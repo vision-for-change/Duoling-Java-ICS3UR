@@ -8,6 +8,7 @@ import { UNITS } from '../data/curriculum'
 import { useProgress } from '../state/hooks'
 import { UNIT_STYLES } from '../lib/unitStyles'
 import { AppIcon } from '../components/AppIcon'
+import signatureUrl from '../../Signature.webp'
 
 const FLOATERS = [
   { text: 'int streak = 7;', className: 'top-2 -left-4 rotate-[-6deg]', delay: 0 },
@@ -172,7 +173,8 @@ export function LandingPage() {
       </section>
 
       <footer className="border-t-2 border-espresso-100 py-8 text-center text-sm text-espresso-400">
-        ByteBrew · a learning prototype. Progress is saved in this browser. Java is a trademark of Oracle.
+        <p className="font-semibold text-espresso-500">ByteBrew - Your chance to get good at java</p>
+        <img src={signatureUrl} alt="ByteBrew signature" className="mx-auto mt-3 h-20 w-auto max-w-full object-contain bg-transparent" style={{ filter: 'drop-shadow(0 0 0 transparent)' }} />
       </footer>
     </div>
   )
