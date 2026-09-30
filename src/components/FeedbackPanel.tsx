@@ -8,7 +8,7 @@ import { Md } from './Md'
 import type { Phase } from './questions/types'
 import { outputHint } from './questions/CodeQuestions'
 
-const CORRECT = ['Nice! You got it!', 'Brewed to perfection! ☕', 'Correct!', 'Java-tastic!', 'Spot on!', 'Exactly right!']
+const CORRECT = ['Nice! You got it!', 'Brewed to perfection!', 'Correct!', 'Java-tastic!', 'Spot on!', 'Exactly right!']
 const SECOND = ['Got it on the second try!', 'That\'s the spirit! Mistakes help you learn.']
 const RETRY = ['Almost! Let\'s look at what happened.', 'Not quite. Take another look.', 'Close! Check the highlighted part.']
 const FAILED = ['Here\'s how it works.', 'Let\'s learn from this one.']
@@ -114,7 +114,7 @@ export function FeedbackPanel(props: FeedbackPanelProps) {
       : 'Noted. Let\'s keep going.'
     : correct
       ? combo >= 3
-        ? `You're on fire! 🔥 ${combo} in a row`
+        ? `You're on fire! ${combo} in a row`
         : attempt > 1
           ? pick(SECOND, seed)
           : pick(CORRECT, seed)
@@ -180,7 +180,7 @@ export function FeedbackPanel(props: FeedbackPanelProps) {
                 )}
                 {correct && grade?.alternative && <p className="mt-1 text-sm font-semibold text-mint-700">Your answer works too. Nice thinking!</p>}
                 {!correct && !retry && followupAdded && !placement && (
-                  <p className="mt-1 text-sm font-bold text-espresso-600">🪜 Byte added an easier question on this idea to help it stick.</p>
+                  <p className="mt-1 text-sm font-bold text-espresso-600">Byte added an easier question on this idea to help it stick.</p>
                 )}
                 {q?.type === 'find-bug' && !retry && (
                   <details className="mt-2">

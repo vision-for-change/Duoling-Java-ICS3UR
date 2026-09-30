@@ -4,6 +4,7 @@ import type { MultipleChoiceQuestion, TrueFalseQuestion, ErrorTypeQuestion, Erro
 import { ERROR_KIND_LABELS } from '../../engine/grading'
 import { Md } from '../Md'
 import type { QuestionViewProps } from './types'
+import { AppIcon } from '../AppIcon'
 
 type OptionState = 'idle' | 'selected' | 'correct' | 'wrong' | 'disabled' | 'reveal'
 
@@ -126,9 +127,7 @@ export function TrueFalseQuestion(props: QuestionViewProps<TrueFalseQuestion>) {
         aria-pressed={selected}
         className={`flex flex-1 flex-col items-center gap-1 rounded-3xl border-2 px-4 py-6 font-display text-2xl font-semibold transition-colors ${optionClasses(state)}`}
       >
-        <span className="text-4xl" aria-hidden>
-          {value ? '👍' : '👎'}
-        </span>
+        <AppIcon name={value ? 'thumbs-up' : 'thumbs-down'} size={38} />
         {value ? 'True' : 'False'}
         <span className="text-xs font-bold text-espresso-400">press {value ? '1' : '2'}</span>
       </motion.button>
@@ -163,9 +162,7 @@ export function ErrorTypeQuestion(props: QuestionViewProps<ErrorTypeQuestion>) {
             aria-pressed={selected}
             className={`flex items-center gap-3 rounded-2xl border-2 px-4 py-3 text-left transition-colors ${optionClasses(state)}`}
           >
-            <span className="text-2xl" aria-hidden>
-              {info.icon}
-            </span>
+            <AppIcon name={info.icon} size={26} />
             <span>
               <span className="block font-display text-[17px] font-semibold">{info.label}</span>
               <span className="block text-sm opacity-75">{info.hint}</span>

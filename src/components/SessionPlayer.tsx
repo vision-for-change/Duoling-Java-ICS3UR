@@ -30,6 +30,7 @@ import { SessionComplete } from './SessionComplete'
 import { HeartsDisplay } from './Stats'
 import { TeachCardView } from './TeachCardView'
 import { TraceViewer } from './TraceViewer'
+import { AppIcon } from './AppIcon'
 
 export interface FinishInfo {
   reward: Reward | null
@@ -301,7 +302,7 @@ export function SessionPlayer({ initial, onFinish, exitTo, noun = 'lesson' }: Se
           <ProgressBar value={fraction} height={16} label={`${noun} progress`} />
           {s.combo >= 3 && !placement && (
             <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} className="hidden shrink-0 font-display text-sm font-bold text-brew-600 sm:block" title="Answers in a row">
-              🔥 {s.combo}
+              <AppIcon name="flame" size={16} className="mr-0.5 inline-block align-[-2px] fill-brew-300" /> {s.combo}
             </motion.span>
           )}
           {!placement && <HeartsDisplay hearts={s.hearts} max={s.maxHearts} />}
@@ -372,7 +373,7 @@ export function SessionPlayer({ initial, onFinish, exitTo, noun = 'lesson' }: Se
       <Modal open={heartsOpen} onClose={() => setHeartsOpen(false)} size="sm" dismissible={false}>
         <div className="flex flex-col items-center text-center">
           <Mascot mood="encouraging" size={110} />
-          <h2 className="mt-2 text-2xl font-bold">Out of hearts 💔</h2>
+          <h2 className="mt-2 text-2xl font-bold">Out of hearts</h2>
           <p className="mt-1 text-espresso-600">Mistakes are how programmers learn! Keep going without hearts, or start fresh.</p>
           <div className="mt-5 flex w-full flex-col gap-2">
             <Button

@@ -1,4 +1,4 @@
-# ☕ ByteBrew: learn Java one byte at a time
+# ByteBrew: learn Java one byte at a time
 
 ByteBrew is a gamified, beginner-friendly Java course for high-school students. Learners follow a path of
 bite-sized lessons with **Byte**, a lion mascot, answer interactive questions with instant feedback, earn XP,
@@ -51,7 +51,7 @@ Progress is stored in the browser (`localStorage`), so no account or server is n
 - **9 question types:** multiple choice, predict the output (pick or type it), true/false, fill in the blank
   (typed or word bank), error identification (syntax / runtime / logic / none), arrange the code, find the bug,
   fix the broken program, and write code (code completion). Every question has a difficulty
-  (🟢 Beginner / 🟡 Intermediate / 🔴 Advanced) and an explanation of *why* the answer is right.
+  (green Beginner / yellow Intermediate / red Advanced) and an explanation of *why* the answer is right.
 - **Adaptive difficulty.** Correct first tries raise the target difficulty; mistakes lower it. A wrong answer
   never reveals the solution immediately: Byte gives targeted feedback for the specific wrong choice, highlights
   the relevant code and offers a second try. After a mistake an **easier follow-up on the same concept** is
@@ -171,7 +171,7 @@ Questions live next to their lessons in `src/data/units/`. A minimal example:
 {
   id: 'w-01',
   type: 'predict-output',
-  difficulty: 1,               // 1 🟢, 2 🟡, 3 🔴
+  difficulty: 1,               // 1 beginner, 2 intermediate, 3 advanced
   concept: 'while',            // used to pick easier follow-ups
   prompt: 'What does this program print?',
   code: j`

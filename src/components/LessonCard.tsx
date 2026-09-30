@@ -6,8 +6,7 @@ import type { NodeStatus } from '../engine/progression'
 import { UNIT_STYLES } from '../lib/unitStyles'
 import type { LessonRecord } from '../state/types'
 import { ButtonLink } from './Button'
-
-const DOTS = ['', '🟢', '🟡', '🔴']
+import { AppIcon, DifficultyDot } from './AppIcon'
 
 /** Compact card for a lesson: unit, title, difficulty range, status and a start/review button. */
 export function LessonCard({ lesson, status, record }: { lesson: Lesson; status: NodeStatus; record?: LessonRecord }) {
@@ -17,7 +16,7 @@ export function LessonCard({ lesson, status, record }: { lesson: Lesson; status:
   return (
     <div className="flex items-center gap-4 rounded-2xl border-2 border-espresso-100 bg-white p-4">
       <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-2xl ${style.soft}`} aria-hidden>
-        {unit.icon}
+        <AppIcon name={unit.icon} size={26} className={style.text} />
       </div>
       <div className="min-w-0 flex-1">
         <div className={`text-xs font-extrabold tracking-wider uppercase ${style.text}`}>
@@ -26,7 +25,11 @@ export function LessonCard({ lesson, status, record }: { lesson: Lesson; status:
         <div className="truncate font-display text-lg font-semibold text-espresso-900">{lesson.title}</div>
         <div className="flex flex-wrap items-center gap-x-3 text-sm text-espresso-500">
           <span>{lesson.summary}</span>
-          <span title="Difficulty range">{difficulties.map((d) => DOTS[d]).join('')}</span>
+          <span title="Difficulty range" className="inline-flex items-center gap-0.5">
+            {difficulties.map((d) => (
+              <DifficultyDot key={d} level={d} />
+            ))}
+          </span>
           {status === 'completed' && record && (
             <span className="inline-flex items-center gap-1 font-bold text-mint-600">
               <CheckCircle2 size={14} /> best {Math.round(record.bestAccuracy * 100)}%

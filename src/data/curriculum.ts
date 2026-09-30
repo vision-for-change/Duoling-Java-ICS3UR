@@ -7,7 +7,7 @@ import { unit6 } from './units/unit6'
 import { unit7 } from './units/unit7'
 import { unit8 } from './units/unit8'
 import { placementItems } from './placement'
-import type { Lesson, Question, TopicId, Unit } from './types'
+import type { IconName, Lesson, Question, TopicId, Unit } from './types'
 
 const contents = [unit1, unit2, unit3, unit4, unit5, unit6, unit7, unit8]
 
@@ -70,26 +70,26 @@ export interface TopicInfo {
   id: TopicId
   label: string
   short: string
-  icon: string
+  icon: IconName
   unitId: string
 }
 
 export const TOPICS: TopicInfo[] = [
-  { id: 'variables', label: 'Variables & Constants', short: 'Variables', icon: '📦', unitId: 'u1' },
-  { id: 'types', label: 'Data Types & Strings', short: 'Data types', icon: '🔤', unitId: 'u1' },
-  { id: 'arithmetic', label: 'Arithmetic Expressions', short: 'Arithmetic', icon: '➗', unitId: 'u2' },
-  { id: 'boolean-logic', label: 'Boolean Logic', short: 'Boolean logic', icon: '⚖️', unitId: 'u2' },
-  { id: 'conditionals', label: 'if / else', short: 'if / else', icon: '🔀', unitId: 'u3' },
-  { id: 'nested-if', label: 'Nested & Combined Conditions', short: 'Nested if', icon: '🪆', unitId: 'u3' },
-  { id: 'while-loops', label: 'while Loops', short: 'while loops', icon: '🔁', unitId: 'u4' },
-  { id: 'for-loops', label: 'for & Nested Loops', short: 'for loops', icon: '🔂', unitId: 'u4' },
-  { id: 'do-while', label: 'do-while & Choosing Loops', short: 'do-while', icon: '♻️', unitId: 'u4' },
-  { id: 'input', label: 'Scanner & hasNextInt()', short: 'Input', icon: '⌨️', unitId: 'u5' },
-  { id: 'errors', label: 'Types of Errors', short: 'Errors', icon: '🐛', unitId: 'u5' },
-  { id: 'try-catch', label: 'try / catch', short: 'try / catch', icon: '🛡️', unitId: 'u5' },
-  { id: 'math', label: 'The Math Class', short: 'Math', icon: '📐', unitId: 'u6' },
-  { id: 'printf', label: 'printf Formatting', short: 'printf', icon: '🖨️', unitId: 'u7' },
-  { id: 'mixed', label: 'Mixed Problems', short: 'Mixed', icon: '🧩', unitId: 'u8' },
+  { id: 'variables', label: 'Variables & Constants', short: 'Variables', icon: 'package', unitId: 'u1' },
+  { id: 'types', label: 'Data Types & Strings', short: 'Data types', icon: 'type', unitId: 'u1' },
+  { id: 'arithmetic', label: 'Arithmetic Expressions', short: 'Arithmetic', icon: 'divide', unitId: 'u2' },
+  { id: 'boolean-logic', label: 'Boolean Logic', short: 'Boolean logic', icon: 'scale', unitId: 'u2' },
+  { id: 'conditionals', label: 'if / else', short: 'if / else', icon: 'git-branch', unitId: 'u3' },
+  { id: 'nested-if', label: 'Nested & Combined Conditions', short: 'Nested if', icon: 'layers', unitId: 'u3' },
+  { id: 'while-loops', label: 'while Loops', short: 'while loops', icon: 'repeat', unitId: 'u4' },
+  { id: 'for-loops', label: 'for & Nested Loops', short: 'for loops', icon: 'repeat-once', unitId: 'u4' },
+  { id: 'do-while', label: 'do-while & Choosing Loops', short: 'do-while', icon: 'recycle', unitId: 'u4' },
+  { id: 'input', label: 'Scanner & hasNextInt()', short: 'Input', icon: 'keyboard', unitId: 'u5' },
+  { id: 'errors', label: 'Types of Errors', short: 'Errors', icon: 'bug', unitId: 'u5' },
+  { id: 'try-catch', label: 'try / catch', short: 'try / catch', icon: 'shield', unitId: 'u5' },
+  { id: 'math', label: 'The Math Class', short: 'Math', icon: 'ruler', unitId: 'u6' },
+  { id: 'printf', label: 'printf Formatting', short: 'printf', icon: 'printer', unitId: 'u7' },
+  { id: 'mixed', label: 'Mixed Problems', short: 'Mixed', icon: 'puzzle', unitId: 'u8' },
 ]
 
 const topicIndex = new Map(TOPICS.map((t) => [t.id, t]))

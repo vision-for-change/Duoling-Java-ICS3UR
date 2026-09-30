@@ -3,7 +3,7 @@
  * easy to move to a server later.
  */
 import { outputsMatch, runJava, type RunResult } from '../java'
-import type { ArrangeQuestion, ErrorKind, FillBlankQuestion, Question } from '../data/types'
+import type { ArrangeQuestion, ErrorKind, FillBlankQuestion, IconName, Question } from '../data/types'
 import { runCodeTask, type CodeTaskResult } from './codeRunner'
 
 export type Response =
@@ -138,11 +138,11 @@ export function grade(q: Question, r: Response): GradeResult {
   return { correct: false }
 }
 
-export const ERROR_KIND_LABELS: Record<ErrorKind, { label: string; hint: string; icon: string }> = {
-  syntax: { label: 'Syntax / compile error', hint: 'Java refuses to compile it', icon: '🧱' },
-  runtime: { label: 'Runtime error', hint: 'It starts, then crashes', icon: '💥' },
-  logic: { label: 'Logic error', hint: 'It runs, but the result is wrong', icon: '🧠' },
-  none: { label: 'No error', hint: 'It works as intended', icon: '✅' },
+export const ERROR_KIND_LABELS: Record<ErrorKind, { label: string; hint: string; icon: IconName }> = {
+  syntax: { label: 'Syntax / compile error', hint: 'Java refuses to compile it', icon: 'brick-wall' },
+  runtime: { label: 'Runtime error', hint: 'It starts, then crashes', icon: 'bomb' },
+  logic: { label: 'Logic error', hint: 'It runs, but the result is wrong', icon: 'brain' },
+  none: { label: 'No error', hint: 'It works as intended', icon: 'check-circle' },
 }
 
 /** Short text describing the right answer (shown after the learner runs out of attempts). */

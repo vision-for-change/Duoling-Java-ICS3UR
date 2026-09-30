@@ -1,5 +1,5 @@
 import { Keyboard } from 'lucide-react'
-import type { Question } from '../data/types'
+import type { IconName, Question } from '../data/types'
 import { DIFFICULTY_LABEL } from '../engine/gamification'
 import type { QuestionRole } from '../engine/session'
 import { CodeBlock } from './CodeBlock'
@@ -9,11 +9,12 @@ import { ChoiceQuestion, ErrorTypeQuestion, TrueFalseQuestion } from './question
 import { ArrangeQuestionView, FillBlankQuestionView, FindBugQuestionView, TypeOutputQuestionView } from './questions/CodeQuestions'
 import { CodeTaskQuestionView } from './questions/CodeTaskQuestion'
 import { TYPE_LABEL, type QuestionViewProps } from './questions/types'
+import { AppIcon, DifficultyDot } from './AppIcon'
 
-const ROLE_BADGE: Partial<Record<QuestionRole, { text: string; className: string }>> = {
-  challenge: { text: '⚡ Mini challenge', className: 'bg-grape-100 text-grape-700' },
-  followup: { text: '🪜 Easier follow-up', className: 'bg-sky-100 text-sky-700' },
-  retry: { text: '🔄 Let\'s try that again', className: 'bg-brew-100 text-brew-700' },
+const ROLE_BADGE: Partial<Record<QuestionRole, { icon: IconName; text: string; className: string }>> = {
+  challenge: { icon: 'zap', text: 'Mini challenge', className: 'bg-grape-100 text-grape-700' },
+  followup: { icon: 'footsteps', text: 'Easier follow-up', className: 'bg-sky-100 text-sky-700' },
+  retry: { icon: 'refresh', text: 'Let\'s try that again', className: 'bg-brew-100 text-brew-700' },
 }
 
 function StdinNote({ stdin }: { stdin: string }) {
@@ -53,10 +54,14 @@ export function QuestionCard(props: QuestionCardProps) {
     <div className="space-y-5">
       <div className="flex flex-wrap items-center gap-2">
         <span className="rounded-full bg-espresso-800 px-3 py-1 text-xs font-extrabold tracking-wider text-cream-50 uppercase">{TYPE_LABEL[q.type]}</span>
-        <span className={`rounded-full px-3 py-1 text-xs font-extrabold ${diff.className}`}>
-          {diff.dot} {diff.label}
+        <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-extrabold ${diff.className}`}>
+          <DifficultyDot level={q.difficulty} /> {diff.label}
         </span>
-        {badge && <span className={`rounded-full px-3 py-1 text-xs font-extrabold ${badge.className}`}>{badge.text}</span>}
+        {badge && (
+          <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-extrabold ${badge.className}`}>
+            <AppIcon name={badge.icon} size={13} /> {badge.text}
+          </span>
+        )}
       </div>
 
       <div className="flex items-start gap-3">

@@ -10,6 +10,7 @@ import { Button, ButtonLink } from './Button'
 import { Mascot } from './Mascot'
 import type { FinishInfo } from './SessionPlayer'
 import { AnimatedNumber } from './Stats'
+import { AppIcon } from './AppIcon'
 
 function Tile({ icon, label, value, color }: { icon: React.ReactNode; label: string; value: React.ReactNode; color: string }) {
   return (
@@ -89,17 +90,21 @@ export function SessionComplete({ info, summaryState }: { info: FinishInfo; summ
         <div className="mt-5 space-y-2">
           {reward?.streakExtended && reward.streak > 0 && (
             <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.3 }} className="rounded-2xl border-2 border-brew-300 bg-brew-50 px-4 py-3 font-display text-lg font-semibold text-brew-700">
-              🔥 {reward.streak} day streak{reward.streak > 1 ? '! You\'re on fire!' : ' started! Come back tomorrow.'}
+              <AppIcon name="flame" size={22} className="mr-1.5 inline-block align-[-4px] fill-brew-300" />
+              {reward.streak} day streak{reward.streak > 1 ? '! You\'re on fire!' : ' started! Come back tomorrow.'}
             </motion.div>
           )}
           {reward?.dailyGoalReached && (
-            <div className="rounded-2xl border-2 border-mint-300 bg-mint-50 px-4 py-3 font-display text-lg font-semibold text-mint-700">🎯 Daily goal reached!</div>
+            <div className="rounded-2xl border-2 border-mint-300 bg-mint-50 px-4 py-3 font-display text-lg font-semibold text-mint-700">
+              <AppIcon name="target" size={22} className="mr-1.5 inline-block align-[-4px]" />
+              Daily goal reached!
+            </div>
           )}
           {reward?.levelUp && (
             <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.45, type: 'spring' }} className="rounded-2xl border-2 border-espresso-900 bg-gradient-to-r from-sun-300 to-brew-300 px-4 py-3 shadow-[0_4px_0_var(--color-espresso-900)]">
               <div className="text-xs font-extrabold tracking-widest text-espresso-800 uppercase">Java level up!</div>
               <div className="font-display text-2xl font-bold">
-                Level {reward.levelUp.level} {reward.levelUp.emoji} {reward.levelUp.title}
+                Level {reward.levelUp.level}: {reward.levelUp.title}
               </div>
             </motion.div>
           )}

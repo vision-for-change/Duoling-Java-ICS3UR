@@ -500,7 +500,7 @@ export const unit7: UnitContent = {
     title: 'printf',
     tagline: 'Format output like a pro.',
     color: 'teal',
-    icon: '🖨️',
+    icon: 'printer',
     topics: ['printf'],
     checkpoint: ['cp7-01', 'cp7-02', 'cp7-03', 'cp7-04', 'cp7-05', 'cp7-06'],
     lessons: [

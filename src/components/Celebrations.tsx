@@ -10,6 +10,7 @@ import { AchievementBadge } from './AchievementBadge'
 import { Button } from './Button'
 import { Mascot } from './Mascot'
 import { Modal } from './Modal'
+import { AppIcon } from './AppIcon'
 
 interface Toast {
   id: number
@@ -86,7 +87,7 @@ export function LevelUpModal({ level, onClose }: { level: LevelInfo | null; onCl
           <Mascot mood="celebrating" size={150} float />
           <div className="mt-2 text-sm font-extrabold tracking-widest text-brew-600 uppercase">Java level up!</div>
           <h2 className="mt-1 text-3xl font-bold">
-            Level {level.level} {level.emoji}
+            Level {level.level} <AppIcon name={level.icon} size={30} className="inline-block align-[-4px] text-brew-500" />
           </h2>
           <p className="mt-1 font-display text-xl text-espresso-600">{level.title}</p>
           <Button className="mt-5" full onClick={onClose} data-autofocus>

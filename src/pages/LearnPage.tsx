@@ -11,6 +11,7 @@ import { isFinalReady, isUnitComplete, nextStep, unitProgress } from '../engine/
 import { UNIT_STYLES } from '../lib/unitStyles'
 import { useDerived } from '../state/hooks'
 import { Card, WeekStrip } from './DashboardPage'
+import { AppIcon } from '../components/AppIcon'
 
 function FinalNode() {
   const { progress: p } = useDerived()
@@ -22,9 +23,7 @@ function FinalNode() {
       id="final"
       className={`mx-auto max-w-md scroll-mt-24 rounded-3xl border-2 p-6 text-center ${ready || done ? 'border-espresso-900 bg-gradient-to-br from-sun-200 via-brew-100 to-mint-100 shadow-[0_5px_0_var(--color-espresso-900)]' : 'border-espresso-200 bg-white shadow-[0_5px_0_var(--color-espresso-200)]'}`}
     >
-      <div className="text-5xl" aria-hidden>
-        {done ? '🏆' : '🏁'}
-      </div>
+      <AppIcon name={done ? 'trophy' : 'flag'} size={52} strokeWidth={2} className="mx-auto text-brew-600" />
       <h2 className="mt-2 text-2xl font-bold">Java Final Challenge</h2>
       <p className="mt-1 text-espresso-600">Build Byte's Café Kiosk: input validation, loops, try/catch, Math and a printf receipt, in 5 guided stages.</p>
       <ButtonLink to="/final" size="lg" className="mt-4" variant={ready && !done ? 'primary' : 'secondary'}>
@@ -61,7 +60,7 @@ export function LearnPage() {
     <PageLayout
       aside={
         <div className="space-y-4 xl:sticky xl:top-24">
-          <Card title={streak ? `${streak} day streak` : 'Start a streak'} icon={<span className="text-xl">🔥</span>}>
+          <Card title={streak ? `${streak} day streak` : 'Start a streak'} icon={<AppIcon name="flame" size={22} className="fill-brew-300 text-brew-600" />}>
             <WeekStrip days={p.days} today={today} />
           </Card>
           <Card title="Daily goal" icon={<Target className="text-mint-600" size={22} />}>

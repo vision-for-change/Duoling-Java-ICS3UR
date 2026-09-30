@@ -15,6 +15,20 @@ import { completedLessonCount, isFinalReady, isPlacedOut, isUnitComplete, lesson
 import { mastery, MIN_ATTEMPTS, overallAccuracy, strongTopics, weakTopics } from '../engine/stats'
 import { UNIT_STYLES } from '../lib/unitStyles'
 import { useDerived } from '../state/hooks'
+import { AppIcon } from '../components/AppIcon'
+import type { IconName } from '../data/types'
+import type { ActivityEvent } from '../state/types'
+
+const ACTIVITY_ICON: Record<ActivityEvent['kind'], IconName> = {
+  lesson: 'book',
+  checkpoint: 'trophy',
+  practice: 'dumbbell',
+  achievement: 'medal',
+  level: 'star',
+  placement: 'compass',
+  final: 'flag',
+  streak: 'flame',
+}
 
 function greeting(): string {
   const h = new Date().getHours()
@@ -75,10 +89,10 @@ export function DashboardPage() {
 
   const byteLine = !activeToday
     ? streak > 0
-      ? `Your ${streak}-day streak is waiting. One lesson keeps it alive! 🔥`
+      ? `Your ${streak}-day streak is waiting. One lesson keeps it alive!`
       : 'Ready to brew some Java? One short lesson starts your streak!'
     : todayXp >= goal
-      ? 'Daily goal smashed! Everything extra is bonus XP. ⚡'
+      ? 'Daily goal smashed! Everything extra is bonus XP.'
       : `${goal - todayXp} XP to go for today's goal. You've got this!`
 
   const nextUnit = next && next.unitId ? getUnit(next.unitId) : undefined
@@ -110,7 +124,7 @@ export function DashboardPage() {
             }
           >
             {unlockedAchievements.length === 0 ? (
-              <p className="text-sm text-espresso-500">Finish your first lesson to earn your first badge! 🏆</p>
+              <p className="text-sm text-espresso-500">Finish your first lesson to earn your first badge!</p>
             ) : (
               <div className="grid grid-cols-3 gap-3">
                 {unlockedAchievements.slice(0, 6).map((a) => (
@@ -162,8 +176,8 @@ export function DashboardPage() {
 
         {/* continue */}
         <div className={`relative overflow-hidden rounded-3xl border-2 ${nextStyle.border} bg-gradient-to-br ${nextStyle.gradient} p-6 text-white shadow-[0_5px_0_var(--shade)]`} style={{ ['--shade' as string]: nextStyle.shade }}>
-          <div className="pointer-events-none absolute -right-4 -bottom-10 text-[140px] leading-none opacity-15" aria-hidden>
-            {nextUnit?.icon ?? '🏁'}
+          <div className="pointer-events-none absolute -right-4 -bottom-10 opacity-15" aria-hidden>
+            <AppIcon name={nextUnit?.icon ?? 'flag'} size={150} strokeWidth={1.5} />
           </div>
           <div className="relative">
             <div className="text-xs font-extrabold tracking-widest text-white/80 uppercase">
@@ -234,7 +248,7 @@ export function DashboardPage() {
                 {weak.slice(0, 4).map((w) => (
                   <li key={w.topic}>
                     <Link to={`/practice/session?mode=topic&topic=${w.topic}`} className="flex items-center gap-3 rounded-xl p-1 hover:bg-cream-100">
-                      <span className="w-6 text-lg">{getTopic(w.topic).icon}</span>
+                      <AppIcon name={getTopic(w.topic).icon} size={22} className="w-6 shrink-0 text-brew-500" />
                       <span className="w-32 shrink-0 font-bold">{getTopic(w.topic).short}</span>
                       <ProgressBar value={w.accuracy} color={w.accuracy < 0.6 ? 'berry' : 'sun'} height={10} shine={false} label={`${getTopic(w.topic).short} accuracy`} />
                       <span className="w-12 shrink-0 text-right font-display font-semibold">{Math.round(w.accuracy * 100)}%</span>
@@ -257,7 +271,7 @@ export function DashboardPage() {
                     <Link to={`/learn#${u.id}`} className="block rounded-xl p-1 hover:bg-cream-100">
                       <div className="flex items-center justify-between text-sm font-bold">
                         <span className="flex items-center gap-2">
-                          <span>{u.icon}</span>
+                          <AppIcon name={u.icon} size={18} className={s.text} />
                           <span className={s.text}>{u.number}.</span> {u.title}
                         </span>
                         <span className="text-espresso-400">{isUnitComplete(p, u) ? '✓ done' : isPlacedOut(p, u) ? 'placed out' : `${pr.done}/${pr.total}`}</span>
@@ -269,7 +283,9 @@ export function DashboardPage() {
               })}
               <li>
                 <Link to="/final" className="flex items-center justify-between rounded-xl bg-espresso-50 px-2 py-2 text-sm font-bold text-espresso-600 hover:bg-cream-100">
-                  <span>🏁 Final Challenge</span>
+                  <span className="flex items-center gap-2">
+                    <AppIcon name="flag" size={18} /> Final Challenge
+                  </span>
                   <span className="text-espresso-400">
                     {p.final.completedAt ? '✓ done' : p.final.stagesDone.length ? `${p.final.stagesDone.length}/${finalStages.length} stages` : isFinalReady(p) ? 'ready!' : 'not started'}
                   </span>
@@ -285,7 +301,7 @@ export function DashboardPage() {
                 const m = mastery(s)
                 return (
                   <li key={t.id} className="flex items-center gap-2 text-sm">
-                    <span className="w-6 text-base">{t.icon}</span>
+                    <AppIcon name={t.icon} size={18} className="w-6 shrink-0 text-brew-500" />
                     <span className="w-28 shrink-0 truncate font-bold text-espresso-700">{t.short}</span>
                     <ProgressBar value={m} color={m >= 0.85 ? 'mint' : m >= 0.6 ? 'sun' : 'brew'} height={9} shine={false} label={`${t.short} mastery`} />
                     <span className="w-10 shrink-0 text-right text-xs font-bold text-espresso-400">{s.attempts ? `${Math.round(s.accuracy * 100)}%` : '-'}</span>
@@ -304,8 +320,8 @@ export function DashboardPage() {
               <ul className="space-y-2">
                 {strong.slice(0, 4).map((s) => (
                   <li key={s.topic} className="flex items-center justify-between rounded-xl bg-mint-50 px-3 py-2 font-bold text-mint-800">
-                    <span>
-                      {getTopic(s.topic).icon} {getTopic(s.topic).short}
+                    <span className="flex items-center gap-2">
+                      <AppIcon name={getTopic(s.topic).icon} size={18} /> {getTopic(s.topic).short}
                     </span>
                     <span>{Math.round(s.accuracy * 100)}%</span>
                   </li>
@@ -321,8 +337,8 @@ export function DashboardPage() {
                 {weak.slice(0, 4).map((s) => (
                   <li key={s.topic}>
                     <Link to={`/practice/session?mode=topic&topic=${s.topic}`} className="flex items-center justify-between rounded-xl bg-berry-50 px-3 py-2 font-bold text-berry-800 hover:bg-berry-100">
-                      <span>
-                        {getTopic(s.topic).icon} {getTopic(s.topic).short}
+                      <span className="flex items-center gap-2">
+                        <AppIcon name={getTopic(s.topic).icon} size={18} /> {getTopic(s.topic).short}
                       </span>
                       <span>{Math.round(s.accuracy * 100)}% · practice →</span>
                     </Link>
@@ -340,8 +356,8 @@ export function DashboardPage() {
             <ul className="divide-y-2 divide-espresso-50">
               {p.activity.slice(0, 8).map((a) => (
                 <li key={a.id} className="flex items-center gap-3 py-2.5">
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-cream-100 text-lg">
-                    {{ lesson: '📘', checkpoint: '🏆', practice: '🏋️', achievement: '🎖️', level: '⭐', placement: '🧭', final: '🏁', streak: '🔥' }[a.kind]}
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-cream-100 text-brew-600">
+                    <AppIcon name={ACTIVITY_ICON[a.kind]} size={20} />
                   </span>
                   <div className="min-w-0 flex-1">
                     <div className="truncate font-bold text-espresso-800">{a.title}</div>

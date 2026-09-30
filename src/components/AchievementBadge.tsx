@@ -1,5 +1,6 @@
 import { Lock } from 'lucide-react'
 import type { AchievementDef } from '../engine/achievements'
+import { AppIcon } from './AppIcon'
 
 const RING: Record<AchievementDef['color'], string> = {
   brew: 'from-brew-300 to-brew-500',
@@ -34,9 +35,7 @@ export function AchievementBadge({ def, unlocked, size = 72 }: { def: Achievemen
           unlocked ? RING[def.color] : 'from-espresso-100 to-espresso-200'
         }`}
       >
-        <span className={`leading-none ${unlocked ? '' : 'opacity-40 grayscale'}`} style={{ fontSize: size * 0.36 }}>
-          {def.icon}
-        </span>
+        <AppIcon name={def.icon} size={size * 0.4} strokeWidth={2.4} className={unlocked ? 'text-white drop-shadow-[0_1px_0_rgba(36,24,18,0.45)]' : 'text-espresso-300'} />
       </div>
       {!unlocked && (
         <span className="absolute -right-1 -bottom-1 flex h-7 w-7 items-center justify-center rounded-full border-2 border-espresso-300 bg-white text-espresso-400">

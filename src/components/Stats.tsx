@@ -2,6 +2,7 @@ import { motion, useSpring, useTransform } from 'motion/react'
 import { useEffect } from 'react'
 import { Flame, Heart, Zap } from 'lucide-react'
 import type { LevelInfo } from '../engine/gamification'
+import { AppIcon } from './AppIcon'
 
 /** Number that animates when it changes. */
 export function AnimatedNumber({ value, className = '' }: { value: number; className?: string }) {
@@ -76,8 +77,12 @@ export function LevelBadge({ level, size = 44 }: { level: LevelInfo; size?: numb
       aria-label={`Level ${level.level}, ${level.title}`}
     >
       {level.level}
-      <span className="absolute -right-2 -bottom-2 text-base" aria-hidden style={{ fontSize: size * 0.36 }}>
-        {level.emoji}
+      <span
+        className="absolute -right-2 -bottom-2 flex items-center justify-center rounded-full border-2 border-espresso-900 bg-white text-brew-600"
+        aria-hidden
+        style={{ width: size * 0.5, height: size * 0.5 }}
+      >
+        <AppIcon name={level.icon} size={size * 0.3} strokeWidth={2.6} />
       </span>
     </div>
   )

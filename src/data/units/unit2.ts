@@ -635,7 +635,7 @@ export const unit2: UnitContent = {
     title: 'Expressions',
     tagline: 'Calculate with operators and ask true/false questions.',
     color: 'sky',
-    icon: '🧮',
+    icon: 'calculator',
     topics: ['arithmetic', 'boolean-logic'],
     checkpoint: ['cp2-01', 'cp2-02', 'cp2-03', 'cp2-04', 'cp2-05', 'cp2-06'],
     lessons: [

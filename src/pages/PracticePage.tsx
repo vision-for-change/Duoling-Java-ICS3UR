@@ -13,6 +13,7 @@ import { createPracticeSession, summarize, type SessionState } from '../engine/s
 import { mastery, missedQuestionIds, MIN_ATTEMPTS, weakTopics } from '../engine/stats'
 import { useDerived, useProgress } from '../state/hooks'
 import { store } from '../state/store'
+import { AppIcon } from '../components/AppIcon'
 
 function pct(v: number) {
   return `${Math.round(v * 100)}%`
@@ -107,9 +108,7 @@ export function PracticePage() {
           const m = mastery(s)
           const inner = (
             <>
-              <span className="text-3xl" aria-hidden>
-                {t.icon}
-              </span>
+              <AppIcon name={t.icon} size={32} className={unlocked ? 'shrink-0 text-brew-500' : 'shrink-0 text-espresso-300'} />
               <span className="min-w-0 flex-1">
                 <span className="block truncate font-display text-lg font-semibold">{t.label}</span>
                 <span className="mt-1 flex items-center gap-2">

@@ -926,7 +926,7 @@ export const unit4: UnitContent = {
     title: 'Loops',
     tagline: 'Repeat work with while, for and do-while.',
     color: 'mint',
-    icon: '🔁',
+    icon: 'repeat',
     topics: ['while-loops', 'for-loops', 'do-while'],
     checkpoint: ['cp4-01', 'cp4-02', 'cp4-03', 'cp4-04', 'cp4-05', 'cp4-06'],
     lessons: [

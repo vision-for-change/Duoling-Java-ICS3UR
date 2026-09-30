@@ -7,6 +7,7 @@ import { getUnit } from '../data/curriculum'
 import { lessonStatus } from '../engine/progression'
 import { UNIT_STYLES } from '../lib/unitStyles'
 import { useProgress } from '../state/hooks'
+import { AppIcon } from '../components/AppIcon'
 
 /** Unit guidebook: every concept, example and common mistake on one page. */
 export function GuidePage() {
@@ -69,7 +70,9 @@ export function GuidePage() {
               )}
               {tip?.kind === 'tip' && (
                 <div className="mt-4 rounded-2xl bg-sun-50 p-4 text-[15px] text-espresso-800">
-                  <div className="font-bold">💡 {tip.title}</div>
+                  <div className="flex items-center gap-2 font-bold">
+                    <AppIcon name="lightbulb" size={18} className="text-sun-600" /> {tip.title}
+                  </div>
                   <Md text={tip.body} />
                   {tip.bullets && (
                     <ul className="mt-1 list-disc space-y-1 pl-5">
@@ -84,7 +87,9 @@ export function GuidePage() {
               )}
               {mistake?.kind === 'mistake' && (
                 <div className="mt-4">
-                  <div className="mb-2 font-bold text-berry-600">⚠️ Common mistake: {mistake.title}</div>
+                  <div className="mb-2 flex items-center gap-2 font-bold text-berry-600">
+                    <AppIcon name="alert" size={18} /> Common mistake: {mistake.title}
+                  </div>
                   <p className="mb-2 text-[15px] text-espresso-700">
                     <Md text={mistake.body} />
                   </p>

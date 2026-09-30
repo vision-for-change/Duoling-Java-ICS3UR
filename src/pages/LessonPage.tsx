@@ -32,7 +32,7 @@ export function LessonPage() {
     const reward = store.finishLesson(lesson.id, lesson.title, sum)
     return {
       reward,
-      headline: sum.perfect ? 'Perfect lesson! 💯' : 'Lesson complete! Java level up!',
+      headline: sum.perfect ? 'Perfect lesson!' : 'Lesson complete! Java level up!',
       subline: `“${lesson.title}” · ${sum.firstTry}/${sum.total} right on the first try`,
       mood: 'celebrating',
       primary: continueTarget(),
@@ -76,7 +76,7 @@ export function CheckpointPage() {
     return {
       reward,
       passed: true,
-      headline: `Unit ${unit.number} complete! 🎉`,
+      headline: `Unit ${unit.number} complete!`,
       subline: allDone ? 'You finished every unit. Time for the Java Final Challenge!' : `You mastered ${unit.title}.`,
       primary: allDone ? { label: 'Open the Final Challenge', to: '/final' } : continueTarget(),
       secondary: { label: 'Dashboard', to: '/home' },

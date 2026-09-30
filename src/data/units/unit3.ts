@@ -983,7 +983,7 @@ export const unit3: UnitContent = {
     title: 'Conditional Statements',
     tagline: 'Teach your programs to make decisions.',
     color: 'grape',
-    icon: '🔀',
+    icon: 'git-branch',
     topics: ['conditionals', 'nested-if'],
     checkpoint: ['cp3-01', 'cp3-02', 'cp3-03', 'cp3-04', 'cp3-05', 'cp3-06'],
     lessons: [

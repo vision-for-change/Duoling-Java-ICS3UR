@@ -8,11 +8,12 @@ import { MascotSays } from '../components/Mascot'
 import { skippedPlacement } from '../engine/placement'
 import { useProgress } from '../state/hooks'
 import { store } from '../state/store'
+import { AppIcon } from '../components/AppIcon'
 
 const LEVELS = [
-  { id: 'new', emoji: '🌱', title: "I'm brand new to Java", body: 'Start from the very first lesson. Byte will guide you step by step.' },
-  { id: 'little', emoji: '🧭', title: 'I know a little', body: 'Take a quick placement test (14 questions, about 5 minutes).' },
-  { id: 'lot', emoji: '🚀', title: 'I know quite a bit', body: 'Take the placement test and skip the units you already know.' },
+  { id: 'new', icon: 'sprout', title: "I'm brand new to Java", body: 'Start from the very first lesson. Byte will guide you step by step.' },
+  { id: 'little', icon: 'compass', title: 'I know a little', body: 'Take a quick placement test (14 questions, about 5 minutes).' },
+  { id: 'lot', icon: 'rocket', title: 'I know quite a bit', body: 'Take the placement test and skip the units you already know.' },
 ] as const
 
 const GOALS = [
@@ -64,7 +65,7 @@ export function OnboardingPage() {
               className="flex flex-1 flex-col"
             >
               <MascotSays mood="excited" size={120} className="mt-6">
-                <span className="text-lg">Hi! I'm <b>Byte</b>, your lion guide. I brew Java, the programming language! ☕</span>
+                <span className="text-lg">Hi! I'm <b>Byte</b>, your lion guide. I brew Java, the programming language!</span>
               </MascotSays>
               <label htmlFor="name" className="mt-10 block font-display text-2xl font-semibold">
                 What should I call you?
@@ -138,9 +139,7 @@ export function OnboardingPage() {
                       level === l.id ? 'border-sky-400 bg-sky-50 shadow-[0_4px_0_var(--color-sky-400)]' : 'border-espresso-200 bg-white shadow-[0_4px_0_var(--color-espresso-200)] hover:bg-cream-100'
                     }`}
                   >
-                    <span className="text-4xl" aria-hidden>
-                      {l.emoji}
-                    </span>
+                    <AppIcon name={l.icon} size={38} className="shrink-0 text-brew-500" />
                     <span>
                       <span className="block font-display text-xl font-semibold">{l.title}</span>
                       <span className="block text-espresso-500">{l.body}</span>

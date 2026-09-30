@@ -988,7 +988,7 @@ export const unit5: UnitContent = {
     title: 'Input & Error Handling',
     tagline: 'Read user input and survive their typos.',
     color: 'berry',
-    icon: '⌨️',
+    icon: 'keyboard',
     topics: ['input', 'errors', 'try-catch'],
     checkpoint: ['cp5-01', 'cp5-02', 'cp5-03', 'cp5-04', 'cp5-05', 'cp5-06'],
     lessons: [

@@ -629,7 +629,7 @@ export const unit1: UnitContent = {
     title: 'Variables & Basic Java',
     tagline: 'Store values, pick the right type and name things well.',
     color: 'brew',
-    icon: '📦',
+    icon: 'package',
     topics: ['variables', 'types'],
     checkpoint: ['cp1-01', 'cp1-02', 'cp1-03', 'cp1-04', 'cp1-05', 'cp1-06'],
     lessons: [

@@ -45,7 +45,7 @@ export function TeachCardView({ card }: { card: TeachCard }) {
             </p>
           </div>
           <RunnableCode code={card.code} stdin={card.stdin} autoRun notes={card.notes} />
-          {card.random && <p className="text-sm text-espresso-500">🎲 This program uses randomness. Press Run again for new numbers.</p>}
+          {card.random && <p className="text-sm text-espresso-500">This program uses randomness. Press Run again for new numbers.</p>}
         </div>
       )
     case 'mistake':

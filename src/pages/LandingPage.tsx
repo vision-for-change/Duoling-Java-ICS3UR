@@ -7,6 +7,7 @@ import { Mascot, MascotSays } from '../components/Mascot'
 import { UNITS } from '../data/curriculum'
 import { useProgress } from '../state/hooks'
 import { UNIT_STYLES } from '../lib/unitStyles'
+import { AppIcon } from '../components/AppIcon'
 
 const FLOATERS = [
   { text: 'int streak = 7;', className: 'top-2 -left-4 rotate-[-6deg]', delay: 0 },
@@ -149,9 +150,7 @@ export function LandingPage() {
                 <li key={u.id} className={`rounded-3xl border-2 ${s.border} bg-gradient-to-br ${s.gradient} p-4 text-white shadow-[0_4px_0_var(--shade)]`} style={{ ['--shade' as string]: s.shade }}>
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-extrabold tracking-widest text-white/80 uppercase">Unit {u.number}</span>
-                    <span className="text-2xl" aria-hidden>
-                      {u.icon}
-                    </span>
+                    <AppIcon name={u.icon} size={26} className="text-white/90" />
                   </div>
                   <div className="mt-2 font-display text-lg leading-tight font-bold">{u.title}</div>
                   <div className="mt-1 text-sm text-white/85">{u.lessons.length} lessons + checkpoint</div>
@@ -160,7 +159,8 @@ export function LandingPage() {
             })}
           </ol>
           <div className="mt-6 flex items-center justify-center gap-3 rounded-3xl border-2 border-dashed border-sun-400/60 p-4 text-center font-display text-lg text-sun-200">
-            🏁 Then: the Java Final Challenge. Build Byte's Café Kiosk!
+            <AppIcon name="flag" size={22} className="mr-2 inline-block align-[-4px]" />
+            Then: the Java Final Challenge. Build Byte's Café Kiosk!
           </div>
         </div>
       </section>

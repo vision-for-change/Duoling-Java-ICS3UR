@@ -691,7 +691,7 @@ export const unit8: UnitContent = {
     title: 'Mixed Problems',
     tagline: 'Put everything together.',
     color: 'cocoa',
-    icon: '🧩',
+    icon: 'puzzle',
     topics: ['mixed'],
     checkpoint: ['cp8-01', 'cp8-02', 'cp8-03', 'cp8-04', 'cp8-05', 'cp8-06'],
     lessons: [

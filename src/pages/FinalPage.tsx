@@ -19,6 +19,7 @@ import { celebrate } from '../lib/motion'
 import { sfx } from '../lib/sound'
 import { useProgress } from '../state/hooks'
 import { store, type Reward } from '../state/store'
+import { AppIcon } from '../components/AppIcon'
 
 /** The next stage after `from` that isn't done yet (wrapping around), or -1 when every stage is done. */
 function nextOpenStage(done: string[], from: number): number {
@@ -89,10 +90,13 @@ export function FinalPage() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
         <div className="flex-1">
           <div className="text-sm font-extrabold tracking-widest text-brew-600 uppercase">Java Final Challenge</div>
-          <h1 className="text-3xl font-bold sm:text-4xl">{FINAL_PROJECT.title} ☕</h1>
+          <h1 className="text-3xl font-bold sm:text-4xl">{FINAL_PROJECT.title}</h1>
           <p className="text-espresso-600">{FINAL_PROJECT.tagline}</p>
         </div>
-        {allDone && <div className="rounded-2xl border-2 border-mint-400 bg-mint-50 px-4 py-2 font-display font-semibold text-mint-700">🏆 Completed!</div>}
+        {allDone && <div className="rounded-2xl border-2 border-mint-400 bg-mint-50 px-4 py-2 font-display font-semibold text-mint-700">
+            <AppIcon name="trophy" size={20} className="mr-1.5 inline-block align-[-4px]" />
+            Completed!
+          </div>}
       </div>
 
       {!ready && !allDone && (
@@ -245,7 +249,7 @@ export function FinalPage() {
             <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="flex flex-col items-center gap-3 rounded-3xl border-2 border-mint-400 bg-mint-50 p-5 text-center sm:flex-row sm:text-left">
               <Mascot mood="celebrating" size={80} />
               <div className="flex-1">
-                <div className="font-display text-2xl font-bold text-mint-800">{upcoming === -1 ? 'You built the whole kiosk! 🏆' : `Stage ${index + 1} complete!`}</div>
+                <div className="font-display text-2xl font-bold text-mint-800">{upcoming === -1 ? 'You built the whole kiosk!' : `Stage ${index + 1} complete!`}</div>
                 <div className="font-bold text-sun-700">+{reward.xp} XP</div>
               </div>
               {upcoming !== -1 && (
@@ -257,7 +261,7 @@ export function FinalPage() {
           )}
           {allDone && (index === lastIndex || reward) && (
             <div className="rounded-3xl border-2 border-espresso-100 bg-white p-5">
-              <h3 className="mb-2 text-xl font-bold">Try your kiosk ☕</h3>
+              <h3 className="mb-2 text-xl font-bold">Try your kiosk</h3>
               <p className="mb-3 text-sm text-espresso-600">Run it and order a drink. Type your answers in the console like a real customer.</p>
               {/* the last stage holds the whole program */}
               <RunnableCode

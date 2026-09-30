@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from 'motion/react'
 import { BookOpenText, Check, Crown, FastForward, Star, Trophy } from 'lucide-react'
 import { Link, useNavigate } from 'react-router'
 import { checkpointId, getQuestion } from '../data/curriculum'
-import type { Unit } from '../data/types'
+import type { Difficulty, Unit } from '../data/types'
 import { XP } from '../engine/gamification'
 import { checkpointStatus, isAheadOfPath, isPlacedOut, isUnitComplete, lessonStatus, nextStep, unitProgress, type NodeStatus } from '../engine/progression'
 import { UNIT_STYLES } from '../lib/unitStyles'
@@ -11,6 +11,7 @@ import type { Progress } from '../state/types'
 import { buttonClass } from './Button'
 import { Mascot } from './Mascot'
 import { ProgressBar } from './ProgressBar'
+import { AppIcon, DifficultyDots } from './AppIcon'
 
 const OFFSETS = [0, 58, 88, 58, 0, -58, -88, -58]
 const GAP = 108
@@ -86,7 +87,7 @@ function UnitBanner({ unit, p, guide = true }: { unit: Unit; p: Progress; guide?
   return (
     <div className={`relative overflow-hidden rounded-3xl border-2 ${style.border} bg-gradient-to-br ${style.gradient} p-5 text-white shadow-[0_5px_0_var(--shade)]`} style={{ ['--shade' as string]: style.shade }}>
       <div className="pointer-events-none absolute -top-8 -right-6 text-[120px] leading-none opacity-15 select-none" aria-hidden>
-        {unit.icon}
+        <AppIcon name={unit.icon} size={120} strokeWidth={1.6} />
       </div>
       <div className="relative flex items-start justify-between gap-3">
         <div>
@@ -147,7 +148,7 @@ function Popover({ node, unit, onClose }: { node: PathNode; unit: Unit; onClose:
       aria-label={node.title}
     >
       <div className="text-xs font-extrabold tracking-wider text-espresso-400 uppercase">
-        {node.kind === 'checkpoint' ? 'Unit challenge' : 'Lesson'} · {node.questionCount} questions · {'🟢🟡🔴'.slice(0, hardest * 2)}
+        {node.kind === 'checkpoint' ? 'Unit challenge' : 'Lesson'} · {node.questionCount} questions · <DifficultyDots upTo={hardest as Difficulty} />
       </div>
       <h3 className="mt-1 text-xl font-bold">{node.title}</h3>
       <p className="mt-1 text-sm text-espresso-600">{node.summary}</p>

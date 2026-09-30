@@ -12,6 +12,7 @@ import { store } from '../state/store'
 import type { Settings as SettingsT } from '../state/types'
 import { Card } from './DashboardPage'
 import { PlacementResults } from './PlacementPage'
+import { AppIcon } from '../components/AppIcon'
 
 function Toggle({ checked, onChange, label, description }: { checked: boolean; onChange: (v: boolean) => void; label: string; description?: string }) {
   return (
@@ -125,14 +126,14 @@ export function ProfilePage() {
       </section>
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <StatTile icon="⚡" tone="sun" label="Total XP" value={p.xp.toLocaleString()} />
-        <StatTile icon="🔥" tone="brew" label="Current streak" value={`${streak} day${streak === 1 ? '' : 's'}`} sub={`Longest: ${p.streak.longest}`} />
-        <StatTile icon="📘" tone="sky" label="Lessons" value={`${completedLessonCount(p)}/${TOTAL_LESSONS}`} />
-        <StatTile icon="🎯" tone="mint" label="Accuracy" value={p.stats.answered ? `${Math.round(overallAccuracy(p) * 100)}%` : 'N/A'} />
-        <StatTile icon="✍️" tone="grape" label="Questions answered" value={p.stats.answered} />
-        <StatTile icon="🏋️" tone="berry" label="Practice sessions" value={p.stats.practiceSessions} />
-        <StatTile icon="🐛" tone="mint" label="Bugs fixed" value={p.stats.bugsFixed} />
-        <StatTile icon="🎯" tone="sky" label="Best combo" value={p.stats.bestCombo} />
+        <StatTile icon={<AppIcon name="zap" size={22} />} tone="sun" label="Total XP" value={p.xp.toLocaleString()} />
+        <StatTile icon={<AppIcon name="flame" size={22} />} tone="brew" label="Current streak" value={`${streak} day${streak === 1 ? '' : 's'}`} sub={`Longest: ${p.streak.longest}`} />
+        <StatTile icon={<AppIcon name="book" size={22} />} tone="sky" label="Lessons" value={`${completedLessonCount(p)}/${TOTAL_LESSONS}`} />
+        <StatTile icon={<AppIcon name="target" size={22} />} tone="mint" label="Accuracy" value={p.stats.answered ? `${Math.round(overallAccuracy(p) * 100)}%` : 'N/A'} />
+        <StatTile icon={<AppIcon name="pen" size={22} />} tone="grape" label="Questions answered" value={p.stats.answered} />
+        <StatTile icon={<AppIcon name="dumbbell" size={22} />} tone="berry" label="Practice sessions" value={p.stats.practiceSessions} />
+        <StatTile icon={<AppIcon name="bug" size={22} />} tone="mint" label="Bugs fixed" value={p.stats.bugsFixed} />
+        <StatTile icon={<AppIcon name="target" size={22} />} tone="sky" label="Best combo" value={p.stats.bestCombo} />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
@@ -182,7 +183,7 @@ export function ProfilePage() {
         </Card>
 
         <div className="space-y-6">
-          <Card title="Placement" icon={<span className="text-xl">🧭</span>} action={<ButtonLink to="/placement" size="sm" variant="secondary">Retake</ButtonLink>}>
+          <Card title="Placement" icon={<AppIcon name="compass" size={22} className="text-brew-500" />} action={<ButtonLink to="/placement" size="sm" variant="secondary">Retake</ButtonLink>}>
             {p.placement && !p.placement.skipped ? (
               <PlacementResults result={p.placement} />
             ) : (

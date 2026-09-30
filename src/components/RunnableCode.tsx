@@ -9,6 +9,7 @@ import { Console } from './Console'
 import { Md } from './Md'
 import { Modal } from './Modal'
 import { TraceViewer } from './TraceViewer'
+import { AppIcon } from './AppIcon'
 
 interface RunnableCodeProps {
   code: string
@@ -37,7 +38,7 @@ export function ErrorExplainer({ result }: { result: RunResult }) {
   return (
     <div className={`rounded-2xl border-2 px-4 py-3 ${color}`} role="status">
       <div className="font-display font-semibold">
-        {ex.kind === 'compile' ? '🧱 ' : ex.kind === 'runtime' ? '💥 ' : ex.kind === 'timeout' ? '⏱️ ' : '🚧 '}
+        <AppIcon name={ex.kind === 'compile' ? 'brick-wall' : ex.kind === 'runtime' ? 'bomb' : ex.kind === 'timeout' ? 'timer' : 'construction'} size={18} className="mr-1.5 inline-block align-[-3px]" />
         {ex.title}
         {result.error?.line ? <span className="ml-2 text-sm font-normal opacity-70">line {result.error.line}</span> : null}
       </div>

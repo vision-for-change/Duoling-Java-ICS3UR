@@ -475,7 +475,7 @@ export const unit6: UnitContent = {
     title: 'Math in Java',
     tagline: 'Powers, roots, rounding and randomness.',
     color: 'sun',
-    icon: '📐',
+    icon: 'ruler',
     topics: ['math'],
     checkpoint: ['cp6-01', 'cp6-02', 'cp6-03', 'cp6-04', 'cp6-05'],
     lessons: [

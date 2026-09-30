@@ -22,8 +22,60 @@ export type TopicId =
   | 'printf'
   | 'mixed'
 
-/** 1 = 🟢 Beginner, 2 = 🟡 Intermediate, 3 = 🔴 Advanced */
+/** 1 = Beginner (green), 2 = Intermediate (yellow), 3 = Advanced (red) */
 export type Difficulty = 1 | 2 | 3
+
+/** Names of the line icons drawn by `AppIcon` (src/components/AppIcon.tsx). */
+export type IconName =
+  | 'alert'
+  | 'bomb'
+  | 'book'
+  | 'brick-wall'
+  | 'brain'
+  | 'bug'
+  | 'calculator'
+  | 'check-circle'
+  | 'coffee'
+  | 'compass'
+  | 'construction'
+  | 'crown'
+  | 'dice'
+  | 'divide'
+  | 'dumbbell'
+  | 'flag'
+  | 'flame'
+  | 'flask'
+  | 'footsteps'
+  | 'git-branch'
+  | 'graduation'
+  | 'heart-crack'
+  | 'keyboard'
+  | 'layers'
+  | 'lightbulb'
+  | 'medal'
+  | 'package'
+  | 'party'
+  | 'pen'
+  | 'printer'
+  | 'puzzle'
+  | 'recycle'
+  | 'refresh'
+  | 'repeat'
+  | 'repeat-once'
+  | 'rocket'
+  | 'ruler'
+  | 'scale'
+  | 'shield'
+  | 'sparkles'
+  | 'sprout'
+  | 'star'
+  | 'target'
+  | 'thumbs-down'
+  | 'thumbs-up'
+  | 'timer'
+  | 'trophy'
+  | 'type'
+  | 'zap'
 
 export type ErrorKind = 'syntax' | 'runtime' | 'logic' | 'none'
 
@@ -233,7 +285,7 @@ export interface Unit {
   title: string
   tagline: string
   color: UnitColor
-  icon: string
+  icon: IconName
   topics: TopicId[]
   lessons: Lesson[]
   /** harder questions that combine the unit's concepts */
