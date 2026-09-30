@@ -1,0 +1,312 @@
+@import 'tailwindcss';
+
+/* ------------------------------------------------------------------
+   ByteBrew design tokens: a warm café palette with bright accents.
+   ------------------------------------------------------------------ */
+@theme {
+  --font-display: 'Fredoka Variable', 'Fredoka', ui-rounded, system-ui, sans-serif;
+  --font-sans: 'Nunito Variable', 'Nunito', ui-rounded, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, 'Cascadia Code', Consolas, monospace;
+
+  --color-cream-50: #fffbf4;
+  --color-cream-100: #fff5e8;
+  --color-cream-200: #fbe9d2;
+  --color-cream-300: #f3d9b8;
+
+  --color-espresso-50: #f7f1ec;
+  --color-espresso-100: #efe5dc;
+  --color-espresso-200: #e0d0c2;
+  --color-espresso-300: #c4ad9b;
+  --color-espresso-400: #a18672;
+  --color-espresso-500: #7d6353;
+  --color-espresso-600: #5e4638;
+  --color-espresso-700: #47332a;
+  --color-espresso-800: #33241d;
+  --color-espresso-900: #241812;
+
+  --color-brew-50: #fff4ec;
+  --color-brew-100: #ffe3cf;
+  --color-brew-200: #ffc7a0;
+  --color-brew-300: #ffa56b;
+  --color-brew-400: #ff8a45;
+  --color-brew-500: #f76f22;
+  --color-brew-600: #db5710;
+  --color-brew-700: #b4450d;
+  --color-brew-800: #8c3610;
+
+  --color-mint-50: #eafbf4;
+  --color-mint-100: #cff5e4;
+  --color-mint-200: #a2eacb;
+  --color-mint-300: #6cdbae;
+  --color-mint-400: #37c68e;
+  --color-mint-500: #17ad76;
+  --color-mint-600: #0e8c5e;
+  --color-mint-700: #0c6f4c;
+  --color-mint-800: #0b573d;
+
+  --color-berry-50: #fff0f3;
+  --color-berry-100: #ffdde4;
+  --color-berry-200: #ffb8c7;
+  --color-berry-300: #ff8aa3;
+  --color-berry-400: #fa5d80;
+  --color-berry-500: #ec3a63;
+  --color-berry-600: #cd2350;
+  --color-berry-700: #a81a42;
+  --color-berry-800: #85173a;
+
+  --color-sky-50: #eef7ff;
+  --color-sky-100: #d8edff;
+  --color-sky-200: #b0daff;
+  --color-sky-300: #7cc2ff;
+  --color-sky-400: #45a5f8;
+  --color-sky-500: #2388e6;
+  --color-sky-600: #176cc4;
+  --color-sky-700: #14569d;
+  --color-sky-800: #154779;
+
+  --color-grape-50: #f5f1ff;
+  --color-grape-100: #ebe2ff;
+  --color-grape-200: #d5c4ff;
+  --color-grape-300: #b89cff;
+  --color-grape-400: #9b74f7;
+  --color-grape-500: #7f55e6;
+  --color-grape-600: #6a40c9;
+  --color-grape-700: #5633a3;
+  --color-grape-800: #452a80;
+
+  --color-sun-50: #fffbea;
+  --color-sun-100: #fff3c4;
+  --color-sun-200: #ffe68a;
+  --color-sun-300: #ffd54f;
+  --color-sun-400: #ffc21f;
+  --color-sun-500: #f2a900;
+  --color-sun-600: #cf8a00;
+  --color-sun-700: #a26800;
+  --color-sun-800: #7e5104;
+
+  --color-teal-50: #ebfbfb;
+  --color-teal-100: #ccf4f4;
+  --color-teal-200: #9de8e8;
+  --color-teal-300: #5fd6d6;
+  --color-teal-400: #2bbdbf;
+  --color-teal-500: #12a0a4;
+  --color-teal-600: #0e8187;
+  --color-teal-700: #10676d;
+  --color-teal-800: #125358;
+
+  --color-cocoa-50: #f8f2ee;
+  --color-cocoa-100: #eedfd4;
+  --color-cocoa-200: #ddbfa9;
+  --color-cocoa-300: #c79a7b;
+  --color-cocoa-400: #b07a57;
+  --color-cocoa-500: #966041;
+  --color-cocoa-600: #7a4b33;
+  --color-cocoa-700: #603a29;
+  --color-cocoa-800: #4a2e22;
+
+  /* Espresso code theme */
+  --color-code-bg: #2a1d17;
+  --color-code-gutter: #33241d;
+  --color-code-text: #f4e9df;
+  --color-code-muted: #8c7565;
+
+  --animate-float: float 3.2s ease-in-out infinite;
+  --animate-pop: pop 0.45s cubic-bezier(0.2, 1.4, 0.4, 1) both;
+  --animate-shake: shake 0.42s ease-in-out both;
+  --animate-wiggle: wiggle 0.7s ease-in-out both;
+  --animate-pulse-ring: pulse-ring 1.8s ease-out infinite;
+  --animate-shine: shine 2.6s ease-in-out infinite;
+  --animate-steam: steam 2.4s ease-in-out infinite;
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-6px);
+    }
+  }
+  @keyframes pop {
+    0% {
+      transform: scale(0.6);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  @keyframes shake {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    20% {
+      transform: translateX(-8px);
+    }
+    40% {
+      transform: translateX(7px);
+    }
+    60% {
+      transform: translateX(-5px);
+    }
+    80% {
+      transform: translateX(3px);
+    }
+  }
+  @keyframes wiggle {
+    0%,
+    100% {
+      transform: rotate(0);
+    }
+    25% {
+      transform: rotate(-8deg);
+    }
+    75% {
+      transform: rotate(8deg);
+    }
+  }
+  @keyframes pulse-ring {
+    0% {
+      box-shadow: 0 0 0 0 color-mix(in srgb, currentColor 45%, transparent);
+    }
+    100% {
+      box-shadow: 0 0 0 16px transparent;
+    }
+  }
+  @keyframes shine {
+    0% {
+      transform: translateX(-120%);
+    }
+    60%,
+    100% {
+      transform: translateX(220%);
+    }
+  }
+  @keyframes steam {
+    0% {
+      transform: translateY(4px) scaleY(0.9);
+      opacity: 0;
+    }
+    30% {
+      opacity: 0.9;
+    }
+    100% {
+      transform: translateY(-10px) scaleY(1.1);
+      opacity: 0;
+    }
+  }
+}
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+    text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-cream-50 font-sans text-espresso-900 antialiased;
+    font-feature-settings: 'ss01';
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display;
+    letter-spacing: -0.01em;
+  }
+  code,
+  pre,
+  kbd,
+  .font-mono {
+    /* ligatures would turn != into ≠: confusing when learning */
+    font-variant-ligatures: none;
+    font-feature-settings: 'calt' 0, 'liga' 0;
+  }
+  ::selection {
+    @apply bg-brew-200 text-espresso-900;
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-sky-400);
+    outline-offset: 2px;
+    border-radius: 12px;
+  }
+  button {
+    cursor: pointer;
+  }
+  button:disabled {
+    cursor: not-allowed;
+  }
+}
+
+@layer components {
+  /* dotted café-paper texture used behind the learning path */
+  .paper-dots {
+    background-image: radial-gradient(color-mix(in srgb, var(--color-espresso-300) 45%, transparent) 1px, transparent 1.2px);
+    background-size: 22px 22px;
+  }
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-espresso-300) transparent;
+  }
+  .code-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: #5e4638 transparent;
+  }
+}
+
+/* Syntax highlighting tokens (Espresso theme) */
+.tok-keyword {
+  color: #ff9e64;
+  font-weight: 600;
+}
+.tok-type {
+  color: #7fd6c2;
+}
+.tok-string {
+  color: #ffd580;
+}
+.tok-char {
+  color: #ffc98a;
+}
+.tok-number {
+  color: #f7a4c0;
+}
+.tok-comment {
+  color: #9c8676;
+  font-style: italic;
+}
+.tok-method {
+  color: #8cc8ff;
+}
+.tok-literal {
+  color: #f7a4c0;
+  font-weight: 600;
+}
+.tok-operator {
+  color: #f0c9a8;
+}
+.tok-punct {
+  color: #cdb8a8;
+}
+.tok-annotation {
+  color: #b89cff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+html.reduce-motion *,
+html.reduce-motion *::before,
+html.reduce-motion *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+}

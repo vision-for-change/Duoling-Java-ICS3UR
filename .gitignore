@@ -1,0 +1,16 @@
+# dependencies and build output
+node_modules
+dist
+*.local
+
+# scratch folder used by `npm run validate:java`
+.javac-validate
+
+# logs
+*.log
+npm-debug.log*
+
+# editor / OS / local tool settings
+.DS_Store
+Thumbs.db
+.claude/
