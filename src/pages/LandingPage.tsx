@@ -1,5 +1,5 @@
 import { motion } from 'motion/react'
-import { Brain, FlaskConical, Flame, Map, Sparkles, Trophy, Zap } from 'lucide-react'
+import { Brain, FlaskConical, Flame, Map, Trophy, Zap } from 'lucide-react'
 import { ButtonLink } from '../components/Button'
 import { CodeBlock } from '../components/CodeBlock'
 import { Logo } from '../components/Logo'
@@ -41,9 +41,6 @@ export function LandingPage() {
       {/* hero */}
       <section className="mx-auto grid max-w-6xl items-center gap-10 px-4 pt-6 pb-16 sm:px-6 lg:grid-cols-2 lg:pt-12">
         <div>
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="inline-flex items-center gap-2 rounded-full border-2 border-brew-200 bg-brew-50 px-3 py-1 text-sm font-bold text-brew-700">
-            <Sparkles size={16} /> For first-time coders · free · no account needed
-          </motion.div>
           <motion.h1 initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="mt-4 text-5xl leading-[1.05] font-bold text-espresso-900 sm:text-6xl">
             Learn Java one <span className="relative whitespace-nowrap text-brew-500">byte<svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 120 12" aria-hidden><path d="M2 8 Q30 2 60 7 T118 5" stroke="#ffc21f" strokeWidth="5" fill="none" strokeLinecap="round" /></svg></span> at a time.
           </motion.h1>
