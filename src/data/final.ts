@@ -309,7 +309,7 @@ export const finalStages: FinalStage[] = [
     id: 'final-1',
     title: 'The Menu Board',
     concepts: ['Variables', 'Constants', 'printf'],
-    story: 'Byte just opened a tiny café for robots and humans! First, the kiosk needs a menu board. Prices never change during the day, so they should be constants.',
+    story: 'Byte just opened a tiny café for lions and humans! First, the kiosk needs a menu board. Prices never change during the day, so they should be constants.',
     instructions: [
       'Declare three `final double` constants: `LATTE` = 3.75, `MOCHA` = 4.25 and `TEA` = 2.50.',
       'After the title line, print one menu line per drink with `printf("1. %-6s $%.2f%n", "Latte", LATTE)` (and 2 / 3 for the others).',

@@ -47,7 +47,7 @@ export function LandingPage() {
             Learn Java one <span className="relative whitespace-nowrap text-brew-500">byte<svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 120 12" aria-hidden><path d="M2 8 Q30 2 60 7 T118 5" stroke="#ffc21f" strokeWidth="5" fill="none" strokeLinecap="round" /></svg></span> at a time.
           </motion.h1>
           <motion.p initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="mt-5 max-w-lg text-lg leading-relaxed text-espresso-600">
-            Bite-sized lessons, instant feedback and a robot barista who cheers you on. Go from your first variable to building a real program, with streaks, XP and badges along the way.
+            Bite-sized lessons, instant feedback and a friendly lion who cheers you on. Go from your first variable to building a real program, with streaks, XP and badges along the way.
           </motion.p>
           <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="mt-8 flex flex-col gap-3 sm:flex-row">
             <ButtonLink to={cta.to} size="lg" className="whitespace-nowrap">

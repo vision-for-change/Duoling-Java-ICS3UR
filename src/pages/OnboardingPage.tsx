@@ -64,7 +64,7 @@ export function OnboardingPage() {
               className="flex flex-1 flex-col"
             >
               <MascotSays mood="excited" size={120} className="mt-6">
-                <span className="text-lg">Hi! I'm <b>Byte</b>, your robot barista. I brew Java, the programming language! ☕</span>
+                <span className="text-lg">Hi! I'm <b>Byte</b>, your lion guide. I brew Java, the programming language! ☕</span>
               </MascotSays>
               <label htmlFor="name" className="mt-10 block font-display text-2xl font-semibold">
                 What should I call you?

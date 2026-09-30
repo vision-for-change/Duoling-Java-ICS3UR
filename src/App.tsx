@@ -4,6 +4,7 @@ import { createBrowserRouter, Navigate, Outlet, RouterProvider, ScrollRestoratio
 import { CelebrationLayer } from './components/Celebrations'
 import { Mascot } from './components/Mascot'
 import { AppShell } from './components/Navbar'
+import { RouteError } from './components/RouteError'
 import { useProgress } from './state/hooks'
 import { store } from './state/store'
 import { DashboardPage } from './pages/DashboardPage'
@@ -65,6 +66,7 @@ function Home() {
 const router = createBrowserRouter([
   {
     element: <Root />,
+    errorElement: <RouteError fullPage />,
     children: [
       { path: '/', element: <Home /> },
       { path: '/welcome', element: <LandingPage /> },
@@ -77,14 +79,20 @@ const router = createBrowserRouter([
           </RequireOnboarding>
         ),
         children: [
-          { path: '/home', element: <DashboardPage /> },
-          { path: '/learn', element: <LearnPage /> },
-          { path: '/practice', element: <PracticePage /> },
-          { path: '/sandbox', element: <SandboxPage /> },
-          { path: '/achievements', element: <AchievementsPage /> },
-          { path: '/profile', element: <ProfilePage /> },
-          { path: '/guide/:unitId', element: <GuidePage /> },
-          { path: '/final', element: <FinalPage /> },
+          {
+            // errors inside a page keep the navigation around them
+            errorElement: <RouteError />,
+            children: [
+              { path: '/home', element: <DashboardPage /> },
+              { path: '/learn', element: <LearnPage /> },
+              { path: '/practice', element: <PracticePage /> },
+              { path: '/sandbox', element: <SandboxPage /> },
+              { path: '/achievements', element: <AchievementsPage /> },
+              { path: '/profile', element: <ProfilePage /> },
+              { path: '/guide/:unitId', element: <GuidePage /> },
+              { path: '/final', element: <FinalPage /> },
+            ],
+          },
         ],
       },
       { path: '/lesson/:lessonId', element: <RequireOnboarding><LessonPage /></RequireOnboarding> },

@@ -1,7 +1,7 @@
 # ☕ ByteBrew: learn Java one byte at a time
 
 ByteBrew is a gamified, beginner-friendly Java course for high-school students. Learners follow a path of
-bite-sized lessons with **Byte**, a robot barista, answer interactive questions with instant feedback, earn XP,
+bite-sized lessons with **Byte**, a lion mascot, answer interactive questions with instant feedback, earn XP,
 keep a daily streak, unlock badges and finish with a real multi-stage project.
 
 Everything runs in the browser, including a **Java sandbox** that compiles and runs beginner Java programs,
