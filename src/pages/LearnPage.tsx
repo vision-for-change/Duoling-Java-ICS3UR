@@ -1,35 +1,48 @@
-import { useEffect } from 'react'
-import { Compass, Flag, Target } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { Compass, Flag, Lock, Target } from 'lucide-react'
 import { Link, useLocation } from 'react-router'
-import { ButtonLink } from '../components/Button'
+import { Button, ButtonLink } from '../components/Button'
 import { LearningPath } from '../components/LearningPath'
 import { Mascot } from '../components/Mascot'
 import { PageLayout } from '../components/Navbar'
 import { ProgressBar } from '../components/ProgressBar'
+import { CourseOutline, OutlineButton, useCourseNavigation, type NavTarget } from '../components/SkipAhead'
 import { UNITS } from '../data/curriculum'
-import { isFinalReady, isUnitComplete, nextStep, unitProgress } from '../engine/progression'
+import { isFinalUnlocked, isUnitComplete, isUnitRevealed, nextStep, unitProgress } from '../engine/progression'
 import { UNIT_STYLES } from '../lib/unitStyles'
 import { useDerived } from '../state/hooks'
 import { Card, WeekStrip } from './DashboardPage'
 import { AppIcon } from '../components/AppIcon'
 
-function FinalNode() {
+function FinalNode({ onSkip }: { onSkip: (t: NavTarget) => void }) {
   const { progress: p } = useDerived()
-  const ready = isFinalReady(p)
+  const unlocked = isFinalUnlocked(p)
   const done = !!p.final.completedAt
   const started = p.final.stagesDone.length > 0
   return (
     <div
       id="final"
-      className={`mx-auto max-w-md scroll-mt-24 rounded-3xl border-2 p-6 text-center ${ready || done ? 'border-espresso-900 bg-gradient-to-br from-sun-200 via-brew-100 to-mint-100 shadow-[0_5px_0_var(--color-espresso-900)]' : 'border-espresso-200 bg-white shadow-[0_5px_0_var(--color-espresso-200)]'}`}
+      className={`mx-auto max-w-md scroll-mt-24 rounded-3xl border-2 p-6 text-center ${unlocked ? 'border-espresso-900 bg-gradient-to-br from-sun-200 via-brew-100 to-mint-100 shadow-[0_5px_0_var(--color-espresso-900)]' : 'border-dashed border-espresso-200 bg-white'}`}
     >
       <AppIcon name={done ? 'trophy' : 'flag'} size={52} strokeWidth={2} className="mx-auto text-brew-600" />
       <h2 className="mt-2 text-2xl font-bold">Java Final Challenge</h2>
       <p className="mt-1 text-espresso-600">Build Byte's Café Kiosk: input validation, loops, try/catch, Math and a printf receipt, in 5 guided stages.</p>
-      <ButtonLink to="/final" size="lg" className="mt-4" variant={ready && !done ? 'primary' : 'secondary'}>
-        {done ? 'Open the kiosk again' : started ? 'Continue the challenge' : 'Start the challenge'}
-      </ButtonLink>
-      {!ready && !done && <p className="mt-3 text-sm font-semibold text-espresso-500">Open anytime. It uses ideas from every unit, so it's easiest after Unit 8.</p>}
+      {unlocked ? (
+        <ButtonLink to="/final" size="lg" className="mt-4" variant={done ? 'secondary' : 'primary'}>
+          {done ? 'Open the kiosk again' : started ? 'Continue the challenge' : 'Start the challenge'}
+        </ButtonLink>
+      ) : (
+        <>
+          <p className="mt-4 inline-flex items-center gap-2 rounded-xl bg-espresso-50 px-3 py-2 text-sm font-bold text-espresso-500">
+            <Lock size={16} /> Unlocks when you finish the last lesson of Unit 8
+          </p>
+          <div className="mt-3">
+            <Button variant="secondary" onClick={() => onSkip({ id: 'final', title: 'Java Final Challenge', to: '/final', status: 'locked' })}>
+              Skip to the Final Challenge
+            </Button>
+          </div>
+        </>
+      )}
     </div>
   )
 }
@@ -38,6 +51,8 @@ export function LearnPage() {
   const { progress: p, streak, today, todayXp } = useDerived()
   const location = useLocation()
   const next = nextStep(p)
+  const nav = useCourseNavigation()
+  const [outlineOpen, setOutlineOpen] = useState(false)
 
   useEffect(() => {
     const id = location.hash.slice(1) || (next ? (next.unitId ?? 'final') : '')
@@ -73,7 +88,7 @@ export function LearnPage() {
           </Card>
           <Card title="Units" icon={<Flag className="text-brew-500" size={22} />}>
             <ul className="space-y-1.5">
-              {UNITS.map((u) => {
+              {UNITS.filter((u) => isUnitRevealed(p, u)).map((u) => {
                 const pr = unitProgress(p, u)
                 return (
                   <li key={u.id}>
@@ -95,24 +110,27 @@ export function LearnPage() {
           <div className="mt-4 flex items-center gap-3 rounded-3xl border-2 border-sky-200 bg-sky-50 p-4">
             <Mascot mood="happy" size={56} />
             <p className="text-sm font-semibold text-sky-900">
-              Based on your placement test, earlier units are <b>placed out</b>. Every lesson is still open, so review them whenever you like.
+              Based on your placement test, earlier units are <b>placed out</b>. Those lessons stay open, so you can review them whenever you like.
             </p>
           </div>
         ) : (
           <p className="mt-4 flex items-center justify-center gap-2 text-center text-sm font-semibold text-espresso-500">
             <Compass size={18} className="shrink-0 text-brew-500" />
-            <span>
-              Every lesson is open. Follow the <b>Next</b> marker, or tap any lesson to jump to it.
-            </span>
+            <span>Finish a lesson to unlock the next one. Want to jump ahead? You can, and I will check first.</span>
           </p>
         )}
+        <div className="mt-3 flex justify-center">
+          <OutlineButton onClick={() => setOutlineOpen(true)} />
+        </div>
         <div className="py-6">
-          <LearningPath units={UNITS} progress={p} />
+          <LearningPath units={UNITS} progress={p} onSkip={nav.open} />
         </div>
         <div className="pb-10">
-          <FinalNode />
+          <FinalNode onSkip={nav.open} />
         </div>
       </div>
+      <CourseOutline open={outlineOpen} onClose={() => setOutlineOpen(false)} progress={p} onPick={nav.open} />
+      {nav.dialog}
     </PageLayout>
   )
 }

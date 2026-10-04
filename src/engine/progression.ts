@@ -1,12 +1,23 @@
 /**
- * Where the learner is on the learning path. Nothing is locked: every lesson, checkpoint and the
- * Final Challenge can be opened at any time. `nextStep` only recommends where to go next.
+ * Where the learner is on the learning path.
+ *
+ * Learning is sequential by default: a lesson opens when the lesson before it is finished, and the first
+ * lesson of the next unit opens when the last lesson of a unit is finished. A learner can still jump ahead
+ * on purpose (the UI asks for confirmation first). Jumping ahead never completes anything. It marks the
+ * lessons that were passed over as "skipped" so they can be finished later, and opens the one chosen.
  */
 import { checkpointId, UNITS } from '../data/curriculum'
 import type { Lesson, Unit } from '../data/types'
 import type { Progress } from '../state/types'
 
-export type NodeStatus = 'available' | 'completed'
+/**
+ * completed: finished.
+ * current: the one to do next.
+ * unlocked: open and ready (it came up in order, or it was opened by skipping ahead).
+ * skipped: passed over on purpose. It can still be done at any time.
+ * locked: not open yet.
+ */
+export type NodeStatus = 'completed' | 'current' | 'unlocked' | 'skipped' | 'locked'
 
 export function unitIndex(unitId: string): number {
   return UNITS.findIndex((u) => u.id === unitId)
@@ -18,26 +29,6 @@ export function isUnitComplete(p: Progress, unit: Unit): boolean {
 
 export function isPlacedOut(p: Progress, unit: Unit): boolean {
   return !!p.units[unit.id]?.placedOut
-}
-
-export function lessonStatus(p: Progress, lesson: Lesson): NodeStatus {
-  return p.lessons[lesson.id] ? 'completed' : 'available'
-}
-
-export function checkpointStatus(p: Progress, unit: Unit): NodeStatus {
-  return isUnitComplete(p, unit) ? 'completed' : 'available'
-}
-
-export function unitProgress(p: Progress, unit: Unit): { done: number; total: number; fraction: number } {
-  const total = unit.lessons.length + 1
-  const done = unit.lessons.filter((l) => p.lessons[l.id]).length + (isUnitComplete(p, unit) ? 1 : 0)
-  return { done, total, fraction: done / total }
-}
-
-/** Every unit is finished, so the Final Challenge is the recommended next step. */
-export function isFinalReady(p: Progress): boolean {
-  const last = UNITS[UNITS.length - 1]
-  return UNITS.every((u) => isUnitComplete(p, u) || isPlacedOut(p, u)) && isUnitComplete(p, last)
 }
 
 export type NextStep =
@@ -53,67 +44,106 @@ const PATH: PathStep[] = UNITS.flatMap((u) => [
   { kind: 'checkpoint', id: checkpointId(u.id), unitId: u.id, title: `Unit ${u.number} Checkpoint` },
 ])
 
-const stepFor = (id: string) => PATH.find((s) => s.id === id)!
+const stepFor = (id: string): PathStep | null => PATH.find((s) => s.id === id) ?? null
+const unitOfStep = (s: PathStep): Unit => UNITS[unitIndex(s.unitId)]
 
-/** A unit that is still on the recommended path: not passed and not placed out. */
-function inProgress(p: Progress, unit: Unit): boolean {
-  return !isUnitComplete(p, unit) && !isPlacedOut(p, unit)
+function isDone(p: Progress, s: PathStep): boolean {
+  return s.kind === 'lesson' ? !!p.lessons[s.id] : isUnitComplete(p, unitOfStep(s))
 }
 
-/** The first unfinished lesson in a unit (looking after `from` first), or its checkpoint once every lesson is done. */
-function stepInUnit(p: Progress, unit: Unit, from = 0): PathStep {
-  const open = (l: Lesson) => !p.lessons[l.id]
-  const lesson = unit.lessons.slice(from).find(open) ?? unit.lessons.find(open)
-  return stepFor(lesson ? lesson.id : checkpointId(unit.id))
+/** The step that has to be finished before this one opens up on its own. */
+function gate(s: PathStep): PathStep | null {
+  const unit = unitOfStep(s)
+  if (s.kind === 'checkpoint') return stepFor(unit.lessons[unit.lessons.length - 1].id)
+  const i = unit.lessons.findIndex((l) => l.id === s.id)
+  if (i > 0) return stepFor(unit.lessons[i - 1].id)
+  // the first lesson of a unit opens when the last lesson of the unit before it is finished
+  const prev = UNITS[unitIndex(s.unitId) - 1]
+  return prev ? stepFor(prev.lessons[prev.lessons.length - 1].id) : null
 }
 
-/** The lesson or checkpoint the learner finished most recently. */
-function lastFinished(p: Progress): PathStep | null {
-  let last: PathStep | null = null
-  let lastAt = 0
-  for (const s of PATH) {
-    const at = s.kind === 'lesson' ? p.lessons[s.id]?.lastCompletedAt : p.units[s.unitId]?.checkpointPassedAt
-    if (at && at >= lastAt) [last, lastAt] = [s, at]
-  }
-  return last
+function isOpen(p: Progress, s: PathStep): boolean {
+  if (isDone(p, s) || p.skipped[s.id] || p.unlocked[s.id]) return true
+  if (isPlacedOut(p, unitOfStep(s))) return true
+  const g = gate(s)
+  if (!g) return true
+  return isDone(p, g) || isPlacedOut(p, unitOfStep(g))
+}
+
+/** True when every lesson of the course is finished, so the Final Challenge is next. */
+function lastLessonDone(p: Progress): boolean {
+  const last = UNITS[UNITS.length - 1]
+  return !!p.lessons[last.lessons[last.lessons.length - 1].id]
+}
+
+export function isFinalUnlocked(p: Progress): boolean {
+  return !!p.final.completedAt || p.final.stagesDone.length > 0 || !!p.unlocked.final || lastLessonDone(p)
+}
+
+/** Where "Continue learning" should take the learner: the first open step that is not finished or skipped. */
+export function nextStep(p: Progress): NextStep | null {
+  const cur = PATH.find((s) => isOpen(p, s) && !isDone(p, s) && !p.skipped[s.id] && !isPlacedOut(p, unitOfStep(s)))
+  if (cur) return cur
+  if (isFinalUnlocked(p) && !p.final.completedAt) return { kind: 'final', id: 'final', unitId: null, title: 'Java Final Challenge' }
+  // nothing new is waiting: bring the learner back to something they skipped, or to the first unfinished step
+  return PATH.find((s) => !isDone(p, s) && p.skipped[s.id]) ?? PATH.find((s) => !isDone(p, s)) ?? null
+}
+
+export function nodeStatus(p: Progress, id: string): NodeStatus {
+  const s = stepFor(id)
+  if (!s) return 'locked'
+  if (isDone(p, s)) return 'completed'
+  const cur = nextStep(p)
+  if (cur && cur.id === id) return 'current'
+  if (p.skipped[id]) return 'skipped'
+  return isOpen(p, s) ? 'unlocked' : 'locked'
+}
+
+export function lessonStatus(p: Progress, lesson: Lesson): NodeStatus {
+  return nodeStatus(p, lesson.id)
+}
+
+export function checkpointStatus(p: Progress, unit: Unit): NodeStatus {
+  return nodeStatus(p, checkpointId(unit.id))
+}
+
+/** Can the learner open this right now, without skipping ahead? */
+export function canOpen(status: NodeStatus): boolean {
+  return status !== 'locked'
+}
+
+/** A unit shows up in the course navigation once any of it is open. */
+export function isUnitRevealed(p: Progress, unit: Unit): boolean {
+  return PATH.some((s) => s.unitId === unit.id && isOpen(p, s))
 }
 
 /**
- * Where "Continue learning" should take the learner. It follows the learner around: after a
- * lesson it suggests the next one in the same unit, and after a finished unit the next unfinished
- * unit. A brand-new learner starts at the first unit that wasn't placed out.
+ * What skipping ahead to `id` (a lesson, a checkpoint or 'final') would do: the steps that are passed over.
+ * Steps that are already finished or already skipped are left alone.
  */
-export function nextStep(p: Progress): NextStep | null {
-  const last = lastFinished(p)
-  const lastUnit = last ? UNITS[unitIndex(last.unitId)] : null
-  if (last && lastUnit && inProgress(p, lastUnit)) {
-    return stepInUnit(p, lastUnit, lastUnit.lessons.findIndex((l) => l.id === last.id) + 1)
-  }
-  const from = lastUnit ? unitIndex(lastUnit.id) + 1 : 0
-  const unit = [...UNITS.slice(from), ...UNITS.slice(0, from)].find((u) => inProgress(p, u))
-  if (unit) return stepInUnit(p, unit)
-  if (isFinalReady(p) && !p.final.completedAt) return { kind: 'final', id: 'final', unitId: null, title: 'Java Final Challenge' }
-  // everything done, or only placed-out units left: suggest the first unfinished lesson anywhere
-  return PATH.find((s) => (s.kind === 'lesson' ? !p.lessons[s.id] : !isUnitComplete(p, UNITS[unitIndex(s.unitId)]))) ?? null
+export function skipPlan(p: Progress, id: string): { target: string; skipped: string[] } | null {
+  const end = id === 'final' ? PATH.length : PATH.findIndex((s) => s.id === id)
+  if (end < 0) return null
+  return { target: id, skipped: PATH.slice(0, end).filter((s) => !isDone(p, s) && !p.skipped[s.id] && !isPlacedOut(p, unitOfStep(s))).map((s) => s.id) }
 }
 
-/** The next few unfinished lessons, starting at the recommended step. */
+export function unitProgress(p: Progress, unit: Unit): { done: number; total: number; fraction: number } {
+  const total = unit.lessons.length + 1
+  const done = unit.lessons.filter((l) => p.lessons[l.id]).length + (isUnitComplete(p, unit) ? 1 : 0)
+  return { done, total, fraction: done / total }
+}
+
+/** The next few lessons the learner can open and has not finished, starting with the current one. */
 export function upcomingLessons(p: Progress, count: number): Lesson[] {
-  const next = nextStep(p)
-  const start = next && next.kind !== 'final' ? PATH.indexOf(stepFor(next.id)) : 0
-  const lessons = UNITS.filter((u) => inProgress(p, u)).flatMap((u) => u.lessons)
-  const order = (l: Lesson) => (PATH.indexOf(stepFor(l.id)) - start + PATH.length) % PATH.length
+  const lessons = UNITS.flatMap((u) => u.lessons)
+  const rank = (l: Lesson) => {
+    const s = nodeStatus(p, l.id)
+    return s === 'current' ? 0 : s === 'unlocked' ? 1 : s === 'skipped' ? 2 : 3
+  }
   return lessons
-    .filter((l) => !p.lessons[l.id])
-    .sort((a, b) => order(a) - order(b))
+    .filter((l) => rank(l) < 3 && !isPlacedOut(p, UNITS[unitIndex(l.unitId)]))
+    .sort((a, b) => rank(a) - rank(b))
     .slice(0, count)
-}
-
-/** True when opening `id` (a lesson or checkpoint) jumps past the recommended next step. */
-export function isAheadOfPath(p: Progress, id: string): boolean {
-  const next = nextStep(p)
-  if (!next || next.kind === 'final') return false
-  return PATH.indexOf(stepFor(id)) > PATH.indexOf(stepFor(next.id))
 }
 
 export function completedLessonCount(p: Progress): number {

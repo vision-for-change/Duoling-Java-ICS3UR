@@ -9,8 +9,9 @@ import type { Difficulty, PlacementArea, TopicId } from '../data/types'
 /**
  * 2: the course was rewritten (new units, lessons and questions), so lesson progress from
  * version 1 no longer lines up with anything. See `migrate` in repository.ts.
+ * 3: lessons unlock in order, and `skipped` / `unlocked` record the ones the learner jumped past or opened early.
  */
-export const PROGRESS_VERSION = 2
+export const PROGRESS_VERSION = 3
 
 export type SessionSource = 'lesson' | 'practice' | 'checkpoint' | 'placement'
 
@@ -83,6 +84,10 @@ export interface Progress {
   days: Record<string, DayRecord>
   lessons: Record<string, LessonRecord>
   units: Record<string, UnitRecord>
+  /** lesson / checkpoint id -> when the learner chose to skip past it. Skipped is not completed. */
+  skipped: Record<string, number>
+  /** lesson / checkpoint id (or 'final') -> when skipping ahead opened it early */
+  unlocked: Record<string, number>
   /** oldest first, capped */
   history: QuestionAttempt[]
   /** achievement id -> unlocked at */
@@ -120,6 +125,8 @@ export function createEmptyProgress(now = Date.now()): Progress {
     days: {},
     lessons: {},
     units: {},
+    skipped: {},
+    unlocked: {},
     history: [],
     achievements: {},
     placement: null,

@@ -2,7 +2,8 @@ import { useMemo } from 'react'
 import { Navigate, useParams } from 'react-router'
 import { SessionPlayer, type FinishInfo } from '../components/SessionPlayer'
 import { getLesson, getUnit } from '../data/curriculum'
-import { isPlacedOut, nextStep } from '../engine/progression'
+import { isPlacedOut, nextStep, nodeStatus } from '../engine/progression'
+import { checkpointId } from '../data/curriculum'
 import { createCheckpointSession, createLessonSession, summarize, type SessionState } from '../engine/session'
 import { useProgress } from '../state/hooks'
 import { store } from '../state/store'
@@ -26,6 +27,8 @@ export function LessonPage() {
   const initial = useMemo(() => (lesson ? createLessonSession(lesson, unit, { hearts }) : null), [lessonId])
 
   if (!lesson || !initial) return <Navigate to="/learn" replace />
+  // locked lessons open only through the skip-ahead confirmation, which unlocks them first
+  if (nodeStatus(p, lesson.id) === 'locked') return <Navigate to="/learn" replace />
 
   const onFinish = (s: SessionState): FinishInfo => {
     const sum = summarize(s)
@@ -52,6 +55,7 @@ export function CheckpointPage() {
   const initial = useMemo(() => (unit ? createCheckpointSession(unit, { hearts }) : null), [unitId])
 
   if (!unit || !initial) return <Navigate to="/learn" replace />
+  if (nodeStatus(p, checkpointId(unit.id)) === 'locked') return <Navigate to="/learn" replace />
 
   const onFinish = (s: SessionState): FinishInfo => {
     const sum = summarize(s)

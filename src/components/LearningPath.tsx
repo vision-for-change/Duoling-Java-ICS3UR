@@ -1,17 +1,18 @@
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
-import { BookOpenText, Check, Crown, FastForward, Star, Trophy } from 'lucide-react'
+import { BookOpenText, Check, Crown, Lock, Play, SkipForward, Trophy } from 'lucide-react'
 import { Link, useNavigate } from 'react-router'
 import { checkpointId, getQuestion } from '../data/curriculum'
 import type { Difficulty, Unit } from '../data/types'
 import { XP } from '../engine/gamification'
-import { checkpointStatus, isAheadOfPath, isPlacedOut, isUnitComplete, lessonStatus, nextStep, unitProgress, type NodeStatus } from '../engine/progression'
+import { checkpointStatus, isPlacedOut, isUnitComplete, isUnitRevealed, lessonStatus, nextStep, unitProgress, type NodeStatus } from '../engine/progression'
 import { UNIT_STYLES } from '../lib/unitStyles'
 import type { Progress } from '../state/types'
 import { buttonClass } from './Button'
 import { Mascot } from './Mascot'
 import { ProgressBar } from './ProgressBar'
 import { AppIcon, DifficultyDots } from './AppIcon'
+import type { NavTarget } from './SkipAhead'
 
 const OFFSETS = [0, 58, 88, 58, 0, -58, -88, -58]
 const GAP = 108
@@ -25,8 +26,6 @@ interface PathNode {
   status: NodeStatus
   to: string
   questionCount: number
-  /** shown in the popover when opening this node skips part of the suggested order */
-  skipNote: string | null
 }
 
 function nodesFor(unit: Unit, p: Progress): PathNode[] {
@@ -38,7 +37,6 @@ function nodesFor(unit: Unit, p: Progress): PathNode[] {
     status: lessonStatus(p, l),
     to: `/lesson/${l.id}`,
     questionCount: Math.min(5, l.questions.length) + 1,
-    skipNote: !p.lessons[l.id] && isAheadOfPath(p, l.id) ? 'Skipping ahead is fine! Earlier lessons stay open whenever you want them.' : null,
   }))
   const cp: PathNode = {
     id: checkpointId(unit.id),
@@ -48,33 +46,49 @@ function nodesFor(unit: Unit, p: Progress): PathNode[] {
     status: checkpointStatus(p, unit),
     to: `/checkpoint/${unit.id}`,
     questionCount: unit.checkpoint.length,
-    skipNote: !isUnitComplete(p, unit) && unit.lessons.some((l) => !p.lessons[l.id]) ? 'Already know this unit? Pass the checkpoint to complete it right away.' : null,
   }
   return [...lessons, cp]
 }
 
-function NodeButton({ node, unit, current, onClick, active }: { node: PathNode; unit: Unit; current: boolean; onClick: () => void; active: boolean }) {
+const STATUS_TEXT: Record<NodeStatus, string> = {
+  completed: 'completed',
+  current: 'up next',
+  unlocked: 'unlocked',
+  skipped: 'skipped',
+  locked: 'locked',
+}
+
+function NodeButton({ node, unit, onClick, active }: { node: PathNode; unit: Unit; onClick: () => void; active: boolean }) {
   const style = UNIT_STYLES[unit.color]
-  const done = node.status === 'completed'
+  const s = node.status
   const size = node.kind === 'checkpoint' ? NODE + 10 : NODE
-  const Icon = done ? (node.kind === 'checkpoint' ? Crown : Check) : node.kind === 'checkpoint' ? Trophy : current ? Star : BookOpenText
+  const iconSize = node.kind === 'checkpoint' ? 36 : 32
+  const Icon = s === 'completed' ? (node.kind === 'checkpoint' ? Crown : Check) : s === 'locked' ? Lock : s === 'current' ? Play : s === 'skipped' ? SkipForward : node.kind === 'checkpoint' ? Trophy : BookOpenText
+  const look =
+    s === 'completed'
+      ? 'border-sun-700 bg-sun-400 text-espresso-900 active:shadow-[0_2px_0_var(--color-sun-700)]'
+      : s === 'current'
+        ? `${style.border} ${style.bg} animate-pulse-ring text-white`
+        : s === 'skipped'
+          ? 'border-dashed border-sun-600 bg-sun-50 text-sun-700'
+          : s === 'locked'
+            ? 'border-espresso-200 bg-espresso-50 text-espresso-300'
+            : `${style.border} ${style.text} bg-white`
+  const shade = s === 'completed' ? 'var(--color-sun-700)' : s === 'skipped' ? 'var(--color-sun-600)' : s === 'locked' ? 'var(--color-espresso-200)' : style.shade
   return (
     <button
       type="button"
       onClick={onClick}
-      aria-label={`${node.title} (${done ? 'completed' : current ? 'up next' : 'not started'})`}
+      aria-label={`${node.title} (${STATUS_TEXT[s]})`}
       aria-expanded={active}
-      className={`relative flex items-center justify-center rounded-full border-[3px] transition-transform active:translate-y-[4px] ${
-        done
-          ? 'border-sun-700 bg-sun-400 text-espresso-900 shadow-[0_6px_0_var(--color-sun-700)] active:shadow-[0_2px_0_var(--color-sun-700)]'
-          : current
-            ? `${style.border} ${style.bg} animate-pulse-ring text-white`
-            : `${style.border} ${style.text} bg-white`
-      }`}
-      style={{ width: size, height: size, boxShadow: done ? undefined : `0 6px 0 ${style.shade}` }}
+      className={`relative flex items-center justify-center rounded-full border-[3px] transition-transform active:translate-y-[4px] ${look}`}
+      style={{ width: size, height: size, boxShadow: `0 6px 0 ${shade}` }}
     >
-      {(done || current) && <span className="absolute inset-x-3 top-2 h-1/3 rounded-full bg-white/25" aria-hidden />}
-      <Icon size={node.kind === 'checkpoint' ? 36 : 32} strokeWidth={2.6} fill={current ? 'currentColor' : 'none'} />
+      {(s === 'completed' || s === 'current') && <span className="absolute inset-x-3 top-2 h-1/3 rounded-full bg-white/25" aria-hidden />}
+      <Icon size={iconSize} strokeWidth={2.6} fill={s === 'current' ? 'currentColor' : 'none'} />
+      {s === 'skipped' && (
+        <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 rounded-full border-2 border-sun-600 bg-sun-50 px-2 text-[10px] font-extrabold tracking-wider text-sun-700 uppercase">Skipped</span>
+      )}
     </button>
   )
 }
@@ -118,7 +132,7 @@ function UnitBanner({ unit, p, guide = true }: { unit: Unit; p: Progress; guide?
   )
 }
 
-function Popover({ node, unit, onClose }: { node: PathNode; unit: Unit; onClose: () => void }) {
+function Popover({ node, unit, onClose, onSkip }: { node: PathNode; unit: Unit; onClose: () => void; onSkip: (t: NavTarget) => void }) {
   const navigate = useNavigate()
   const style = UNIT_STYLES[unit.color]
   const ref = useRef<HTMLDivElement>(null)
@@ -152,19 +166,32 @@ function Popover({ node, unit, onClose }: { node: PathNode; unit: Unit; onClose:
       </div>
       <h3 className="mt-1 text-xl font-bold">{node.title}</h3>
       <p className="mt-1 text-sm text-espresso-600">{node.summary}</p>
-      {node.skipNote && (
-        <p className="mt-3 flex items-start gap-2 rounded-xl bg-sky-50 px-3 py-2 text-sm font-semibold text-sky-800">
-          <FastForward size={16} className="mt-0.5 shrink-0" /> {node.skipNote}
-        </p>
+      {node.status === 'locked' ? (
+        <>
+          <p className="mt-3 flex items-start gap-2 rounded-xl bg-espresso-50 px-3 py-2 text-sm font-semibold text-espresso-600">
+            <Lock size={16} className="mt-0.5 shrink-0" /> Locked. It opens when you finish the lesson before it.
+          </p>
+          <button type="button" onClick={() => onSkip({ id: node.id, title: node.title, to: node.to, status: node.status })} className={buttonClass('secondary', 'md', 'mt-3 w-full')} autoFocus>
+            Skip ahead to this one
+          </button>
+        </>
+      ) : (
+        <>
+          {node.status === 'skipped' && (
+            <p className="mt-3 flex items-start gap-2 rounded-xl bg-sun-50 px-3 py-2 text-sm font-semibold text-sun-800">
+              <SkipForward size={16} className="mt-0.5 shrink-0" /> You skipped this one. It is not completed yet, but you can do it any time.
+            </p>
+          )}
+          <button type="button" onClick={() => navigate(node.to)} className={buttonClass(node.status === 'completed' ? 'secondary' : 'primary', 'md', 'mt-3 w-full')} autoFocus>
+            {node.status === 'completed' ? 'Practice again' : node.kind === 'checkpoint' ? 'Start checkpoint' : 'Start'} · {xp}
+          </button>
+        </>
       )}
-      <button type="button" onClick={() => navigate(node.to)} className={buttonClass(node.status === 'completed' ? 'secondary' : 'primary', 'md', 'mt-3 w-full')} autoFocus>
-        {node.status === 'completed' ? 'Practice again' : node.kind === 'checkpoint' ? 'Start checkpoint' : 'Start'} · {xp}
-      </button>
     </motion.div>
   )
 }
 
-function UnitPath({ unit, p, currentId, interactive }: { unit: Unit; p: Progress; currentId: string | null; interactive: boolean }) {
+function UnitPath({ unit, p, currentId, interactive, onSkip }: { unit: Unit; p: Progress; currentId: string | null; interactive: boolean; onSkip: (t: NavTarget) => void }) {
   const nodes = nodesFor(unit, p)
   const [open, setOpen] = useState<string | null>(null)
   const width = 340
@@ -181,7 +208,7 @@ function UnitPath({ unit, p, currentId, interactive }: { unit: Unit; p: Progress
     }
   })
   const doneCount = nodes.filter((n) => n.status === 'completed').length
-  // color the trail up to the first node that isn't finished (lessons can be done in any order)
+  // color the trail up to the first node that is not finished
   const firstOpen = nodes.findIndex((n) => n.status !== 'completed')
   const trail = firstOpen === -1 ? nodes.length : firstOpen
 
@@ -217,13 +244,13 @@ function UnitPath({ unit, p, currentId, interactive }: { unit: Unit; p: Progress
                 <span className={`absolute top-full left-1/2 -mt-[5px] h-2.5 w-2.5 -translate-x-1/2 rotate-45 border-r-2 border-b-2 bg-white ${style.border}`} />
               </motion.div>
             )}
-            <NodeButton node={n} unit={unit} current={isCurrent} active={open === n.id} onClick={() => interactive && setOpen(open === n.id ? null : n.id)} />
+            <NodeButton node={n} unit={unit} active={open === n.id} onClick={() => interactive && setOpen(open === n.id ? null : n.id)} />
             {isCurrent && (
               <div className={`pointer-events-none absolute top-1/2 -translate-y-1/2 ${OFFSETS[i % OFFSETS.length] >= 0 ? 'right-full mr-6' : 'left-full ml-6'}`}>
                 <Mascot mood="excited" size={78} float />
               </div>
             )}
-            <AnimatePresence>{open === n.id && <Popover node={n} unit={unit} onClose={() => setOpen(null)} />}</AnimatePresence>
+            <AnimatePresence>{open === n.id && <Popover node={n} unit={unit} onClose={() => setOpen(null)} onSkip={(target) => { setOpen(null); onSkip(target) }} />}</AnimatePresence>
           </div>
         )
       })}
@@ -231,17 +258,39 @@ function UnitPath({ unit, p, currentId, interactive }: { unit: Unit; p: Progress
   )
 }
 
-export function LearningPath({ units, progress, interactive = true, showBanners = true }: { units: Unit[]; progress: Progress; interactive?: boolean; showBanners?: boolean }) {
+export function LearningPath({
+  units,
+  progress,
+  interactive = true,
+  showBanners = true,
+  onSkip,
+}: {
+  units: Unit[]
+  progress: Progress
+  interactive?: boolean
+  showBanners?: boolean
+  /** called when a locked node is chosen, so the page can ask "skip ahead?" */
+  onSkip: (t: NavTarget) => void
+}) {
   const next = nextStep(progress)
   const currentId = next && next.kind !== 'final' ? next.id : null
+  // later units stay hidden until the learner reaches them (or skips ahead to them)
+  const shown = units.filter((u) => isUnitRevealed(progress, u))
+  const hidden = units.length - shown.length
   return (
     <div className="space-y-10">
-      {units.map((unit) => (
+      {shown.map((unit) => (
         <section key={unit.id} id={unit.id} className="scroll-mt-24 space-y-8" aria-label={`Unit ${unit.number}: ${unit.title}`}>
           {showBanners && <UnitBanner unit={unit} p={progress} guide={interactive} />}
-          <UnitPath unit={unit} p={progress} currentId={currentId} interactive={interactive} />
+          <UnitPath unit={unit} p={progress} currentId={currentId} interactive={interactive} onSkip={onSkip} />
         </section>
       ))}
+      {hidden > 0 && (
+        <div className="mx-auto flex max-w-md items-center gap-3 rounded-3xl border-2 border-dashed border-espresso-200 bg-white/70 p-4 text-sm font-semibold text-espresso-500">
+          <Lock size={20} className="shrink-0 text-espresso-300" aria-hidden />
+          <span>{hidden === 1 ? 'One more unit' : `${hidden} more units`} will appear as you finish the lessons in front of you.</span>
+        </div>
+      )}
     </div>
   )
 }

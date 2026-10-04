@@ -9,7 +9,7 @@ import { levelFor, levelProgress, XP } from './gamification'
 import { grade, normalizeCode } from './grading'
 import { evaluatePlacement } from './placement'
 import { buildPractice } from './practice'
-import { checkpointStatus, isAheadOfPath, isFinalReady, lessonStatus, nextStep, upcomingLessons } from './progression'
+import { checkpointStatus, isFinalUnlocked, isUnitRevealed, lessonStatus, nextStep, skipPlan, upcomingLessons } from './progression'
 import { advance, createCheckpointSession, createLessonSession, currentStep, isFinished, outOfHearts, recordAttempt, summarize, type SessionState } from './session'
 
 const fresh = (): Progress => ({ ...createEmptyProgress(), onboarded: true })
@@ -70,71 +70,102 @@ describe('progression', () => {
   const finish = (p: Progress, id: string, at = 1) => {
     p.lessons[id] = { firstCompletedAt: at, lastCompletedAt: at, bestAccuracy: 1, timesCompleted: 1, perfect: true }
   }
+  const finishUnit = (p: Progress, unitId: string) => getUnit(unitId)!.lessons.forEach((l) => finish(p, l.id))
+  const status = (p: Progress, id: string) => lessonStatus(p, getLesson(id)!)
+  const revealed = (p: Progress) => UNITS.filter((u) => isUnitRevealed(p, u)).map((u) => u.id)
 
-  it('opens every lesson and checkpoint, even for a new learner', () => {
+  it('starts a new learner at Unit 1, Lesson 1 with everything else locked', () => {
     const p = fresh()
-    for (const l of LESSONS) expect(lessonStatus(p, l)).toBe('available')
-    for (const u of UNITS) expect(checkpointStatus(p, u)).toBe('available')
+    expect(status(p, 'u1-l1')).toBe('current')
+    expect(status(p, 'u1-l2')).toBe('locked')
+    expect(status(p, 'u2-l1')).toBe('locked')
+    expect(checkpointStatus(p, UNITS[0])).toBe('locked')
     expect(nextStep(p)).toMatchObject({ kind: 'lesson', id: 'u1-l1' })
-    expect(upcomingLessons(p, 3).map((l) => l.id)).toEqual(UNITS[0].lessons.slice(0, 3).map((l) => l.id))
+    expect(revealed(p)).toEqual(['u1'])
+    expect(isFinalUnlocked(p)).toBe(false)
   })
 
-  it('recommends lessons in order, then the checkpoint, then the next unit', () => {
+  it('unlocks one lesson at a time as lessons are completed', () => {
     const p = fresh()
-    const u1 = UNITS[0]
-    finish(p, u1.lessons[0].id)
-    expect(lessonStatus(p, u1.lessons[0])).toBe('completed')
-    expect(nextStep(p)).toMatchObject({ id: u1.lessons[1].id })
-    for (const l of u1.lessons) finish(p, l.id)
-    expect(nextStep(p)).toMatchObject({ kind: 'checkpoint', unitId: 'u1' })
+    finish(p, 'u1-l1')
+    expect(status(p, 'u1-l1')).toBe('completed')
+    expect(status(p, 'u1-l2')).toBe('current')
+    expect(status(p, 'u1-l3')).toBe('locked')
+    expect(upcomingLessons(p, 3).map((l) => l.id)).toEqual(['u1-l2'])
+    finish(p, 'u1-l2')
+    expect(status(p, 'u1-l3')).toBe('current')
+  })
+
+  it('opens the checkpoint and the next unit when the last lesson of a unit is finished', () => {
+    const p = fresh()
+    finishUnit(p, 'u1')
+    expect(checkpointStatus(p, UNITS[0])).toBe('current')
+    expect(status(p, 'u2-l1')).toBe('unlocked')
+    expect(status(p, 'u2-l2')).toBe('locked')
+    expect(revealed(p)).toEqual(['u1', 'u2'])
     p.units.u1 = { checkpointPassedAt: 2 }
-    expect(checkpointStatus(p, u1)).toBe('completed')
-    expect(nextStep(p)).toMatchObject({ kind: 'lesson', id: UNITS[1].lessons[0].id })
+    expect(status(p, 'u2-l1')).toBe('current')
   })
 
-  it('follows a learner who skips ahead, and back again', () => {
+  it('keeps skipped lessons separate from completed ones, and they can still be finished', () => {
     const p = fresh()
-    finish(p, 'u1-l1', 1)
-    finish(p, 'u5-l1', 2)
-    expect(nextStep(p)).toMatchObject({ id: 'u5-l2' })
-    expect(isAheadOfPath(p, 'u6-l1')).toBe(true)
-    expect(isAheadOfPath(p, 'u1-l2')).toBe(false)
-    finish(p, 'u1-l2', 3)
-    expect(nextStep(p)).toMatchObject({ id: 'u1-l3' })
-    // lessons skipped earlier in a unit come back before its checkpoint
-    const u5 = getUnit('u5')!
-    finish(p, u5.lessons[u5.lessons.length - 1].id, 4)
-    expect(nextStep(p)).toMatchObject({ id: 'u5-l2' })
+    p.skipped = { 'u1-l1': 1, 'u1-l2': 1, 'u1-l3': 1 }
+    p.unlocked = { 'u1-l4': 1 }
+    expect(['u1-l1', 'u1-l2', 'u1-l3'].map((id) => status(p, id))).toEqual(['skipped', 'skipped', 'skipped'])
+    expect(status(p, 'u1-l4')).toBe('current')
+    expect(status(p, 'u1-l5')).toBe('locked')
+    expect(nextStep(p)).toMatchObject({ id: 'u1-l4' })
+    expect(p.lessons['u1-l1']).toBeUndefined()
+    finish(p, 'u1-l4')
+    expect(status(p, 'u1-l5')).toBe('current')
+    finish(p, 'u1-l1')
+    delete p.skipped['u1-l1']
+    expect(status(p, 'u1-l1')).toBe('completed')
   })
 
-  it('lets a checkpoint complete a unit without its lessons', () => {
+  it('plans a skip: everything before the target that is not finished is passed over', () => {
     const p = fresh()
-    p.units.u2 = { checkpointPassedAt: 1 }
-    expect(nextStep(p)).toMatchObject({ id: 'u3-l1' })
-    expect(upcomingLessons(p, 20).some((l) => l.unitId === 'u2')).toBe(false)
+    finish(p, 'u1-l1')
+    const plan = skipPlan(p, 'u1-l4')!
+    expect(plan.skipped).toEqual(['u1-l2', 'u1-l3'])
+    expect(skipPlan(p, 'nope')).toBeNull()
+    const toFinal = skipPlan(p, 'final')!
+    expect(toFinal.skipped).toContain('u8-checkpoint')
+    expect(toFinal.skipped).not.toContain('u1-l1')
   })
 
-  it('placement recommends the start unit but keeps earlier units open', () => {
+  it('placement keeps earlier units open for review and starts at the chosen unit', () => {
     const p = fresh()
     p.placement = { completedAt: 1, skipped: false, scores: {}, startUnitId: 'u3', message: '' }
     p.units.u1 = { placedOut: true }
     p.units.u2 = { placedOut: true }
-    expect(lessonStatus(p, getLesson('u2-l3')!)).toBe('available')
-    expect(lessonStatus(p, getLesson('u3-l2')!)).toBe('available')
+    expect(status(p, 'u1-l4')).toBe('unlocked')
+    expect(status(p, 'u2-l3')).toBe('unlocked')
+    expect(status(p, 'u3-l1')).toBe('current')
+    expect(status(p, 'u3-l2')).toBe('locked')
     expect(nextStep(p)).toMatchObject({ id: 'u3-l1' })
-    // reviewing a placed-out lesson doesn't pull the recommendation backwards
-    finish(p, 'u1-l2', 5)
-    expect(nextStep(p)).toMatchObject({ id: 'u3-l1' })
+    expect(revealed(p)).toEqual(['u1', 'u2', 'u3'])
   })
 
-  it('recommends the final challenge after every unit including unit 8', () => {
+  it('unlocks the final challenge after the last lesson and recommends it once the units are done', () => {
     const p = fresh()
-    for (const u of UNITS.slice(0, -1)) p.units[u.id] = { checkpointPassedAt: 1 }
-    expect(isFinalReady(p)).toBe(false)
-    expect(nextStep(p)).toMatchObject({ unitId: 'u8' })
-    p.units.u8 = { checkpointPassedAt: 2 }
-    expect(isFinalReady(p)).toBe(true)
+    for (const u of UNITS) finishUnit(p, u.id)
+    expect(isFinalUnlocked(p)).toBe(true)
+    expect(nextStep(p)).toMatchObject({ kind: 'checkpoint', unitId: 'u1' })
+    for (const u of UNITS) p.units[u.id] = { checkpointPassedAt: 2 }
     expect(nextStep(p)).toMatchObject({ kind: 'final' })
+  })
+
+  it('suggests a skipped lesson when nothing new is waiting', () => {
+    const p = fresh()
+    for (const u of UNITS) {
+      finishUnit(p, u.id)
+      p.units[u.id] = { checkpointPassedAt: 2 }
+    }
+    delete p.lessons['u2-l2']
+    p.skipped['u2-l2'] = 1
+    p.final.completedAt = 3
+    expect(nextStep(p)).toMatchObject({ id: 'u2-l2' })
   })
 })
 
@@ -345,5 +376,72 @@ describe('saved progress', () => {
 
   it('rejects a save from a newer version', () => {
     expect(migrate({ ...createEmptyProgress(), version: PROGRESS_VERSION + 1 })).toBeNull()
+  })
+})
+
+describe('skipping ahead', () => {
+  const summary = { total: 5, firstTry: 5, accuracy: 1, mistakes: 0, perfect: true, xp: 60, bestCombo: 5 }
+
+  it('marks what was passed over as skipped, opens the target, and completes nothing', async () => {
+    const store = new ProgressStore(new MemoryRepository())
+    await store.hydrate()
+    const count = store.skipAhead('u1-l4')
+    expect(count).toBe(3)
+    const p = store.getSnapshot()
+    expect(Object.keys(p.skipped).sort()).toEqual(['u1-l1', 'u1-l2', 'u1-l3'])
+    expect(Object.keys(p.unlocked)).toEqual(['u1-l4'])
+    expect(p.lessons).toEqual({})
+    expect(lessonStatus(p, getLesson('u1-l4')!)).toBe('current')
+    expect(lessonStatus(p, getLesson('u1-l1')!)).toBe('skipped')
+    expect(lessonStatus(p, getLesson('u1-l5')!)).toBe('locked')
+  })
+
+  it('does not re-skip lessons that are already finished or skipped', async () => {
+    const store = new ProgressStore(new MemoryRepository())
+    await store.hydrate()
+    store.finishLesson('u1-l1', 'Every Program Starts with class Main', summary)
+    expect(store.skipAhead('u1-l3')).toBe(1)
+    expect(store.skipAhead('u1-l5')).toBe(2)
+    expect(Object.keys(store.getSnapshot().skipped).sort()).toEqual(['u1-l2', 'u1-l3', 'u1-l4'])
+  })
+
+  it('finishing a skipped lesson clears its skipped mark', async () => {
+    const store = new ProgressStore(new MemoryRepository())
+    await store.hydrate()
+    store.skipAhead('u1-l3')
+    expect(store.getSnapshot().skipped['u1-l1']).toBeTypeOf('number')
+    store.finishLesson('u1-l1', 'x', summary)
+    const p = store.getSnapshot()
+    expect(p.skipped['u1-l1']).toBeUndefined()
+    expect(lessonStatus(p, getLesson('u1-l1')!)).toBe('completed')
+    expect(lessonStatus(p, getLesson('u1-l2')!)).toBe('skipped')
+  })
+
+  it('skipping to the final challenge opens it without completing anything', async () => {
+    const store = new ProgressStore(new MemoryRepository())
+    await store.hydrate()
+    expect(isFinalUnlocked(store.getSnapshot())).toBe(false)
+    store.skipAhead('final')
+    const p = store.getSnapshot()
+    expect(isFinalUnlocked(p)).toBe(true)
+    expect(p.lessons).toEqual({})
+    expect(p.final.completedAt).toBeUndefined()
+  })
+
+  it('ignores a target that does not exist', async () => {
+    const store = new ProgressStore(new MemoryRepository())
+    await store.hydrate()
+    expect(store.skipAhead('nope')).toBe(0)
+    expect(store.getSnapshot().skipped).toEqual({})
+  })
+
+  it('older saves load with empty skipped and unlocked records', () => {
+    const old = { ...createEmptyProgress(), version: 2, onboarded: true } as Partial<Progress>
+    delete old.skipped
+    delete old.unlocked
+    const p = migrate(old)!
+    expect(p.skipped).toEqual({})
+    expect(p.unlocked).toEqual({})
+    expect(p.version).toBe(PROGRESS_VERSION)
   })
 })

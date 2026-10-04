@@ -55,9 +55,14 @@ Progress is stored in the browser (`localStorage`), so no account or server is n
   8. **Switch and Exceptions**: `switch` (with fall-through), `try`/`catch`, `ArithmeticException`,
      `InputMismatchException` and `Exception e`
 - **Learning path** with 8 units and 36 lessons (+ a checkpoint per unit and the Final Challenge), drawn as a
-  winding path of nodes with Byte standing next to the suggested next lesson. **Nothing is locked:** learners can
-  jump to any lesson, take any unit checkpoint early (passing it completes the unit) or open the Final Challenge
-  at any time. The *Next* marker follows the learner, suggesting the next lesson after the one they just did.
+  winding path of nodes with Byte standing next to the current lesson. **Learning is sequential by default:** a new
+  learner starts at Unit 1, Lesson 1 and sees only Unit 1. Finishing a lesson unlocks the next one, and finishing the
+  last lesson of a unit reveals the next unit. Each lesson shows one of five states: *completed*, *current*, *unlocked*,
+  *skipped* or *locked*.
+- **Skipping ahead is allowed, but never by accident.** Tapping a locked lesson (or choosing one in the **Course
+  outline**) asks "Are you sure you want to skip ahead?" first. On "Yes, Skip Ahead" the chosen lesson opens, and the
+  lessons that were passed over are marked *skipped*. Skipping never marks anything as completed, and a skipped
+  lesson can be finished at any time. Locked lessons cannot be opened by typing their address either.
   Each unit has a **Guidebook** page.
 - **Lesson rhythm:** very short explanation (*what / why*) → runnable example (*how*, with line notes) →
   question → instant feedback → another question → common-mistake card (wrong vs right, both runnable) →
@@ -120,7 +125,7 @@ src/
 │   ├── grading.ts       grading for every question type
 │   ├── codeRunner.ts    runs learner code against tests
 │   ├── practice.ts      weak-topic / mistake-driven practice selection
-│   ├── progression.ts   available / completed status, the suggested "next step"
+│   ├── progression.ts   lesson states (completed, current, unlocked, skipped, locked), unlock and skip rules, the "next step"
 │   ├── stats.ts         accuracy, mastery, weakest / strongest topics
 │   ├── achievements.ts  achievement definitions (pure checks over progress)
 │   ├── gamification.ts  XP table and levels

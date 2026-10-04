@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { motion } from 'motion/react'
-import { CheckCircle2, ChevronRight, Compass, Eye, FlaskConical, Lightbulb, Play } from 'lucide-react'
-import { Link } from 'react-router'
+import { CheckCircle2, ChevronRight, Eye, FlaskConical, Lightbulb, Play } from 'lucide-react'
+import { Navigate } from 'react-router'
 import { Button } from '../components/Button'
 import { CodeBlock } from '../components/CodeBlock'
 import { CodeEditor } from '../components/CodeEditor'
@@ -13,7 +13,7 @@ import { TestResults } from '../components/questions/CodeTaskQuestion'
 import { ErrorExplainer, RunnableCode } from '../components/RunnableCode'
 import { finalStages, FINAL_PROJECT } from '../data/final'
 import { runCodeTask, type CodeTaskResult } from '../engine/codeRunner'
-import { isFinalReady } from '../engine/progression'
+import { isFinalUnlocked } from '../engine/progression'
 import { runJava, type RunResult } from '../java'
 import { celebrate } from '../lib/motion'
 import { sfx } from '../lib/sound'
@@ -32,7 +32,6 @@ function nextOpenStage(done: string[], from: number): number {
 
 export function FinalPage() {
   const p = useProgress()
-  const ready = isFinalReady(p)
   const firstOpen = finalStages.findIndex((s) => !p.final.stagesDone.includes(s.id))
   const [index, setIndex] = useState(firstOpen === -1 ? finalStages.length - 1 : firstOpen)
   const stage = finalStages[index]
@@ -85,6 +84,9 @@ export function FinalPage() {
   const upcoming = nextOpenStage(p.final.stagesDone, index)
   const lastIndex = finalStages.length - 1
 
+  // the Final Challenge opens after the last lesson, or when the learner chooses to skip ahead to it
+  if (!isFinalUnlocked(p)) return <Navigate to="/learn#final" replace />
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
@@ -98,19 +100,6 @@ export function FinalPage() {
             Completed!
           </div>}
       </div>
-
-      {!ready && !allDone && (
-        <div className="flex items-start gap-3 rounded-3xl border-2 border-sky-200 bg-sky-50 p-4 text-sm font-semibold text-sky-900">
-          <Compass size={20} className="mt-0.5 shrink-0 text-sky-600" />
-          <p>
-            You can start whenever you like! The kiosk uses ideas from every unit, so if something looks new, the{' '}
-            <Link to="/learn" className="underline decoration-2 underline-offset-2 hover:text-sky-700">
-              lessons
-            </Link>{' '}
-            are always open.
-          </p>
-        </div>
-      )}
 
       {/* stepper: every stage can be opened in any order */}
       <div>

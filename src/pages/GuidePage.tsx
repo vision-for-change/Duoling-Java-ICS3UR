@@ -1,10 +1,10 @@
-import { ArrowLeft, BookOpenText } from 'lucide-react'
+import { ArrowLeft, BookOpenText, Lock } from 'lucide-react'
 import { Link, Navigate, useParams } from 'react-router'
 import { ButtonLink } from '../components/Button'
 import { CodeBlock } from '../components/CodeBlock'
 import { Md } from '../components/Md'
 import { getUnit } from '../data/curriculum'
-import { lessonStatus } from '../engine/progression'
+import { isUnitRevealed, lessonStatus } from '../engine/progression'
 import { UNIT_STYLES } from '../lib/unitStyles'
 import { useProgress } from '../state/hooks'
 import { AppIcon } from '../components/AppIcon'
@@ -14,7 +14,8 @@ export function GuidePage() {
   const { unitId = '' } = useParams()
   const p = useProgress()
   const unit = getUnit(unitId)
-  if (!unit) return <Navigate to="/learn" replace />
+  // a unit's guidebook opens along with the unit
+  if (!unit || !isUnitRevealed(p, unit)) return <Navigate to="/learn" replace />
   const style = UNIT_STYLES[unit.color]
   return (
     <div className="mx-auto max-w-3xl">
@@ -43,9 +44,15 @@ export function GuidePage() {
                   <div className={`text-xs font-extrabold tracking-wider uppercase ${style.text}`}>Lesson {i + 1}</div>
                   <h2 className="text-2xl font-bold">{l.title}</h2>
                 </div>
-                <ButtonLink to={`/lesson/${l.id}`} size="sm" variant={status === 'completed' ? 'secondary' : 'primary'}>
-                  {status === 'completed' ? 'Review' : 'Start'}
-                </ButtonLink>
+                {status === 'locked' ? (
+                  <span className="inline-flex items-center gap-1.5 rounded-xl bg-espresso-50 px-3 py-2 text-sm font-bold text-espresso-400">
+                    <Lock size={14} aria-hidden /> Locked
+                  </span>
+                ) : (
+                  <ButtonLink to={`/lesson/${l.id}`} size="sm" variant={status === 'completed' ? 'secondary' : 'primary'}>
+                    {status === 'completed' ? 'Review' : status === 'skipped' ? 'Do it now' : 'Start'}
+                  </ButtonLink>
+                )}
               </div>
               {concept?.kind === 'concept' && (
                 <div className="mt-3 space-y-2 text-[16px] leading-relaxed text-espresso-800">

@@ -113,6 +113,8 @@ export function migrate(raw: unknown): Progress | null {
     settings: { ...DEFAULT_SETTINGS, ...r.settings },
     streak: { ...empty.streak, ...r.streak },
     stats: { ...empty.stats, ...r.stats },
+    skipped: r.skipped ?? {},
+    unlocked: r.unlocked ?? {},
     days: r.days ?? {},
     achievements: r.achievements ?? {},
   }

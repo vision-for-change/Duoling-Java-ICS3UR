@@ -11,7 +11,7 @@ import { getTopic, getUnit, TOPICS, TOTAL_LESSONS, UNITS } from '../data/curricu
 import { finalStages } from '../data/final'
 import { ACHIEVEMENTS } from '../engine/achievements'
 import { lastDays, relativeTime } from '../engine/dates'
-import { completedLessonCount, isFinalReady, isPlacedOut, isUnitComplete, lessonStatus, nextStep, unitProgress, upcomingLessons } from '../engine/progression'
+import { completedLessonCount, isFinalUnlocked, isPlacedOut, isUnitComplete, isUnitRevealed, lessonStatus, nextStep, unitProgress, upcomingLessons } from '../engine/progression'
 import { mastery, MIN_ATTEMPTS, overallAccuracy, strongTopics, weakTopics } from '../engine/stats'
 import { UNIT_STYLES } from '../lib/unitStyles'
 import { useDerived } from '../state/hooks'
@@ -215,7 +215,7 @@ export function DashboardPage() {
             icon={<BookOpen className="text-brew-500" size={22} />}
             action={
               <Link to="/learn" className="text-sm font-bold text-brew-600 hover:underline">
-                Pick any lesson
+                See the path
               </Link>
             }
           >
@@ -263,7 +263,7 @@ export function DashboardPage() {
         <div className="grid gap-6 lg:grid-cols-2">
           <Card title="Unit progress" icon={<BookOpen className="text-sky-600" size={22} />}>
             <ul className="space-y-3">
-              {UNITS.map((u) => {
+              {UNITS.filter((u) => isUnitRevealed(p, u)).map((u) => {
                 const pr = unitProgress(p, u)
                 const s = UNIT_STYLES[u.color]
                 return (
@@ -282,12 +282,12 @@ export function DashboardPage() {
                 )
               })}
               <li>
-                <Link to="/final" className="flex items-center justify-between rounded-xl bg-espresso-50 px-2 py-2 text-sm font-bold text-espresso-600 hover:bg-cream-100">
+                <Link to={isFinalUnlocked(p) ? '/final' : '/learn#final'} className="flex items-center justify-between rounded-xl bg-espresso-50 px-2 py-2 text-sm font-bold text-espresso-600 hover:bg-cream-100">
                   <span className="flex items-center gap-2">
                     <AppIcon name="flag" size={18} /> Final Challenge
                   </span>
                   <span className="text-espresso-400">
-                    {p.final.completedAt ? '✓ done' : p.final.stagesDone.length ? `${p.final.stagesDone.length}/${finalStages.length} stages` : isFinalReady(p) ? 'ready!' : 'not started'}
+                    {p.final.completedAt ? '✓ done' : p.final.stagesDone.length ? `${p.final.stagesDone.length}/${finalStages.length} stages` : isFinalUnlocked(p) ? 'ready!' : 'locked'}
                   </span>
                 </Link>
               </li>

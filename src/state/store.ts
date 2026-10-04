@@ -3,13 +3,13 @@
  * that owns the Progress document, applies game rules and persists changes
  * through a ProgressRepository.
  */
-import { UNITS } from '../data/curriculum'
+import { checkpointId, UNITS } from '../data/curriculum'
 import { finalStages } from '../data/final'
 import type { Difficulty, TopicId } from '../data/types'
 import { getAchievement, newlyEarned } from '../engine/achievements'
 import { dayKey, registerActivity } from '../engine/dates'
 import { levelFor, XP, type LevelInfo } from '../engine/gamification'
-import { unitIndex } from '../engine/progression'
+import { skipPlan, unitIndex } from '../engine/progression'
 import type { SessionSummary } from '../engine/session'
 import { LocalStorageRepository, migrate, type ProgressRepository } from './repository'
 import { createEmptyProgress, type ActivityEvent, type PlacementResult, type Progress, type SessionSource, type Settings } from './types'
@@ -222,8 +222,12 @@ export class ProgressStore {
     const now = Date.now()
     const breakdown: { label: string; xp: number }[] = [{ label: 'Questions', xp: s.xp }, { label: 'Lesson complete', xp: XP.lessonComplete }]
     if (s.perfect) breakdown.push({ label: 'Perfect lesson', xp: XP.perfectBonus })
+    // finishing a lesson clears its "skipped" mark
+    const { [lessonId]: _skipped, ...stillSkipped } = p.skipped
+    void _skipped
     const withLesson: Progress = {
       ...p,
+      skipped: stillSkipped,
       lessons: {
         ...p.lessons,
         [lessonId]: {
@@ -253,8 +257,11 @@ export class ProgressStore {
     const firstPass = passed && !prev.checkpointPassedAt
     const breakdown: { label: string; xp: number }[] = [{ label: 'Questions', xp: s.xp }]
     if (firstPass) breakdown.push({ label: 'Unit complete', xp: XP.unitComplete })
+    const { [checkpointId(unitId)]: _skipped, ...stillSkipped } = p.skipped
+    void _skipped
     const withUnit: Progress = {
       ...p,
+      skipped: passed ? stillSkipped : p.skipped,
       units: {
         ...p.units,
         [unitId]: {
@@ -287,6 +294,22 @@ export class ProgressStore {
     )
     this.commit(next, events)
     return reward
+  }
+
+  /**
+   * The learner chose to jump ahead to a lesson, a checkpoint or the Final Challenge. Everything passed over
+   * is marked as skipped (not completed, and still open to finish later), and the target is opened.
+   * Returns how many steps were skipped.
+   */
+  skipAhead(id: string): number {
+    const p = this.state
+    const plan = skipPlan(p, id)
+    if (!plan) return 0
+    const now = Date.now()
+    const skipped = { ...p.skipped }
+    for (const k of plan.skipped) skipped[k] = now
+    this.commit({ ...p, skipped, unlocked: { ...p.unlocked, [id]: p.unlocked[id] ?? now } })
+    return plan.skipped.length
   }
 
   /** Placement test or "I'm brand new". Marks earlier units as placed out. */
