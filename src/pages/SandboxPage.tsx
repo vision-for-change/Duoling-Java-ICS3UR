@@ -132,7 +132,7 @@ export function SandboxPage() {
               ))}
             </ul>
             <p className="mt-3 text-sm text-espresso-500">
-              Arrays, objects and switch aren't supported yet. The sandbox will tell you honestly instead of pretending. Snippets without a class are wrapped in <code className="font-mono">main</code> automatically.
+              Arrays and objects aren't supported yet, and neither are the arrow-style switch cases. The sandbox will tell you so honestly instead of pretending. Snippets without a class are wrapped in <code className="font-mono">main</code> automatically.
             </p>
           </div>
           <MascotSays mood="thinking" size={64}>

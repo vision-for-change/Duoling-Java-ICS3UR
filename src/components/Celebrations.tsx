@@ -91,7 +91,7 @@ export function LevelUpModal({ level, onClose }: { level: LevelInfo | null; onCl
           </h2>
           <p className="mt-1 font-display text-xl text-espresso-600">{level.title}</p>
           <Button className="mt-5" full onClick={onClose} data-autofocus>
-            Keep brewing
+            Keep going
           </Button>
         </div>
       )}

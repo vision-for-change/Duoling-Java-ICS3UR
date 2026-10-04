@@ -91,21 +91,29 @@ export function migrate(raw: unknown): Progress | null {
   const r = raw as Partial<Progress>
   if (typeof r.version !== 'number' || r.version > PROGRESS_VERSION) return null
   const empty = createEmptyProgress(r.profile?.createdAt ?? Date.now())
+  // Saves from before the course rewrite keep who the learner is (name, goal, XP, streak, badges)
+  // but start the new course fresh, because the old lesson and question ids no longer exist.
+  const oldCourse = r.version < 2
+  const course = oldCourse
+    ? { lessons: {}, units: {}, history: [], placement: null, activity: [], final: { ...empty.final } }
+    : {
+        lessons: r.lessons ?? {},
+        units: r.units ?? {},
+        history: Array.isArray(r.history) ? r.history : [],
+        placement: r.placement ?? null,
+        activity: Array.isArray(r.activity) ? r.activity : [],
+        final: { ...empty.final, ...r.final },
+      }
   return {
     ...empty,
     ...r,
+    ...course,
     version: PROGRESS_VERSION,
-    profile: { ...empty.profile, ...r.profile },
+    profile: { ...empty.profile, ...r.profile, avatar: 'lion' },
     settings: { ...DEFAULT_SETTINGS, ...r.settings },
     streak: { ...empty.streak, ...r.streak },
     stats: { ...empty.stats, ...r.stats },
-    final: { ...empty.final, ...r.final },
     days: r.days ?? {},
-    lessons: r.lessons ?? {},
-    units: r.units ?? {},
-    history: Array.isArray(r.history) ? r.history : [],
     achievements: r.achievements ?? {},
-    activity: Array.isArray(r.activity) ? r.activity : [],
-    placement: r.placement ?? null,
   }
 }

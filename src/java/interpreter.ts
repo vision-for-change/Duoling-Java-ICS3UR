@@ -350,9 +350,39 @@ export class Interpreter {
         }
         return undefined
       }
+      case 'Switch': {
+        this.tick(s.line)
+        const sel = this.eval(s.selector)
+        if (sel === null && s.selector.t === 'String') throw new JavaThrow('NullPointerException', null, s.line)
+        const shown = displayValue(sel, s.selector.t!)
+        const key = sel instanceof JStr ? sel.s : sel
+        let start = s.cases.findIndex((c) => c.label !== null && c.label.cv === key)
+        const matched = start !== -1
+        if (!matched) start = s.cases.findIndex((c) => c.label === null)
+        this.record(
+          s.line,
+          'cond',
+          matched ? `switch (${this.text(s.selector)}) is ${shown}, jump to case ${this.text(s.cases[start].label!)}` : start !== -1 ? `switch (${this.text(s.selector)}) is ${shown}, no case matches, use default` : `switch (${this.text(s.selector)}) is ${shown}, no case matches`,
+        )
+        if (start === -1) return undefined
+        const mark = this.frame.visible.length
+        try {
+          // fall through from the matching label until a break (or return) is reached
+          for (let i = start; i < s.cases.length; i++) {
+            for (const b of s.cases[i].body) {
+              const r = this.exec(b)
+              if (r === BREAK) return undefined
+              if (r) return r
+            }
+          }
+        } finally {
+          this.frame.visible.length = mark
+        }
+        return undefined
+      }
       case 'Break':
         this.tick(s.line)
-        this.record(s.line, 'stmt', 'break → leave the loop')
+        this.record(s.line, 'stmt', 'break → leave the loop or switch')
         return BREAK
       case 'Continue':
         this.tick(s.line)

@@ -17,7 +17,7 @@ export function TeachCardView({ card }: { card: TeachCard }) {
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="rounded-3xl border-2 border-sky-200 bg-sky-50 p-5">
               <div className="mb-2 flex items-center gap-2 text-sm font-extrabold tracking-wider text-sky-700 uppercase">
-                <Sparkles size={18} /> What it is
+                <Sparkles size={18} /> Here's the idea
               </div>
               <p className="text-[17px] leading-relaxed text-espresso-800">
                 <Md text={card.what} />
@@ -25,7 +25,7 @@ export function TeachCardView({ card }: { card: TeachCard }) {
             </div>
             <div className="rounded-3xl border-2 border-brew-200 bg-brew-50 p-5">
               <div className="mb-2 flex items-center gap-2 text-sm font-extrabold tracking-wider text-brew-700 uppercase">
-                <Compass size={18} /> Why it matters
+                <Compass size={18} /> Why we care
               </div>
               <p className="text-[17px] leading-relaxed text-espresso-800">
                 <Md text={card.why} />
@@ -38,7 +38,7 @@ export function TeachCardView({ card }: { card: TeachCard }) {
       return (
         <div className="space-y-4">
           <div>
-            <div className="text-sm font-extrabold tracking-wider text-mint-700 uppercase">Example · How it works</div>
+            <div className="text-sm font-extrabold tracking-wider text-mint-700 uppercase">Watch this</div>
             <h2 className="mt-1 text-2xl font-bold">{card.title}</h2>
             <p className="mt-2 text-[17px] leading-relaxed text-espresso-700">
               <Md text={card.how} />
@@ -52,7 +52,7 @@ export function TeachCardView({ card }: { card: TeachCard }) {
       return (
         <div className="space-y-4">
           <div>
-            <div className="text-sm font-extrabold tracking-wider text-berry-600 uppercase">Common mistake</div>
+            <div className="text-sm font-extrabold tracking-wider text-berry-600 uppercase">Watch out for this one</div>
             <h2 className="mt-1 text-2xl font-bold">{card.title}</h2>
             <p className="mt-2 text-[17px] leading-relaxed text-espresso-700">
               <Md text={card.body} />
@@ -82,7 +82,7 @@ export function TeachCardView({ card }: { card: TeachCard }) {
           </MascotSays>
           <div className="rounded-3xl border-2 border-sun-200 bg-sun-50 p-5">
             <div className="mb-2 flex items-center gap-2 text-sm font-extrabold tracking-wider text-sun-800 uppercase">
-              <Lightbulb size={18} /> Byte's tip
+              <Lightbulb size={18} /> A tip from your teacher
             </div>
             <p className="text-[17px] leading-relaxed text-espresso-800">
               <Md text={card.body} />

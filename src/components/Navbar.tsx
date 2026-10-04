@@ -95,7 +95,7 @@ export function AppShell() {
         <div className="mt-auto rounded-3xl border-2 border-espresso-100 bg-white p-4">
           <div className="flex items-center gap-3">
             <Mascot mood="encouraging" size={54} />
-            <p className="text-sm leading-snug font-semibold text-espresso-600">Little and often beats cramming. One lesson a day keeps your streak alive!</p>
+            <p className="text-sm leading-snug font-semibold text-espresso-600">A little every day beats cramming. One lesson a day keeps your streak going.</p>
           </div>
         </div>
       </aside>

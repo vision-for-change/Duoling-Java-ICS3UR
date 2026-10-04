@@ -78,12 +78,20 @@ export type Stmt =
   | (StmtBase & { kind: 'While'; cond: Expr; body: Stmt })
   | (StmtBase & { kind: 'DoWhile'; body: Stmt; cond: Expr })
   | (StmtBase & { kind: 'For'; init: Stmt[]; cond: Expr | null; update: Expr[]; body: Stmt })
+  | (StmtBase & { kind: 'Switch'; selector: Expr; cases: SwitchCase[]; hasDefault: boolean })
   | (StmtBase & { kind: 'Break' })
   | (StmtBase & { kind: 'Continue' })
   | (StmtBase & { kind: 'Return'; value: Expr | null })
   | (StmtBase & { kind: 'Throw'; expr: Expr })
   | (StmtBase & { kind: 'Try'; block: Stmt & { kind: 'Block' }; catches: CatchClause[]; finally: (Stmt & { kind: 'Block' }) | null })
   | (StmtBase & { kind: 'Empty' })
+
+/** One `case X:` or `default:` label and the statements after it (empty when labels are stacked). */
+export interface SwitchCase extends Pos {
+  /** null for `default` */
+  label: Expr | null
+  body: Stmt[]
+}
 
 export interface CatchClause extends Pos {
   types: string[]

@@ -2,26 +2,162 @@ import { j, topic } from '../helpers'
 import type { UnitContent } from '../types'
 
 const questions = [
-  // ---------------- Lesson 1: Meet Variables ----------------
+  // ---------------- Lesson 1: Every Program Starts with class Main ----------------
+  ...topic('basics', [
+    {
+      id: 'u1l1-01',
+      type: 'multiple-choice',
+      difficulty: 1,
+      concept: 'main',
+      prompt: 'Which method does Java look for when it starts running your program?',
+      optionStyle: 'code',
+      options: [
+        { text: 'main' },
+        { text: 'start', feedback: 'That is a very reasonable guess, but Java only ever looks for one specific name. Look back at the shell we wrote.' },
+        { text: 'run', feedback: 'It sounds right, but Java is not listening for that word. Check the shell from the lesson again.' },
+        { text: 'begin', feedback: 'Nice try. Java is stricter than that, though. It wants one exact name.' },
+      ],
+      answer: 0,
+      explanation: 'Java always starts at `main`. Think of the class as the building and `main` as the front door. No door, no way in.',
+    },
+    {
+      id: 'u1l1-02',
+      type: 'true-false',
+      difficulty: 1,
+      concept: 'case',
+      prompt: 'Java does not care about capital letters, so `system.out.println("Hi");` works exactly like `System.out.println("Hi");`.',
+      answer: false,
+      wrongFeedback: 'Careful, this one catches everybody at first. Java is case sensitive, so `system` with a small s is a different word than `System`.',
+      explanation: 'Capital letters matter everywhere in Java. `System` and `String` start with a capital, and `main` is all lowercase. When something "does not exist" and you swear it does, check your capitals first.',
+    },
+    {
+      id: 'u1l1-03',
+      type: 'predict-output',
+      difficulty: 1,
+      concept: 'print',
+      prompt: 'What does this program print?',
+      code: j`
+System.out.print("Go");
+System.out.print("Go");
+System.out.println("Go");`,
+      optionStyle: 'output',
+      options: [
+        { text: 'GoGoGo' },
+        { text: 'Go\nGo\nGo', feedback: 'Only `println` moves to a new line. The first two lines used `print`, which stays put.' },
+        { text: 'Go Go Go', feedback: 'Java does not add spaces for you. If you want a space, you have to type one inside the quotes.' },
+        { text: 'GoGo', feedback: 'Count the print statements. There are three of them, and all three run.' },
+      ],
+      answer: 0,
+      highlightLines: [1, 2],
+      explanation: '`print` keeps the cursor on the same line, so the first two "Go"s stick together. `println` prints and then jumps to the next line. Everything lands on one line: GoGoGo.',
+    },
+    {
+      id: 'u1l1-04',
+      type: 'fill-blank',
+      difficulty: 1,
+      concept: 'main',
+      prompt: 'Fill in the blank so Java knows where to start.',
+      code: j`
+public class Main {
+    public static void ___(String[] args) {
+        System.out.println("Ready!");
+    }
+}`,
+      blanks: [['main']],
+      bank: ['main', 'Main', 'start', 'run'],
+      expectedOutput: 'Ready!',
+      explanation: 'The method has to be called `main`, all lowercase. `Main` with a capital M is the name of our class, which is a different thing.',
+    },
+    {
+      id: 'u1l1-05',
+      type: 'error-type',
+      difficulty: 2,
+      concept: 'semicolon',
+      prompt: 'What kind of problem is in this code?',
+      code: j`
+System.out.println("Hello")
+System.out.println("World");`,
+      answer: 'syntax',
+      feedback: {
+        runtime: 'A runtime problem only shows up once the program is running. Java stops this one before it even starts.',
+        logic: 'The program never gets a chance to run, so it cannot give a wrong answer yet.',
+        none: 'Look at the end of line 1. What is missing?',
+      },
+      highlightLines: [1],
+      explanation: 'Every statement ends with a semicolon, and line 1 is missing its one. Java reports *\';\' expected* and refuses to run anything. This is the single most common mistake in your first month of coding.',
+    },
+    {
+      id: 'u1l1-06',
+      type: 'find-bug',
+      difficulty: 2,
+      concept: 'spelling',
+      prompt: 'One line has a typo that stops the program from compiling. Tap it.',
+      code: j`
+System.out.println("Welcome to Java!");
+System.out.printn("Let's get started.");
+System.out.println("See you in class.");`,
+      bugLines: [2],
+      fixedCode: j`
+System.out.println("Welcome to Java!");
+System.out.println("Let's get started.");
+System.out.println("See you in class.");`,
+      bugKind: 'syntax',
+      explanation: 'Line 2 says `printn` instead of `println`. Java cannot find a method with that name, so it refuses to compile. Typos in names are a classic.',
+    },
+    {
+      id: 'u1l1-07',
+      type: 'arrange',
+      difficulty: 2,
+      concept: 'shell',
+      prompt: 'Put the lines in order to build a complete program. One line is a decoy that does not belong.',
+      lines: ['public class Main {', 'public static void main(String[] args) {', 'System.out.println("Hello, class!");', '}', '}'],
+      distractors: ['System.out.println("Hello, class!")'],
+      expectedOutput: 'Hello, class!',
+      explanation: 'The class comes first, then `main` inside it, then your statement inside `main`, and finally the two closing braces. The decoy was missing its semicolon.',
+    },
+    {
+      id: 'u1l1-08',
+      type: 'write-code',
+      difficulty: 2,
+      concept: 'print',
+      prompt: 'Use one `print` and one `println` so the program shows `Hello, World!` on a single line.',
+      starter: j`
+// 1. print the first part, and stay on the same line
+
+// 2. println the second part
+`,
+      solution: j`
+System.out.print("Hello, ");
+System.out.println("World!");`,
+      tests: [{ label: 'one line of output', output: 'Hello, World!' }],
+      mustInclude: [
+        { pattern: 'System\\.out\\.print\\(', message: 'Use `System.out.print(...)` for the first part.' },
+        { pattern: 'System\\.out\\.println\\(', message: 'Use `System.out.println(...)` for the second part.' },
+      ],
+      explanation: '`print` does not move to a new line, so the second statement continues right after it. Notice the space inside "Hello, " because Java will not add one for you.',
+    },
+  ]),
+
+  // ---------------- Lesson 2: Variables ----------------
   ...topic('variables', [
     {
-      id: 'v-01',
+      id: 'u1l2-01',
       type: 'multiple-choice',
       difficulty: 1,
       concept: 'declare',
-      prompt: 'Which line declares a variable named `lives` and stores `3` in it?',
+      prompt: 'Which line creates an `int` variable called `lives` that holds 3?',
       optionStyle: 'code',
       options: [
         { text: 'int lives = 3;' },
-        { text: 'lives int = 3;', feedback: 'Close! In Java the type comes first, then the name.' },
-        { text: 'int 3 = lives;', feedback: 'The name goes on the left of `=` and the value on the right.' },
-        { text: 'int lives == 3;', feedback: '`==` compares two values. To store a value, use a single `=`.' },
+        { text: 'lives int = 3;', feedback: 'You are close. In Java the type comes first, and then the name.' },
+        { text: 'int 3 = lives;', feedback: 'Flip it around. The name goes on the left of the equals sign and the value goes on the right, like pouring 3 into a box labelled lives.' },
+        { text: 'int lives == 3;', feedback: 'Two equals signs ask a question ("are these equal?"). To store a value you only need one.' },
       ],
       answer: 0,
-      explanation: 'The pattern is **type name = value;**, so `int lives = 3;` creates an int box called `lives` holding 3.',
+      explanation: 'The pattern is **type, name, equals, value, semicolon**. So `int lives = 3;` creates a whole-number box called `lives` with 3 inside.',
     },
     {
-      id: 'v-02',
+      id: 'u1l2-02',
       type: 'predict-output',
       difficulty: 1,
       concept: 'assign',
@@ -33,30 +169,30 @@ System.out.println(coins);`,
       optionStyle: 'output',
       options: [
         { text: '25' },
-        { text: '10', feedback: 'Line 2 stored a new value, replacing the 10.' },
-        { text: '35', feedback: '`=` replaces the value, it doesn\'t add. Adding would be `coins = coins + 25;`' },
-        { text: 'coins', feedback: 'Without quotes, `coins` means the variable, so Java prints the value inside it.' },
+        { text: '10', feedback: 'Line 2 stored a new value on top of the old one. The 10 is gone.' },
+        { text: '35', feedback: 'The equals sign replaces what is in the box, it does not add to it. Adding would be `coins = coins + 25;`' },
+        { text: 'coins', feedback: 'There are no quotes around `coins`, so Java uses the variable and prints whatever is inside it.' },
       ],
       answer: 0,
       highlightLines: [2],
-      explanation: '`=` overwrites whatever was in the box. After line 2, `coins` holds 25, so 25 is printed.',
+      explanation: 'Assigning a new value empties the box and refills it. After line 2, `coins` holds 25, so 25 is what we see.',
     },
     {
-      id: 'v-03',
+      id: 'u1l2-03',
       type: 'true-false',
       difficulty: 1,
       concept: 'declare',
-      prompt: '**Declaring** a variable (like `int x;`) and **initializing** it (giving it its first value) are the same thing.',
+      prompt: '**Declaring** a variable (like `int x;`) and **initializing** it (giving it its first value) mean the same thing.',
       answer: false,
-      wrongFeedback: '`int x;` only creates the box. Putting the first value in (`x = 5;`) is initializing.',
-      explanation: '`int x;` declares (creates the box). `x = 5;` initializes (first value). You can do both at once: `int x = 5;`.',
+      wrongFeedback: 'They are two different steps. `int x;` only builds the box. Putting the first value in is initializing.',
+      explanation: '`int x;` declares the variable, and `x = 5;` initializes it. Most of the time we do both at once with `int x = 5;`.',
     },
     {
-      id: 'v-04',
+      id: 'u1l2-04',
       type: 'fill-blank',
       difficulty: 1,
       concept: 'declare',
-      prompt: 'Complete the code so it declares a variable named `price` holding `4.99`.',
+      prompt: 'Fill in the blank so the program stores the price `4.99`.',
       code: j`
 ___ price = 4.99;
 System.out.println(price);`,
@@ -66,10 +202,10 @@ System.out.println(price);`,
       explanation: '4.99 has a decimal point, so it needs a `double`. An `int` can only hold whole numbers.',
     },
     {
-      id: 'v-05',
+      id: 'u1l2-05',
       type: 'predict-output',
       difficulty: 2,
-      concept: 'assign',
+      concept: 'copy',
       prompt: 'What does this program print?',
       code: j`
 int a = 5;
@@ -79,16 +215,16 @@ System.out.println(b);`,
       optionStyle: 'output',
       options: [
         { text: '5' },
-        { text: '8', feedback: '`b` got a copy of the value 5 on line 2. Changing `a` later doesn\'t change `b`.' },
-        { text: '13', feedback: 'Nothing is added here: each `=` just stores a value.' },
-        { text: 'a', feedback: 'Variables store values, not names of other variables.' },
+        { text: '8', feedback: 'On line 2, `b` got its own copy of 5. Changing `a` afterwards does not reach back and change `b`.' },
+        { text: '13', feedback: 'Nothing is being added here. Each equals sign just stores a value.' },
+        { text: 'a', feedback: 'A variable stores a value, never the name of another variable.' },
       ],
       answer: 0,
       highlightLines: [2, 3],
-      explanation: 'Line 2 copies the value 5 into `b`. Variables hold values, not links to other variables, so `b` stays 5 even after `a` becomes 8.',
+      explanation: 'Line 2 copies the value 5 into `b`. After that the two boxes are completely separate, so `b` stays 5 even when `a` becomes 8.',
     },
     {
-      id: 'v-06',
+      id: 'u1l2-06',
       type: 'error-type',
       difficulty: 2,
       concept: 'initialize',
@@ -99,19 +235,19 @@ score = score + 10;
 System.out.println(score);`,
       answer: 'syntax',
       feedback: {
-        runtime: 'Java catches this before the program ever runs, so it can\'t be a runtime error.',
-        logic: 'The program never gets to run because Java refuses to compile it.',
-        none: 'Look at line 2: what value does `score` have the first time it is read?',
+        runtime: 'Java spots this before the program ever starts, so it cannot be a runtime error.',
+        logic: 'The program never gets to run, because Java refuses to compile it.',
+        none: 'Look closely at line 2. What is inside `score` the first time we read it?',
       },
       highlightLines: [1, 2],
-      explanation: '`score` is declared but never initialized, so `score + 10` would read an empty box. javac stops with: *variable score might not have been initialized*. Fix: `int score = 0;`',
+      explanation: '`score` was declared but never given a value, so `score + 10` would be reading an empty box. Java stops with *variable score might not have been initialized*. The fix is `int score = 0;`.',
     },
     {
-      id: 'v-07',
+      id: 'u1l2-07',
       type: 'type-output',
       difficulty: 2,
       concept: 'assign',
-      prompt: 'Type exactly what this program prints.',
+      prompt: 'Trace it line by line, then type exactly what this program prints.',
       code: j`
 int x = 3;
 int y = 4;
@@ -120,492 +256,507 @@ y = x + 2;
 System.out.println(x + " " + y);`,
       answer: '4 6',
       highlightLines: [3, 4],
-      explanation: 'Line 3 copies 4 into `x`. Line 4 uses the NEW `x`: `y = 4 + 2 = 6`. So it prints `4 6`.',
+      explanation: 'Line 3 copies 4 into `x`. Line 4 then uses the NEW `x`, so `y = 4 + 2 = 6`. The output is `4 6`.',
     },
     {
-      id: 'v-08',
+      id: 'u1l2-08',
       type: 'arrange',
       difficulty: 2,
-      concept: 'assign',
-      prompt: 'Arrange the lines to **swap** the values of `a` and `b`, so the program prints `2 1`.',
+      concept: 'swap',
+      prompt: 'Arrange the lines so the program **swaps** `a` and `b` and prints `2 1`.',
       lines: ['int a = 1;', 'int b = 2;', 'int temp = a;', 'a = b;', 'b = temp;', 'System.out.println(a + " " + b);'],
       alternatives: [[1, 0, 2, 3, 4, 5]],
       expectedOutput: '2 1',
-      explanation: 'Save `a` in `temp` first, THEN overwrite `a` with `b`, and finally give `b` the saved value. Without `temp`, the original `a` would be lost.',
+      explanation: 'Think of two cups of juice you want to swap. You need a third empty cup. Save `a` in `temp`, copy `b` into `a`, then pour the saved value into `b`.',
     },
-
-    // ---------------- Lesson 4: Constants & Naming ----------------
     {
-      id: 'c-01',
+      id: 'u1l2-09',
+      type: 'write-code',
+      difficulty: 2,
+      concept: 'assign',
+      prompt: 'Create an `int` called `score` equal to 10. Then give `score` 5 more points by assigning `score = score + 5;` and print `score`.',
+      starter: j`
+// 1. create the variable score and give it 10
+
+// 2. add 5 to it
+
+// 3. print it
+`,
+      solution: j`
+int score = 10;
+score = score + 5;
+System.out.println(score);`,
+      tests: [{ label: 'prints 15', output: '15' }],
+      mustInclude: [
+        { pattern: 'int\\s+score', message: 'Declare an `int` called `score`.' },
+        { pattern: 'score\\s*=\\s*score\\s*\\+\\s*5', message: 'Use `score = score + 5;` to add the points.' },
+      ],
+      explanation: 'The right side runs first. Java reads the old `score` (10), adds 5, and then stores the answer back into the same box.',
+    },
+  ]),
+
+  // ---------------- Lesson 3: The 8 primitive data types ----------------
+  ...topic('types', [
+    {
+      id: 'u1l3-01',
       type: 'multiple-choice',
       difficulty: 1,
-      concept: 'naming',
-      prompt: 'Which is a **valid** Java variable name?',
+      concept: 'primitive',
+      prompt: 'Which of these is **not** one of Java\'s primitive types?',
       optionStyle: 'code',
       options: [
-        { text: 'highScore' },
-        { text: '2ndPlace', feedback: 'Names can\'t start with a digit.' },
-        { text: 'high score', feedback: 'Spaces aren\'t allowed in names. Use camelCase: `highScore`.' },
-        { text: 'class', feedback: '`class` is a reserved keyword in Java.' },
+        { text: 'String' },
+        { text: 'int', feedback: '`int` is one of the eight primitives. It is probably the one you will use most.' },
+        { text: 'boolean', feedback: '`boolean` is a primitive. It holds only `true` or `false`.' },
+        { text: 'char', feedback: '`char` is a primitive that holds a single character.' },
       ],
       answer: 0,
-      explanation: 'Names start with a letter (or `_`/`$`), may contain digits after that, and can\'t contain spaces or be keywords. `highScore` follows every rule.',
+      explanation: '`String` is not a primitive. It is a class, which is why it starts with a capital letter. The next lesson is all about why.',
     },
     {
-      id: 'c-02',
+      id: 'u1l3-02',
+      type: 'multiple-choice',
+      difficulty: 1,
+      concept: 'choose-type',
+      prompt: 'Which type is the best fit for the number of students in a class?',
+      optionStyle: 'code',
+      options: [
+        { text: 'int' },
+        { text: 'double', feedback: 'You cannot have 27.5 students, so whole numbers are a better fit. Save `double` for decimals.' },
+        { text: 'boolean', feedback: '`boolean` only holds `true` or `false`, not a count.' },
+        { text: 'char', feedback: '`char` holds one single character, not a number you want to count with.' },
+      ],
+      answer: 0,
+      explanation: 'A count of whole things goes in an `int`. There is no such thing as half a student.',
+    },
+    {
+      id: 'u1l3-03',
       type: 'true-false',
       difficulty: 1,
-      concept: 'naming',
-      prompt: 'In Java, `score` and `Score` are the same variable.',
-      answer: false,
-      wrongFeedback: 'Java is case-sensitive: a single capital letter makes a different name.',
-      explanation: 'Java is **case-sensitive**. `score`, `Score` and `SCORE` are three different names.',
+      concept: 'primitive',
+      prompt: 'Java has exactly 8 primitive data types.',
+      answer: true,
+      wrongFeedback: 'It really is eight: byte, short, int, long, float, double, char and boolean. Count them on your fingers.',
+      explanation: 'Four of them are for whole numbers or characters (`byte`, `short`, `int`, `long`), two are for decimals (`float`, `double`), plus `char` and `boolean`. That makes eight.',
     },
     {
-      id: 'c-03',
-      type: 'error-type',
+      id: 'u1l3-04',
+      type: 'fill-blank',
       difficulty: 1,
-      concept: 'constants',
-      prompt: 'What is wrong with this code?',
+      concept: 'choose-type',
+      prompt: 'Fill in the blank so the variable can store a single letter.',
+      code: j`
+___ initial = 'J';
+System.out.println(initial);`,
+      blanks: [['char']],
+      bank: ['char', 'String', 'boolean', 'int'],
+      expectedOutput: 'J',
+      explanation: 'One character in single quotes is a `char`. We use a `String` when there is more than one character.',
+    },
+    {
+      id: 'u1l3-05',
+      type: 'predict-output',
+      difficulty: 2,
+      concept: 'char-number',
+      prompt: 'What does this program print?',
+      code: j`
+int code = 'A';
+System.out.println(code);`,
+      optionStyle: 'output',
+      options: [
+        { text: '65' },
+        { text: 'A', feedback: 'Good thinking, but the variable is an `int`. A `char` is really stored as a number, so the int ends up holding that number.' },
+        { text: 'a', feedback: 'Java would never lowercase it for you. Capital A and lowercase a are different characters with different numbers.' },
+        { text: 'Compile error', feedback: 'This one is allowed. A `char` fits inside an `int` without any trouble.' },
+      ],
+      answer: 0,
+      explanation: 'Every `char` is stored as a number (its Unicode value). `\'A\'` is 65, so the `int` ends up holding 65.',
+    },
+    {
+      id: 'u1l3-06',
+      type: 'error-type',
+      difficulty: 2,
+      concept: 'decimal-in-int',
+      prompt: 'What happens when we try to run this code?',
+      code: j`
+int height = 5.9;
+System.out.println(height);`,
+      answer: 'syntax',
+      feedback: {
+        runtime: 'The program does not even start. Java refuses to compile it first.',
+        logic: 'It never runs, so it cannot print a wrong answer. Java stops it earlier than that.',
+        none: 'Look at the value on the right. Does 5.9 fit in a whole-number box?',
+      },
+      highlightLines: [1],
+      explanation: 'An `int` cannot hold 5.9, and Java will not quietly chop off the .9 for you. It stops with *possible lossy conversion from double to int*. Use a `double` instead.',
+    },
+    {
+      id: 'u1l3-07',
+      type: 'error-type',
+      difficulty: 2,
+      concept: 'float-f',
+      prompt: 'What happens when we try to run this code?',
+      code: j`
+float price = 4.99;
+System.out.println(price);`,
+      answer: 'syntax',
+      feedback: {
+        runtime: 'Java catches this before the program starts, so it cannot be a runtime error.',
+        logic: 'The program never runs, so there is no wrong answer to print.',
+        none: 'Java treats a plain decimal like 4.99 as a double. Is a double allowed inside a float?',
+      },
+      highlightLines: [1],
+      explanation: 'A plain decimal is a `double` in Java, and a `double` does not fit in a `float` box. Add an `f` to say you really mean a float: `4.99f`. Most of the time you will simply use `double`.',
+    },
+    {
+      id: 'u1l3-08',
+      type: 'predict-output',
+      difficulty: 3,
+      concept: 'overflow',
+      prompt: 'The biggest `int` is 2147483647. What does this program print?',
+      code: j`
+int big = 2147483647;
+big = big + 1;
+System.out.println(big);`,
+      optionStyle: 'output',
+      options: [
+        { text: '-2147483648' },
+        { text: '2147483648', feedback: 'That is what a calculator would say. An `int` only has room for numbers up to 2147483647, so it cannot hold that.' },
+        { text: '0', feedback: 'It does not stop at zero. The number wraps around to the other end of the `int` range.' },
+        { text: 'Compile error', feedback: 'Java compiles this happily and does not warn you, which is exactly what makes overflow sneaky.' },
+      ],
+      answer: 0,
+      highlightLines: [2],
+      explanation: 'When an `int` runs out of room it wraps around, like a car odometer rolling over. One past the maximum becomes the smallest value. If you need bigger numbers, switch to `long`.',
+    },
+    {
+      id: 'u1l3-09',
+      type: 'write-code',
+      difficulty: 2,
+      concept: 'declare-types',
+      prompt: 'Declare an `int` called `age` (16), a `double` called `gpa` (3.5), a `char` called `initial` (\'A\') and a `boolean` called `honourRoll` (true). Print them on one line, separated by spaces.',
+      starter: j`
+// declare the four variables
+
+// print them like: 16 3.5 A true
+`,
+      solution: j`
+int age = 16;
+double gpa = 3.5;
+char initial = 'A';
+boolean honourRoll = true;
+System.out.println(age + " " + gpa + " " + initial + " " + honourRoll);`,
+      tests: [{ label: 'prints all four values', output: '16 3.5 A true' }],
+      mustInclude: [
+        { pattern: 'int\\s+age', message: 'Declare an `int` called `age`.' },
+        { pattern: 'double\\s+gpa', message: 'Declare a `double` called `gpa`.' },
+        { pattern: 'char\\s+initial', message: 'Declare a `char` called `initial`.' },
+        { pattern: 'boolean\\s+honourRoll', message: 'Declare a `boolean` called `honourRoll`.' },
+      ],
+      explanation: 'Each value goes into the type that suits it. The `" "` between them adds the spaces, since Java will not put any in for you.',
+    },
+  ]),
+
+  // ---------------- Lesson 4: Strings ----------------
+  ...topic('types', [
+    {
+      id: 'u1l4-01',
+      type: 'true-false',
+      difficulty: 1,
+      concept: 'string-class',
+      prompt: '`String` is one of the 8 primitive data types.',
+      answer: false,
+      wrongFeedback: 'Not quite. The eight primitives all start with a small letter. `String` has a capital S because it is a class.',
+      explanation: 'A `String` is an object, not a primitive. That is the reason it begins with a capital letter, and it is also why it comes with extra tools like `length()`.',
+    },
+    {
+      id: 'u1l4-02',
+      type: 'multiple-choice',
+      difficulty: 1,
+      concept: 'string-vs-char',
+      prompt: 'Which line correctly stores the word Java in a variable?',
+      optionStyle: 'code',
+      options: [
+        { text: 'String lang = "Java";' },
+        { text: 'string lang = "Java";', feedback: 'Java is case sensitive. The type is `String` with a capital S.' },
+        { text: 'String lang = \'Java\';', feedback: 'Single quotes are only for one character. Words need double quotes.' },
+        { text: 'String lang = Java;', feedback: 'Without quotes, Java thinks `Java` is the name of a variable, and it cannot find one.' },
+      ],
+      answer: 0,
+      explanation: 'Text goes in a `String` and sits inside **double quotes**. Single quotes are for a single `char`.',
+    },
+    {
+      id: 'u1l4-03',
+      type: 'predict-output',
+      difficulty: 1,
+      concept: 'length',
+      prompt: 'What does this program print?',
+      code: j`
+String message = "Hi there";
+System.out.println(message.length());`,
+      optionStyle: 'output',
+      options: [
+        { text: '8' },
+        { text: '7', feedback: 'You counted the letters but skipped the space. Spaces are characters too.' },
+        { text: '2', feedback: '`length()` counts every character in the String, not just the words.' },
+        { text: 'Hi there', feedback: '`length()` gives back a count, not the text itself.' },
+      ],
+      answer: 0,
+      explanation: '`Hi there` has 2 letters, a space, and 5 more letters. That is 8 characters in total, and `length()` counts the space.',
+    },
+    {
+      id: 'u1l4-04',
+      type: 'fill-blank',
+      difficulty: 1,
+      concept: 'string-class',
+      prompt: 'Fill in the blank to store a greeting.',
+      code: j`
+___ greeting = "Good morning";
+System.out.println(greeting);`,
+      blanks: [['String']],
+      bank: ['String', 'char', 'string', 'text'],
+      expectedOutput: 'Good morning',
+      explanation: 'It has to be `String` with a capital S. There is no `text` type, and `char` only holds a single character.',
+    },
+    {
+      id: 'u1l4-05',
+      type: 'error-type',
+      difficulty: 2,
+      concept: 'quotes',
+      prompt: 'What kind of problem is in this code?',
+      code: j`
+String name = 'Sam';
+System.out.println(name);`,
+      answer: 'syntax',
+      feedback: {
+        runtime: 'Java never gets far enough to run it. The problem is found while compiling.',
+        logic: 'The program does not run at all, so it cannot be a wrong answer.',
+        none: 'Look at the quotes around Sam. Are they the right kind?',
+      },
+      highlightLines: [1],
+      explanation: 'Single quotes mean one `char`, and `Sam` is three characters, so Java complains about an unclosed character literal. Use double quotes: `"Sam"`.',
+    },
+    {
+      id: 'u1l4-06',
+      type: 'predict-output',
+      difficulty: 2,
+      concept: 'string-methods',
+      prompt: 'What does this program print?',
+      code: j`
+String word = "coffee";
+System.out.println(word.toUpperCase());
+System.out.println(word.charAt(0));`,
+      optionStyle: 'output',
+      options: [
+        { text: 'COFFEE\nc' },
+        { text: 'COFFEE\nC', feedback: '`toUpperCase()` returns a new String. The original `word` is still lowercase, so `charAt(0)` gives a small c.' },
+        { text: 'coffee\nc', feedback: 'The first line calls `toUpperCase()`, so that line is printed in capitals.' },
+        { text: 'COFFEE\no', feedback: 'Positions start counting at 0, not at 1. The character at position 0 is the very first one.' },
+      ],
+      answer: 0,
+      explanation: '`toUpperCase()` gives back an uppercase copy but does not change `word`. And `charAt(0)` grabs the first character, because Java counts positions from 0.',
+    },
+    {
+      id: 'u1l4-07',
+      type: 'predict-output',
+      difficulty: 2,
+      concept: 'concat',
+      prompt: 'What does this program print?',
+      code: j`
+String first = "Ada";
+String last = "Lovelace";
+System.out.println(first + " " + last);`,
+      optionStyle: 'output',
+      options: [
+        { text: 'Ada Lovelace' },
+        { text: 'AdaLovelace', feedback: 'Java does not add a space on its own. We put one in the middle, the `" "`.' },
+        { text: 'first last', feedback: 'There are no quotes around `first` and `last`, so Java uses the values stored in them.' },
+        { text: 'Ada + Lovelace', feedback: 'The plus signs are instructions to join the pieces together, not text to print.' },
+      ],
+      answer: 0,
+      explanation: 'Between Strings, `+` glues the pieces together. The `" "` in the middle is a String holding one space, which is why the names do not touch.',
+    },
+    {
+      id: 'u1l4-08',
+      type: 'find-bug',
+      difficulty: 3,
+      concept: 'string-class',
+      prompt: 'This program should greet the student, but it will not compile. Tap the line with the bug.',
+      code: j`
+public class Main {
+    public static void main(String[] args) {
+        String name = "Sam";
+        int age = "16";
+        System.out.println(name + " is " + age);
+    }
+}`,
+      bugLines: [4],
+      fixedCode: j`
+public class Main {
+    public static void main(String[] args) {
+        String name = "Sam";
+        int age = 16;
+        System.out.println(name + " is " + age);
+    }
+}`,
+      bugKind: 'syntax',
+      explanation: 'Quotes turn 16 into text, and text does not fit in an `int` box. Take the quotes away and `16` is a real number again.',
+    },
+    {
+      id: 'u1l4-09',
+      type: 'write-code',
+      difficulty: 2,
+      concept: 'string-methods',
+      prompt: 'Store the word `programming` in a `String` called `word`. Print its length on one line and the word in capital letters on the next line.',
+      starter: j`
+// 1. create the String called word
+
+// 2. print its length
+
+// 3. print it in capital letters
+`,
+      solution: j`
+String word = "programming";
+System.out.println(word.length());
+System.out.println(word.toUpperCase());`,
+      tests: [{ label: 'length then capitals', output: '11\nPROGRAMMING' }],
+      mustInclude: [
+        { pattern: 'String\\s+word', message: 'Declare a `String` called `word`.' },
+        { pattern: '\\.length\\(\\)', message: 'Use `length()` to count the characters.' },
+        { pattern: '\\.toUpperCase\\(\\)', message: 'Use `toUpperCase()` for the capital letters.' },
+      ],
+      explanation: 'A String comes with built-in tools. You call them with a dot after the variable name, like `word.length()`.',
+    },
+  ]),
+
+  // ---------------- Lesson 5: Constants ----------------
+  ...topic('variables', [
+    {
+      id: 'u1l5-01',
+      type: 'multiple-choice',
+      difficulty: 1,
+      concept: 'final',
+      prompt: 'Which keyword makes a variable a constant that can never change?',
+      optionStyle: 'code',
+      options: [
+        { text: 'final' },
+        { text: 'static', feedback: '`static` does something different, and we will meet it later. The word we want here means "this is the last word on this value".' },
+        { text: 'const', feedback: 'Other languages use `const`, and Java even keeps the word reserved, but it does nothing here.' },
+        { text: 'fixed', feedback: 'That is a good descriptive name, but Java does not use it.' },
+      ],
+      answer: 0,
+      explanation: 'Put `final` in front of a variable and Java will not allow anyone to assign to it again. It becomes a constant.',
+    },
+    {
+      id: 'u1l5-02',
+      type: 'predict-output',
+      difficulty: 1,
+      concept: 'use-constant',
+      prompt: 'What does this program print?',
+      code: j`
+final int DAYS_IN_WEEK = 7;
+int weeks = 3;
+System.out.println(weeks * DAYS_IN_WEEK);`,
+      optionStyle: 'output',
+      options: [
+        { text: '21' },
+        { text: '10', feedback: 'That would be 3 plus 7. The star means multiply.' },
+        { text: '37', feedback: 'Nothing is being joined as text. Both values are numbers, so Java multiplies them.' },
+        { text: 'weeks * DAYS_IN_WEEK', feedback: 'There are no quotes, so Java works out the values instead of printing the names.' },
+      ],
+      answer: 0,
+      explanation: 'A constant is read like any other variable. 3 weeks times 7 days gives 21.',
+    },
+    {
+      id: 'u1l5-03',
+      type: 'error-type',
+      difficulty: 2,
+      concept: 'change-final',
+      prompt: 'What happens when we try to run this code?',
       code: j`
 final int MAX_LIVES = 3;
 MAX_LIVES = 5;
 System.out.println(MAX_LIVES);`,
       answer: 'syntax',
       feedback: {
-        runtime: 'Java spots this while compiling, before anything runs.',
-        logic: 'It never runs at all because javac refuses to compile it.',
-        none: '`final` means the value can never change. What does line 2 try to do?',
+        runtime: 'Java notices this before the program starts. That makes it a compile-time problem.',
+        logic: 'The program never runs, so it cannot print a wrong answer.',
+        none: 'Look at line 2. What does `final` promise?',
       },
       highlightLines: [2],
-      explanation: 'A `final` variable is a constant: once set, it can\'t be reassigned. javac says: *cannot assign a value to final variable MAX_LIVES*.',
+      explanation: 'Line 2 tries to change something we promised would never change. Java stops with *cannot assign a value to final variable MAX_LIVES*.',
     },
     {
-      id: 'c-04',
-      type: 'multiple-choice',
-      difficulty: 2,
-      concept: 'constants',
-      prompt: 'Which name follows Java conventions for a **constant** holding the maximum speed?',
-      optionStyle: 'code',
-      options: [
-        { text: 'MAX_SPEED' },
-        { text: 'maxSpeed', feedback: 'camelCase is the convention for regular variables. Constants use UPPER_SNAKE_CASE.' },
-        { text: 'Max-Speed', feedback: 'Hyphens aren\'t allowed: Java would read it as `Max` minus `Speed`.' },
-        { text: 'maxspeed', feedback: 'Legal, but hard to read and not the constant convention.' },
-      ],
-      answer: 0,
-      explanation: 'Constants are written in UPPER_SNAKE_CASE: all capitals with underscores between words, like `MAX_SPEED` or `TAX_RATE`.',
-    },
-    {
-      id: 'c-05',
+      id: 'u1l5-04',
       type: 'fill-blank',
-      difficulty: 2,
-      concept: 'constants',
-      prompt: 'Make `PI_ISH` a constant that can never be changed.',
+      difficulty: 1,
+      concept: 'final',
+      prompt: 'Fill in the blank to make `TAX_RATE` a constant.',
       code: j`
-___ double PI_ISH = 3.14;
-double r = 2;
-System.out.println(PI_ISH * r * r);`,
+___ double TAX_RATE = 0.13;
+System.out.println(100 * TAX_RATE);`,
       blanks: [['final']],
-      explanation: 'The keyword `final` turns a variable into a constant. Any later attempt to change `PI_ISH` would be a compile error.',
+      bank: ['final', 'static', 'const', 'public'],
+      expectedOutput: '13.0',
+      explanation: '`final double TAX_RATE = 0.13;` locks the value in. The name is in capitals with underscores, which is the habit everyone follows for constants.',
     },
     {
-      id: 'c-06',
-      type: 'find-bug',
-      difficulty: 2,
-      concept: 'naming',
-      prompt: 'This program won\'t compile. Tap the line with the bug.',
-      code: j`
-int totalCoins = 50;
-int spent = 20;
-int left = totalcoins - spent;
-System.out.println(left);`,
-      bugLines: [3],
-      bugKind: 'syntax',
-      fixedCode: j`
-int totalCoins = 50;
-int spent = 20;
-int left = totalCoins - spent;
-System.out.println(left);`,
-      hint: 'Compare the spelling of every name letter by letter, including capitals.',
-      explanation: 'Java is case-sensitive: `totalcoins` (lowercase c) is not the variable `totalCoins`, so javac reports *cannot find symbol*.',
-    },
-    {
-      id: 'c-07',
-      type: 'multiple-choice',
-      difficulty: 2,
-      concept: 'naming',
-      prompt: 'Which line will **NOT** compile?',
-      optionStyle: 'code',
-      options: [
-        { text: 'int my_score = 10;', feedback: 'Underscores are allowed in names, so this compiles.' },
-        { text: 'int $cash = 5;', feedback: 'Surprise: `$` is allowed in names (though rarely used). This compiles.' },
-        { text: 'int score2 = 7;', feedback: 'Digits are fine after the first character, so this compiles.' },
-        { text: 'int double = 3;' },
-      ],
-      answer: 3,
-      explanation: '`double` is a keyword (a type name), so it can\'t be used as a variable name. The other three names are legal.',
-    },
-    {
-      id: 'c-08',
-      type: 'type-output',
-      difficulty: 3,
-      concept: 'constants',
-      prompt: 'Type exactly what this program prints.',
-      code: j`
-final int BONUS = 5;
-int score = 10;
-score = score + BONUS;
-score = score * 2;
-System.out.println(score);`,
-      answer: '30',
-      explanation: '`score` becomes 10 + 5 = 15, then 15 × 2 = 30. `BONUS` itself never changes.',
-    },
-  ]),
-
-  // ---------------- Lesson 2: Primitive Types ----------------
-  ...topic('types', [
-    {
-      id: 't-01',
-      type: 'multiple-choice',
-      difficulty: 1,
-      concept: 'primitives',
-      prompt: 'Which type should store the **number of students** in a class?',
-      optionStyle: 'code',
-      options: [
-        { text: 'int' },
-        { text: 'double', feedback: 'You can\'t have 27.5 students, so whole numbers fit best in an `int`.' },
-        { text: 'boolean', feedback: '`boolean` only holds `true` or `false`.' },
-        { text: 'char', feedback: '`char` holds a single character like `\'A\'`.' },
-      ],
-      answer: 0,
-      explanation: 'Counting things gives whole numbers, and `int` is Java\'s type for whole numbers.',
-    },
-    {
-      id: 't-02',
-      type: 'multiple-choice',
-      difficulty: 1,
-      concept: 'char',
-      prompt: 'Which value is a valid `char`?',
-      optionStyle: 'code',
-      options: [
-        { text: "'B'" },
-        { text: '"B"', feedback: 'Double quotes make a `String`, not a `char`.' },
-        { text: "'Hi'", feedback: 'A `char` holds exactly ONE character.' },
-        { text: 'B', feedback: 'Without quotes, Java thinks `B` is the name of a variable.' },
-      ],
-      answer: 0,
-      explanation: 'A `char` is one character inside **single** quotes, like `\'B\'`.',
-    },
-    {
-      id: 't-03',
+      id: 'u1l5-05',
       type: 'true-false',
       difficulty: 1,
-      concept: 'boolean',
-      prompt: 'A `boolean` variable can hold `true`, `false`, or the numbers `1` and `0`.',
-      answer: false,
-      wrongFeedback: 'Some languages treat 1 and 0 as true/false, but Java doesn\'t.',
-      explanation: 'Java\'s `boolean` is strictly `true` or `false`. Writing `boolean b = 1;` is a compile error.',
+      concept: 'naming',
+      prompt: 'By convention, constants are written in UPPER_SNAKE_CASE, like `MAX_SCORE`.',
+      answer: true,
+      wrongFeedback: 'It is true. It is not a rule Java enforces, but every programmer follows it so constants are easy to spot.',
+      explanation: 'Capitals with underscores between words tell anyone reading your code, "this one never changes".',
     },
     {
-      id: 't-04',
-      type: 'error-type',
-      difficulty: 1,
-      concept: 'type-mismatch',
-      prompt: 'What is wrong with this code?',
-      code: j`
-int height = 5.9;
-System.out.println(height);`,
-      answer: 'syntax',
-      feedback: {
-        runtime: 'This is caught while compiling, before the program runs.',
-        logic: 'It doesn\'t even compile, so it never produces a wrong answer.',
-        none: 'Can an `int` hold the `.9` part of 5.9?',
-      },
-      highlightLines: [1],
-      explanation: '5.9 is a `double`. Squeezing it into an `int` would lose the .9, so javac refuses: *possible lossy conversion from double to int*. Use `double height = 5.9;`',
-    },
-    {
-      id: 't-05',
-      type: 'predict-output',
-      difficulty: 2,
-      concept: 'widening',
-      prompt: 'What does this program print?',
-      code: j`
-double price = 5;
-System.out.println(price);`,
-      optionStyle: 'output',
-      options: [
-        { text: '5.0' },
-        { text: '5', feedback: 'The value is stored as a `double`, and doubles always print with a decimal part.' },
-        { text: '5.00', feedback: '`println` doesn\'t add extra zeros: a double prints as 5.0.' },
-        { text: 'Compile error', feedback: 'Putting an `int` into a `double` is safe (nothing is lost), so Java allows it.' },
-      ],
-      answer: 0,
-      explanation: 'The int 5 is safely widened to the double 5.0, and doubles always print with at least one decimal digit.',
-    },
-    {
-      id: 't-06',
-      type: 'fill-blank',
-      difficulty: 2,
-      concept: 'primitives',
-      prompt: 'Pick the right type for each variable.',
-      code: j`
-___ isRaining = false;
-___ temperature = 18.5;
-___ initial = 'J';`,
-      blanks: [['boolean'], ['double'], ['char']],
-      bank: ['boolean', 'double', 'char', 'int', 'String'],
-      explanation: '`false` is a boolean value, 18.5 has a decimal so it needs a `double`, and `\'J\'` (one character in single quotes) is a `char`.',
-    },
-    {
-      id: 't-07',
+      id: 'u1l5-06',
       type: 'multiple-choice',
-      difficulty: 3,
-      concept: 'type-mismatch',
-      prompt: 'Which of these lines will **NOT** compile?',
-      optionStyle: 'code',
+      difficulty: 2,
+      concept: 'why-constant',
+      prompt: 'Your program uses the tax rate 0.13 in twelve different places. Why is a constant like `TAX_RATE` better than typing 0.13 each time?',
       options: [
-        { text: 'double d = 10;', feedback: 'An int fits inside a double safely, so this compiles (d becomes 10.0).' },
-        { text: "int n = 'A';", feedback: 'Surprise! A char is really a number (its Unicode code), so this compiles and n becomes 65.' },
-        { text: 'char c = "A";' },
-        { text: 'boolean b = 5 > 3;', feedback: '`5 > 3` evaluates to `true`, which is a boolean, so this compiles.' },
-      ],
-      answer: 2,
-      explanation: '`"A"` uses double quotes, so it\'s a `String`, and a String can\'t be converted to a `char`. The other three are safe conversions.',
-    },
-    {
-      id: 't-08',
-      type: 'type-output',
-      difficulty: 3,
-      concept: 'char',
-      prompt: 'Type exactly what this program prints.',
-      code: j`
-char letter = 'A';
-int code = letter;
-System.out.println(code);`,
-      answer: '65',
-      explanation: 'Every `char` is stored as a number: its Unicode value. `\'A\'` is 65, so assigning it to an `int` gives 65.',
-    },
-
-    // ---------------- Lesson 3: Strings ----------------
-    {
-      id: 's-01',
-      type: 'multiple-choice',
-      difficulty: 1,
-      concept: 'strings',
-      prompt: 'Which line correctly stores the word **Java** in a variable?',
-      optionStyle: 'code',
-      options: [
-        { text: 'String lang = "Java";' },
-        { text: 'string lang = "Java";', feedback: '`String` starts with a capital S, and Java is case-sensitive.' },
-        { text: "String lang = 'Java';", feedback: 'Single quotes are for one `char`. Text needs double quotes.' },
-        { text: 'String lang = Java;', feedback: 'Without quotes, Java looks for a variable named `Java`.' },
+        { text: 'If the rate ever changes, you fix it in one place instead of twelve.' },
+        { text: 'Constants run faster than numbers.', feedback: 'The speed difference is too small to matter. The real benefit is for the people reading and changing the code.' },
+        { text: 'Java refuses to compile numbers that are typed directly.', feedback: 'Typing numbers directly is allowed. It is just harder to maintain.' },
+        { text: 'Constants use less memory.', feedback: 'Memory is not the point. The point is that the code is easier to read and to change.' },
       ],
       answer: 0,
-      explanation: 'Text is a `String` (capital S) and String values go inside **double** quotes.',
+      explanation: 'A named constant means one change fixes everything. It also tells the reader what the number means, because `TAX_RATE` explains itself and a lone 0.13 does not.',
     },
     {
-      id: 's-02',
-      type: 'predict-output',
-      difficulty: 1,
-      concept: 'concat',
-      prompt: 'What does this program print?',
-      code: j`
-String pet = "cat";
-System.out.println("My " + pet + " naps");`,
-      optionStyle: 'output',
-      options: [
-        { text: 'My cat naps' },
-        { text: 'My pet naps', feedback: '`pet` has no quotes, so it\'s the variable, and its value "cat" is used.' },
-        { text: 'Mycatnaps', feedback: 'The spaces inside the quotes are kept: "My " and " naps".' },
-        { text: 'My + pet + naps', feedback: 'The `+` signs are outside the quotes, so they join the pieces.' },
-      ],
-      answer: 0,
-      explanation: '`+` glues (concatenates) Strings: "My " + "cat" + " naps" → "My cat naps". The spaces come from inside the quotes.',
-    },
-    {
-      id: 's-03',
+      id: 'u1l5-07',
       type: 'predict-output',
       difficulty: 2,
-      concept: 'concat-order',
-      prompt: 'What does this program print?',
-      code: j`System.out.println("Score: " + 4 + 5);`,
-      optionStyle: 'output',
-      options: [
-        { text: 'Score: 45' },
-        { text: 'Score: 9', feedback: 'Java reads left to right: "Score: " + 4 becomes "Score: 4" (text!), then + 5 glues on "5".' },
-        { text: 'Score: 4 5', feedback: 'No space is added between the pieces.' },
-        { text: 'Compile error', feedback: 'Mixing Strings and numbers with + is allowed: the numbers become text.' },
-      ],
-      answer: 0,
-      explanation: 'Evaluation goes left to right. Once a String is involved, `+` means *join*. To add first, use parentheses: `"Score: " + (4 + 5)`.',
-    },
-    {
-      id: 's-04',
-      type: 'type-output',
-      difficulty: 2,
-      concept: 'strings',
-      prompt: 'Type exactly what this program prints.',
-      code: j`
-String word = "Hello";
-System.out.println(word.length());`,
-      answer: '5',
-      explanation: '`length()` counts the characters in a String. "Hello" has 5.',
-    },
-    {
-      id: 's-05',
-      type: 'predict-output',
-      difficulty: 2,
-      concept: 'concat-order',
-      prompt: 'What does this program print?',
-      code: j`System.out.println(4 + 5 + " points");`,
-      optionStyle: 'output',
-      options: [
-        { text: '9 points' },
-        { text: '45 points', feedback: 'Left to right: 4 + 5 are both numbers, so they\'re ADDED before the String appears.' },
-        { text: '4 + 5 points', feedback: 'The `+` is outside the quotes, so it\'s an operator, not text.' },
-        { text: '45points' },
-      ],
-      answer: 0,
-      explanation: 'Java evaluates left to right. `4 + 5` is 9 (both ints), then `9 + " points"` joins them: "9 points".',
-    },
-    {
-      id: 's-06',
-      type: 'true-false',
-      difficulty: 1,
-      concept: 'strings',
-      prompt: '`String` is one of Java\'s primitive types, just like `int` and `char`.',
-      answer: false,
-      wrongFeedback: 'Notice the capital S: that\'s a hint String is a class, not a primitive.',
-      explanation: '`String` is a class. The primitive types are all lowercase: `int`, `double`, `boolean`, `char` (plus `long`, `float`, `short`, `byte`).',
-    },
-    {
-      id: 's-07',
-      type: 'fill-blank',
-      difficulty: 2,
-      concept: 'concat',
-      prompt: 'Fill in the blanks so the program prints `Hi, Sam!`',
-      code: j`
-String name = "Sam";
-System.out.println("Hi, " ___ name ___ "!");`,
-      blanks: [['+'], ['+']],
-      expectedOutput: 'Hi, Sam!',
-      explanation: 'The `+` operator glues Strings together: "Hi, " + "Sam" + "!" → "Hi, Sam!".',
-    },
-    {
-      id: 's-08',
-      type: 'type-output',
-      difficulty: 3,
-      concept: 'concat-order',
-      prompt: 'Type exactly what this program prints (two lines).',
-      code: j`
-String a = "3";
-int b = 3;
-System.out.println(a + b + b);
-System.out.println(b + b + a);`,
-      answer: '333\n63',
-      highlightLines: [3, 4],
-      explanation: 'Line 3: "3" + 3 → "33", then + 3 → "333". Line 4: 3 + 3 = 6 first (both numbers), then 6 + "3" → "63".',
-    },
-  ]),
-
-  // ---------------- Unit 1 checkpoint ----------------
-  ...topic('variables', [
-    {
-      id: 'cp1-01',
-      type: 'type-output',
-      topic: 'types',
-      difficulty: 3,
-      concept: 'concat-order',
-      prompt: 'Type exactly what this program prints.',
-      code: j`
-String item = "Latte";
-double price = 3.5;
-int qty = 2;
-System.out.println(qty + " x " + item + " = " + price * qty);`,
-      answer: '2 x Latte = 7.0',
-      explanation: '`*` happens before `+`, so `price * qty` = 7.0 is computed first. Then everything is joined left to right into one String.',
-    },
-    {
-      id: 'cp1-02',
-      type: 'error-type',
-      topic: 'types',
-      difficulty: 2,
-      concept: 'type-mismatch',
-      prompt: 'What is wrong with this code?',
-      code: j`
-String name = "Byte";
-int length = name;`,
-      answer: 'syntax',
-      feedback: { runtime: 'javac catches this before running.', logic: 'It never compiles, so it never runs.', none: 'Can a String be stored in an int box?' },
-      highlightLines: [2],
-      explanation: 'A `String` can\'t be stored in an `int`. javac reports *incompatible types: String cannot be converted to int*. (To get the length, use `name.length()`.)',
-    },
-    {
-      id: 'cp1-03',
-      type: 'find-bug',
-      difficulty: 2,
-      concept: 'syntax',
-      prompt: 'This program won\'t compile. Tap the line with the bug.',
-      code: j`
-double total = 0;
-total = 19.99
-System.out.println(total);`,
-      bugLines: [2],
-      bugKind: 'syntax',
-      fixedCode: j`
-double total = 0;
-total = 19.99;
-System.out.println(total);`,
-      explanation: 'Every statement must end with a semicolon. Line 2 is missing its `;`, so javac reports *\';\' expected*.',
-    },
-    {
-      id: 'cp1-04',
-      type: 'arrange',
-      difficulty: 2,
-      concept: 'declare',
-      prompt: 'Arrange the lines to print `Byte is 3 years old`. One line is a decoy!',
-      lines: ['String name = "Byte";', 'int age = 3;', 'System.out.println(name + " is " + age + " years old");'],
-      distractors: ['String age = 3;'],
-      alternatives: [[1, 0, 2]],
-      expectedOutput: 'Byte is 3 years old',
-      explanation: 'Both variables must be declared before the line that prints them. The decoy `String age = 3;` doesn\'t compile because 3 isn\'t text.',
-    },
-    {
-      id: 'cp1-05',
-      type: 'predict-output',
-      difficulty: 3,
-      concept: 'assign',
+      concept: 'use-constant',
       prompt: 'What does this program print?',
       code: j`
-int x = 10;
-int y = x;
-x = x + 5;
-y = y - 1;
-System.out.println(x + y);`,
+final double PI = 3.14;
+double radius = 2;
+System.out.println(PI * radius * radius);`,
       optionStyle: 'output',
       options: [
-        { text: '24' },
-        { text: '159', feedback: '`x` and `y` are both ints, so `+` adds them. No text is involved.' },
-        { text: '29', feedback: '`y` copied the OLD value of x (10), not 15.' },
-        { text: '14' },
+        { text: '12.56' },
+        { text: '6.28', feedback: 'That would be PI times radius once. There are two radius factors, so multiply again.' },
+        { text: '3.14', feedback: 'That is just the value of PI. It is multiplied by the radius twice before printing.' },
+        { text: '12.0', feedback: 'Do not drop the PI part. 3.14 times 2 times 2 is more than 12.' },
       ],
       answer: 0,
-      explanation: '`y` copies 10. Then `x` becomes 15 and `y` becomes 9. `15 + 9 = 24`.',
+      explanation: '3.14 times 2 is 6.28, and 6.28 times 2 is 12.56. That is the area of a circle with radius 2.',
     },
     {
-      id: 'cp1-06',
+      id: 'u1l5-08',
       type: 'write-code',
       difficulty: 3,
-      concept: 'constants',
-      prompt: 'Declare a constant `SPEED` equal to 60 and an `int` variable `hours` equal to 3. Then print the distance: `SPEED * hours`.',
+      concept: 'use-constant',
+      prompt: 'Declare a constant `SPEED` equal to 60 and an `int` variable `hours` equal to 3. Then print the distance, which is `SPEED * hours`.',
       starter: j`
-// 1. Declare the constant SPEED (60)
+// 1. declare the constant SPEED (60)
 
-// 2. Declare the variable hours (3)
+// 2. declare the variable hours (3)
 
-// 3. Print SPEED * hours
+// 3. print SPEED * hours
 `,
       solution: j`
 final int SPEED = 60;
@@ -613,10 +764,137 @@ int hours = 3;
 System.out.println(SPEED * hours);`,
       tests: [{ label: 'prints the distance', output: '180' }],
       mustInclude: [
-        { pattern: 'final\\s+int\\s+SPEED', message: 'Declare SPEED with `final int` so it\'s a constant.' },
-        { pattern: '\\bhours\\b', message: 'Use a variable named `hours`.' },
+        { pattern: 'final\\s+int\\s+SPEED', message: 'Declare `SPEED` with `final int` so it is a constant.' },
+        { pattern: '\\bhours\\b', message: 'Use a variable called `hours`.' },
       ],
-      explanation: '`final int SPEED = 60;` makes a constant, `int hours = 3;` a normal variable, and `SPEED * hours` computes 180.',
+      explanation: '`final int SPEED = 60;` is the constant, `int hours = 3;` is a regular variable, and `SPEED * hours` works out the 180.',
+    },
+  ]),
+
+  // ---------------- Unit 1 checkpoint ----------------
+  ...topic('variables', [
+    {
+      id: 'u1cp-01',
+      type: 'predict-output',
+      difficulty: 2,
+      concept: 'use-constant',
+      prompt: 'What does this program print?',
+      code: j`
+final int PLAYERS = 4;
+int cards = 3;
+cards = cards + PLAYERS;
+System.out.println("Cards: " + cards);`,
+      optionStyle: 'output',
+      options: [
+        { text: 'Cards: 7' },
+        { text: 'Cards: 3', feedback: 'Line 3 updates `cards` before it is printed, so it is no longer 3.' },
+        { text: 'Cards: 34', feedback: 'Both values are numbers, so the plus adds them. It only joins text when a String is involved.' },
+        { text: 'Cards: cards', feedback: 'The second `cards` has no quotes, so Java prints the number stored in it.' },
+      ],
+      answer: 0,
+      explanation: '`cards` starts at 3, then line 3 stores 3 + 4 = 7 back into it. The text "Cards: " is joined to the 7 when it is printed.',
+    },
+    {
+      id: 'u1cp-02',
+      type: 'error-type',
+      difficulty: 2,
+      concept: 'change-final',
+      prompt: 'What happens when we run this code?',
+      code: j`
+final int MAX = 10;
+MAX = 20;
+System.out.println(MAX);`,
+      answer: 'syntax',
+      feedback: {
+        runtime: 'It never gets as far as running. Java catches it while compiling.',
+        logic: 'The program does not run, so it cannot be a wrong answer.',
+        none: 'Look again at line 2 and think about what `final` means.',
+      },
+      highlightLines: [2],
+      explanation: 'A `final` variable can only be given a value once. Java stops with *cannot assign a value to final variable MAX*.',
+    },
+    {
+      id: 'u1cp-03',
+      type: 'multiple-choice',
+      difficulty: 3,
+      concept: 'choose-type',
+      prompt: 'Which declaration is valid Java?',
+      optionStyle: 'code',
+      options: [
+        { text: 'float temp = 36.6f;' },
+        { text: 'float temp = 36.6;', feedback: 'A plain decimal is a double, and a double will not fit into a float. The f at the end fixes it.' },
+        { text: 'long big = 3000000000;', feedback: 'Java reads a plain whole number as an int, and this one is too big for an int. A long needs an L at the end.' },
+        { text: 'char letter = "A";', feedback: 'Double quotes make a String. A char needs single quotes.' },
+      ],
+      answer: 0,
+      explanation: 'The little `f` tells Java the number is a float. The other three each break a rule: a missing f, a missing L, and the wrong kind of quote.',
+    },
+    {
+      id: 'u1cp-04',
+      type: 'find-bug',
+      difficulty: 3,
+      concept: 'shell',
+      topic: 'basics',
+      prompt: 'This program should print a welcome message, but it will not compile. Tap the buggy line.',
+      code: j`
+public class Main {
+    public static void main(String[] args) {
+        String club = "Robotics";
+        System.out.println("Welcome to the " + club + " club!")
+    }
+}`,
+      bugLines: [4],
+      fixedCode: j`
+public class Main {
+    public static void main(String[] args) {
+        String club = "Robotics";
+        System.out.println("Welcome to the " + club + " club!");
+    }
+}`,
+      bugKind: 'syntax',
+      explanation: 'Line 4 is missing its semicolon at the end. When your code looks perfect and still will not compile, read the line above the one Java complains about too.',
+    },
+    {
+      id: 'u1cp-05',
+      type: 'fill-blank',
+      difficulty: 2,
+      concept: 'shell',
+      topic: 'basics',
+      prompt: 'Complete the shell of the program.',
+      code: j`
+public class Main {
+    public ___ void main(String[] args) {
+        System.out.println("All set!");
+    }
+}`,
+      blanks: [['static']],
+      bank: ['static', 'final', 'class', 'int'],
+      expectedOutput: 'All set!',
+      explanation: 'The full line is `public static void main(String[] args)`. It is the same every single time, so make it muscle memory.',
+    },
+    {
+      id: 'u1cp-06',
+      type: 'write-code',
+      difficulty: 3,
+      concept: 'declare-types',
+      topic: 'types',
+      prompt: 'Make a `String` called `club` holding `Robotics` and an `int` called `members` holding `24`. Print them in the form `Robotics has 24 members`.',
+      starter: j`
+// 1. declare club and members
+
+// 2. print: Robotics has 24 members
+`,
+      solution: j`
+String club = "Robotics";
+int members = 24;
+System.out.println(club + " has " + members + " members");`,
+      tests: [{ label: 'prints the sentence', output: 'Robotics has 24 members' }],
+      mustInclude: [
+        { pattern: 'String\\s+club', message: 'Declare a `String` called `club`.' },
+        { pattern: 'int\\s+members', message: 'Declare an `int` called `members`.' },
+        { pattern: 'club\\s*\\+', message: 'Join the pieces with `+`, using the `club` variable rather than typing the word again.' },
+      ],
+      explanation: 'The text pieces sit in quotes and the variables do not. Joining them with `+` builds the whole sentence.',
     },
   ]),
 ]
@@ -626,46 +904,113 @@ export const unit1: UnitContent = {
   unit: {
     id: 'u1',
     number: 1,
-    title: 'Variables & Basic Java',
-    tagline: 'Store values, pick the right type and name things well.',
+    title: 'Getting Started',
+    tagline: 'The shell of a program, boxes for your data, and the types that fit inside them.',
     color: 'brew',
     icon: 'package',
-    topics: ['variables', 'types'],
-    checkpoint: ['cp1-01', 'cp1-02', 'cp1-03', 'cp1-04', 'cp1-05', 'cp1-06'],
+    topics: ['basics', 'variables', 'types'],
+    checkpoint: ['u1cp-01', 'u1cp-02', 'u1cp-03', 'u1cp-04', 'u1cp-05', 'u1cp-06'],
     lessons: [
       {
         id: 'u1-l1',
         unitId: 'u1',
-        title: 'Meet Variables',
+        title: 'Every Program Starts with class Main',
+        summary: 'The shell every Java program needs.',
+        topic: 'basics',
+        teach: [
+          {
+            kind: 'concept',
+            title: 'Before anything else, the shell',
+            what: 'Every Java program lives inside a **class**, and it starts running at a method called **main**. Think of the class as a building and `main` as the front door. Java walks through the door and runs everything inside the curly braces, from top to bottom.',
+            why: 'If the class or the `main` line is missing or spelled wrong, Java has nowhere to begin and you will get an error before anything runs. When a brand new program will not work, check this shell first.',
+            mood: 'happy',
+          },
+          {
+            kind: 'example',
+            title: 'Your very first program',
+            how: 'Everything between the inner braces runs when you press Run. `println` prints and then moves to the next line, and `print` stays on the same line.',
+            code: j`
+public class Main {
+    public static void main(String[] args) {
+        System.out.println("Hello from my first program!");
+        System.out.print("No new line here. ");
+        System.out.println("But this one adds one.");
+    }
+}`,
+            notes: [
+              { line: 1, text: 'The class. Its name starts with a capital letter.' },
+              { line: 2, text: 'The main method. Java starts here, every single time.' },
+              { line: 3, text: 'println prints the text and then moves to a new line.' },
+              { line: 4, text: 'print stays on the same line.' },
+            ],
+          },
+          {
+            kind: 'tip',
+            title: 'A few habits to start today',
+            body: 'To save space, most examples from here on show only the lines that go inside `main`. When you write a real program, wrap them in the shell yourself. And keep these habits:',
+            bullets: [
+              'Every statement ends with a semicolon.',
+              'Curly braces always come in pairs, so every `{` needs its `}`.',
+              'Java is case sensitive. `System` and `String` have a capital letter, and `main` is all lowercase.',
+              'Text goes inside double quotes.',
+            ],
+          },
+          {
+            kind: 'mistake',
+            title: 'The missing semicolon',
+            body: 'I see this one in every class, every year. Forget the semicolon and Java will not run the program at all.',
+            wrong: j`System.out.println("Hello")`,
+            right: j`System.out.println("Hello");`,
+          },
+        ],
+        questions: ['u1l1-01', 'u1l1-02', 'u1l1-03', 'u1l1-04', 'u1l1-05', 'u1l1-06', 'u1l1-07'],
+        challenge: 'u1l1-08',
+      },
+      {
+        id: 'u1-l2',
+        unitId: 'u1',
+        title: 'Variables: Boxes for Values',
         summary: 'Declare, initialize and change a variable.',
         topic: 'variables',
         teach: [
           {
             kind: 'concept',
-            title: 'What is a variable?',
-            what: 'A **variable** is a named box that stores a value your program can use later.',
-            why: 'Programs need to remember things: a score, a name, a price. Variables give each value a name so you can read it and change it.',
+            title: 'A variable is a labelled box',
+            what: 'A **variable** reserves a little space in the computer\'s memory and gives it a name. Picture a box with a label on the front. You can put a value inside, look at it later, or swap it for a new one.',
+            why: 'Programs have to remember things: a score, a name, a price. Without variables every value would disappear the moment you used it.',
             mood: 'happy',
           },
           {
             kind: 'example',
-            title: 'Declare, initialize, assign',
-            how: 'Write the **type**, the **name**, `=` and the **value**, then end with a semicolon. Later, `=` can store a new value in the same box.',
+            title: 'Declare it, fill it, change it',
+            how: 'Write the **type**, then the **name**, then `=` and the **value**. Later on you can use `=` again to put a different value in the same box.',
             code: j`
-int age = 15;
-System.out.println(age);
-age = 16;
-System.out.println(age);`,
+int a = 4;
+System.out.println(a);
+a = 9;
+System.out.println(a);`,
             notes: [
-              { line: 1, text: 'Declare an int called age and initialize it to 15.' },
-              { line: 2, text: 'Print the value inside the box.' },
-              { line: 3, text: 'Assign a new value: the old 15 is replaced.' },
+              { line: 1, text: 'Declare an int box called a and put 4 inside.' },
+              { line: 2, text: 'Print what is inside the box.' },
+              { line: 3, text: 'Assign a new value. The 4 is replaced by 9.' },
+            ],
+          },
+          {
+            kind: 'tip',
+            title: 'Naming your boxes',
+            body: 'Java has a few rules for names, and a few habits that make your code easier to read:',
+            bullets: [
+              'Start with a letter (or `_` or `$`), never with a digit.',
+              'Use letters, digits and underscores only. No spaces and no hyphens.',
+              'You cannot use words Java already owns, like `int` or `class`.',
+              'Capitals matter. `score` and `Score` are two different variables.',
+              'By habit we write `camelCase`, like `highScore`, so names are easy to read.',
             ],
           },
           {
             kind: 'mistake',
             title: 'Reading an empty box',
-            body: 'Declaring creates the box; initializing puts the first value in. Java refuses to read a variable that was never given a value.',
+            body: 'Declaring a variable builds the box, but it does not put anything inside. Java will not let you use a box that has never been filled.',
             wrong: j`
 int score;
 System.out.println(score);`,
@@ -674,44 +1019,61 @@ int score = 0;
 System.out.println(score);`,
           },
         ],
-        questions: ['v-01', 'v-02', 'v-03', 'v-04', 'v-05', 'v-06', 'v-08'],
-        challenge: 'v-07',
+        questions: ['u1l2-01', 'u1l2-02', 'u1l2-03', 'u1l2-04', 'u1l2-05', 'u1l2-06', 'u1l2-07', 'u1l2-08'],
+        challenge: 'u1l2-09',
       },
       {
-        id: 'u1-l2',
+        id: 'u1-l3',
         unitId: 'u1',
-        title: 'Primitive Types',
-        summary: 'int, double, boolean and char.',
+        title: 'The 8 Primitive Data Types',
+        summary: 'byte, short, int, long, float, double, char and boolean.',
         topic: 'types',
         teach: [
           {
             kind: 'concept',
-            title: 'Every variable has a type',
-            what: 'A **type** tells Java what kind of value a variable holds: `int` for whole numbers, `double` for decimals, `boolean` for true/false and `char` for one character.',
-            why: 'Knowing the type lets Java store values efficiently and catch mistakes early, like putting a decimal where a whole number should go.',
+            title: 'Every box has a type',
+            what: 'The **type** tells Java what kind of thing goes in the box. Java has exactly **8 primitive types**. Four hold whole numbers (`byte`, `short`, `int`, `long`), two hold decimals (`float`, `double`), one holds a single character (`char`), and one holds `true` or `false` (`boolean`).',
+            why: 'Different values need different amounts of room, and the type lets Java reserve the right amount. It also lets Java catch silly mistakes early, like trying to squeeze 5.9 into a whole-number box.',
             mood: 'thinking',
           },
           {
             kind: 'example',
-            title: 'The four you\'ll use most',
-            how: 'Each type accepts its own kind of value. Notice the single quotes around a `char`.',
+            title: 'All eight in one program',
+            how: 'Look at how each value is written. A `long` ends in `L`, a `float` ends in `f`, and a `char` lives inside single quotes.',
             code: j`
+byte tiny = 100;
+short small = 20000;
 int students = 28;
+long population = 8000000000L;
+float temp = 36.6f;
 double average = 87.5;
-boolean isOpen = true;
 char grade = 'A';
-System.out.println(students + " " + average + " " + isOpen + " " + grade);`,
+boolean isOpen = true;
+System.out.println(students + " " + average + " " + grade + " " + isOpen);`,
             notes: [
-              { line: 1, text: 'int: whole numbers (no decimal point).' },
-              { line: 2, text: 'double: numbers with decimals.' },
-              { line: 3, text: 'boolean: only true or false.' },
-              { line: 4, text: "char: exactly one character in single quotes." },
+              { line: 1, text: 'byte: whole numbers from -128 to 127.' },
+              { line: 3, text: 'int: whole numbers up to about 2 billion. This is your everyday choice.' },
+              { line: 4, text: 'long: really big whole numbers, and the L is required.' },
+              { line: 5, text: 'float: decimals, and the f is required.' },
+              { line: 6, text: 'double: decimals. This is the one you will use most.' },
+              { line: 7, text: 'char: exactly one character in single quotes.' },
+            ],
+          },
+          {
+            kind: 'tip',
+            title: 'Which one should I pick?',
+            body: 'You do not have to agonize over this. In this course the answer is almost always one of these:',
+            bullets: [
+              '`int` for whole numbers, like ages, counts and scores.',
+              '`double` for anything with a decimal point, like prices and averages.',
+              '`char` for one character, `boolean` for a yes or no.',
+              '`long` only when an `int` is too small, and `byte`, `short` and `float` almost never.',
             ],
           },
           {
             kind: 'mistake',
-            title: 'A decimal in an int box',
-            body: 'An `int` can\'t hold 5.9, and Java won\'t silently chop off the .9 for you. It stops with a compile error instead.',
+            title: 'A decimal in a whole-number box',
+            body: 'An `int` cannot hold 5.9, and Java will not quietly chop off the .9 for you. It stops and makes you decide.',
             wrong: j`
 int height = 5.9;
 System.out.println(height);`,
@@ -720,94 +1082,99 @@ double height = 5.9;
 System.out.println(height);`,
           },
         ],
-        questions: ['t-01', 't-02', 't-03', 't-04', 't-05', 't-06', 't-08'],
-        challenge: 't-07',
-      },
-      {
-        id: 'u1-l3',
-        unitId: 'u1',
-        title: 'Working with Strings',
-        summary: 'Store text and join it with +.',
-        topic: 'types',
-        teach: [
-          {
-            kind: 'concept',
-            title: 'Text lives in Strings',
-            what: 'A `String` stores text: a sequence of characters inside **double quotes**, like `"Hello"`. `String` has a capital S because it\'s a class, not a primitive.',
-            why: 'Names, messages and passwords are all text. Strings let your program store words and build new messages from them.',
-            mood: 'happy',
-          },
-          {
-            kind: 'example',
-            title: 'Joining Strings with +',
-            how: 'Between Strings, `+` means *join* (concatenate). `.length()` tells you how many characters a String has, and spaces count!',
-            code: j`
-String first = "Ada";
-String last = "Lovelace";
-String full = first + " " + last;
-System.out.println("Hello, " + full + "!");
-System.out.println(full.length());`,
-            notes: [
-              { line: 3, text: 'The " " in the middle adds the space between the names.' },
-              { line: 5, text: '"Ada Lovelace" has 12 characters, including the space.' },
-            ],
-          },
-          {
-            kind: 'mistake',
-            title: 'Numbers meet Strings',
-            body: 'Java reads `+` from left to right. Once a String appears, every following `+` joins text instead of adding numbers.',
-            wrong: j`System.out.println("Total: " + 2 + 3);`,
-            right: j`System.out.println("Total: " + (2 + 3));`,
-          },
-        ],
-        questions: ['s-01', 's-02', 's-06', 's-03', 's-04', 's-05', 's-07'],
-        challenge: 's-08',
+        questions: ['u1l3-01', 'u1l3-02', 'u1l3-03', 'u1l3-04', 'u1l3-05', 'u1l3-06', 'u1l3-07', 'u1l3-08'],
+        challenge: 'u1l3-09',
       },
       {
         id: 'u1-l4',
         unitId: 'u1',
-        title: 'Constants & Naming',
-        summary: 'final values and naming rules.',
-        topic: 'variables',
+        title: 'Strings: Why Are They Not Primitive?',
+        summary: 'Text, quotes and a few handy tools.',
+        topic: 'types',
         teach: [
           {
             kind: 'concept',
-            title: 'Constants never change',
-            what: 'Put `final` in front of a variable to make it a **constant**: once it has a value, it can never be changed. Constants are named in UPPER_SNAKE_CASE.',
-            why: 'Some values should stay fixed while the program runs: days in a week, a tax rate, the max number of lives. `final` protects them from accidental changes.',
-            mood: 'encouraging',
+            title: 'String is a class, not a primitive',
+            what: 'A `String` holds text, which is a whole chain of characters inside **double quotes**. It is not one of the 8 primitives. It is a **class**, and that is why it starts with a capital S. A primitive holds one simple value. A String is an object that holds many characters and comes with its own tools.',
+            why: 'Names, messages and passwords are all text, so you will use Strings constantly. Because a String is an object, it can do useful things for you, like tell you its own length or shout in capital letters.',
+            mood: 'happy',
           },
           {
             kind: 'example',
-            title: 'Using constants',
-            how: 'Constants are used just like variables, except you can\'t assign them a new value.',
+            title: 'A String and its tools',
+            how: 'You call a tool by putting a dot after the String and then the tool name. And remember that Java counts positions from 0, not from 1.',
             code: j`
-final int DAYS_IN_WEEK = 7;
-final double TAX_RATE = 0.08;
-int weeks = 3;
-System.out.println(weeks * DAYS_IN_WEEK);
-System.out.println(100 * TAX_RATE);`,
+String name = "Ada Lovelace";
+System.out.println(name.length());
+System.out.println(name.toUpperCase());
+System.out.println(name.charAt(0));
+System.out.println("Hello, " + name + "!");`,
             notes: [
-              { line: 1, text: 'final + UPPER_SNAKE_CASE name = a constant.' },
-              { line: 3, text: 'weeks is a normal variable, so it can change later.' },
+              { line: 2, text: 'length() counts every character, including the space. That is 12.' },
+              { line: 3, text: 'toUpperCase() gives back a capital-letter copy.' },
+              { line: 4, text: 'charAt(0) is the very first character, because we start counting at 0.' },
+              { line: 5, text: 'Plus joins Strings together. We will come back to that in the math unit.' },
             ],
           },
           {
             kind: 'tip',
-            title: 'Rules for names',
-            body: 'Java is picky about names:',
+            title: 'Double quotes or single quotes?',
+            body: 'This catches everyone once, so let us get it out of the way. Double quotes make a **String**, and single quotes make a single **char**.',
             bullets: [
-              'Start with a letter (or `_` / `$`), never a digit.',
-              'Letters, digits and `_` only. No spaces or hyphens.',
-              'Keywords like `int`, `class` or `double` are off limits.',
-              'Case matters: `score` and `Score` are different.',
-              'Convention: `camelCase` for variables, `UPPER_SNAKE_CASE` for constants.',
+              '`"A"` is a String with one letter in it.',
+              '`\'A\'` is a char. It is a primitive, and it is stored as a number.',
+              '`"Java"` needs double quotes, because it has more than one character.',
             ],
           },
           {
             kind: 'mistake',
-            title: 'Changing a constant',
-            body: 'Assigning a new value to a `final` variable is a compile error. If a value needs to change, use a normal variable for it.',
+            title: 'Single quotes around a word',
+            body: 'Single quotes only have room for one character. Put a whole word in them and Java gets confused.',
+            wrong: j`
+String name = 'Sam';
+System.out.println(name);`,
+            right: j`
+String name = "Sam";
+System.out.println(name);`,
+          },
+        ],
+        questions: ['u1l4-01', 'u1l4-02', 'u1l4-03', 'u1l4-04', 'u1l4-05', 'u1l4-06', 'u1l4-07', 'u1l4-08'],
+        challenge: 'u1l4-09',
+      },
+      {
+        id: 'u1-l5',
+        unitId: 'u1',
+        title: 'Constants with final',
+        summary: 'Values that never change.',
+        topic: 'variables',
+        teach: [
+          {
+            kind: 'concept',
+            title: 'A box with a lock on it',
+            what: 'Put the word `final` in front of a variable and it becomes a **constant**. Once it has its value, nobody can change it, not even you. We write constant names in CAPITAL_LETTERS with underscores so they stand out.',
+            why: 'Some values should never change while a program runs: the days in a week, a tax rate, the number of lives in a game. A constant protects them from accidents, and it gives the number a name that explains itself.',
+            mood: 'encouraging',
+          },
+          {
+            kind: 'example',
+            title: 'Using a constant',
+            how: 'You read a constant exactly like any other variable. You just cannot assign to it again.',
+            code: j`
+final int DAYS_IN_WEEK = 7;
+final double TAX_RATE = 0.13;
+int weeks = 3;
+System.out.println(weeks * DAYS_IN_WEEK);
+System.out.println(100 * TAX_RATE);`,
+            notes: [
+              { line: 1, text: 'final plus a capital-letters name makes a constant.' },
+              { line: 3, text: 'weeks is an ordinary variable, so it is free to change later.' },
+              { line: 5, text: 'If the tax rate changes, you fix it in this one place only.' },
+            ],
+          },
+          {
+            kind: 'mistake',
+            title: 'Trying to change a constant',
+            body: 'Assigning a new value to a `final` variable is a compile error. If the value needs to change, it should not be a constant in the first place.',
             wrong: j`
 final int MAX_LIVES = 3;
 MAX_LIVES = 5;`,
@@ -818,8 +1185,8 @@ lives = lives - 1;
 System.out.println(lives);`,
           },
         ],
-        questions: ['c-01', 'c-02', 'c-03', 'c-04', 'c-05', 'c-06', 'c-07'],
-        challenge: 'c-08',
+        questions: ['u1l5-01', 'u1l5-02', 'u1l5-03', 'u1l5-04', 'u1l5-05', 'u1l5-06', 'u1l5-07'],
+        challenge: 'u1l5-08',
       },
     ],
   },

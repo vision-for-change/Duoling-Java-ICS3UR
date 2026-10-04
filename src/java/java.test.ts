@@ -38,6 +38,20 @@ const OK_CASES: [string, string, string?][] = [
   ['System.out.printf("%.3e%n", 12345.678);', '1.235e+04\n'],
   ['System.out.printf("%s %s%n", 2.50, true);', '2.5 true\n'],
   ['System.out.printf("100%%%n");', '100%\n'],
+  // switch: jump to the match, stop at break, fall through without it
+  ['int day = 3; switch (day) { case 1: System.out.println("Mon"); break; case 3: System.out.println("Wed"); break; default: System.out.println("?"); }', 'Wed\n'],
+  ['int n = 9; switch (n) { case 1: System.out.println("one"); break; default: System.out.println("other"); }', 'other\n'],
+  ['int n = 2; switch (n) { case 1: System.out.println("a"); case 2: System.out.println("b"); case 3: System.out.println("c"); break; case 4: System.out.println("d"); }', 'b\nc\n'],
+  ['int n = 7; switch (n) { case 1: System.out.println("a"); }  System.out.println("after");', 'after\n'],
+  ['int n = 6; switch (n) { default: System.out.println("d"); break; case 6: System.out.println("six"); }', 'six\n'],
+  ['int n = 5; switch (n) { default: System.out.println("d"); case 6: System.out.println("six"); }', 'd\nsix\n'],
+  ["char g = 'B'; switch (g) { case 'A': case 'B': System.out.println(\"good\"); break; case 'C': System.out.println(\"ok\"); break; default: System.out.println(\"hmm\"); }", 'good\n'],
+  ['String cmd = "stop"; switch (cmd) { case "go": System.out.println("going"); break; case "stop": System.out.println("stopping"); break; }', 'stopping\n'],
+  ['int n = 2; switch (n) { case 1, 2: System.out.println("small"); break; default: System.out.println("big"); }', 'small\n'],
+  ['final int LOW = 1; int n = 1; switch (n) { case LOW: System.out.println("low"); break; case LOW + 1: System.out.println("next"); break; }', 'low\n'],
+  ['for (int i = 1; i <= 4; i++) { switch (i) { case 2: continue; case 3: break; default: System.out.println("i=" + i); } System.out.println("end " + i); }', 'i=1\nend 1\nend 3\ni=4\nend 4\n'],
+  ['int total = 0; for (int i = 0; i < 5; i++) { switch (i % 3) { case 0: total += 10; break; case 1: total += 1; break; default: total += 100; } } System.out.println(total);', '122\n'],
+  ['int x = 1; switch (x) { case 1: int y = 5; System.out.println(y); break; case 2: y = 7; System.out.println(y); }', '5\n'],
   ['String s = String.format("%03d", 7); System.out.println(s);', '007\n'],
   ['String name = "Byte"; System.out.println(name.length()); System.out.println(name.charAt(0)); System.out.println(name.toUpperCase()); System.out.println(name.substring(1, 3));', '4\nB\nBYTE\nyt\n'],
   ['String a = "hi"; String b = "hi"; String c = new String("hi"); System.out.println(a == b); System.out.println(a == c); System.out.println(a.equals(c));', 'true\nfalse\ntrue\n'],
@@ -132,6 +146,15 @@ const COMPILE_ERRORS: [string, RegExp][] = [
   ['int x = 5; if (x > 3) { System.out.println("big");', /reached end of file/],
   ['System.out.println("sum: " + 5, 6);', /no suitable method/],
   ['String s = "abc"; int n = s.length;', /cannot find symbol/],
+  ['int n = 1; switch (n) { case 1: break; case 1: break; }', /duplicate case label/],
+  ['int n = 1; int k = 2; switch (n) { case k: break; }', /constant expression required/],
+  ['int n = 1; switch (n) { default: break; default: break; }', /duplicate default label/],
+  ['int n = 1; switch (n) { case "one": break; }', /String cannot be converted to int/],
+  ['double d = 1.5; switch (d) { case 1: break; }', /selector type double is not allowed/],
+  ['int n = 1; switch (n) { case 1: break; System.out.println("never"); }', /unreachable statement/],
+  ['int n = 1; int y; switch (n) { case 1: y = 1; break; case 2: y = 2; break; } System.out.println(y);', /might not have been initialized/],
+  ['int n = 1; switch (n) { System.out.println("hi"); }', /case, default, or '}' expected/],
+  ['int n = 1; continue;', /continue outside of loop/],
 ]
 
 const RUNTIME_ERRORS: [string, string, string?][] = [
@@ -242,6 +265,7 @@ describe('Java sandbox: special behaviours', () => {
 
   it('reports unsupported features honestly', () => {
     expect(runJava('int[] a = new int[3];').status).toBe('unsupported')
-    expect(runJava('int x = 1; switch (x) { case 1: break; }').status).toBe('unsupported')
+    expect(runJava('int x = 1; switch (x) { case 1 -> System.out.println("a"); }').status).toBe('unsupported')
+    expect(runJava('int x = 1; int y = switch (x) { case 1: yield 5; default: yield 6; };').status).toBe('unsupported')
   })
 })

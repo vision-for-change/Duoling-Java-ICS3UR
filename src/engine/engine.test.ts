@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { getLesson, getQuestion, getUnit, LESSONS, UNITS } from '../data/curriculum'
 import { finalStages } from '../data/final'
-import { MemoryRepository } from '../state/repository'
+import { MemoryRepository, migrate } from '../state/repository'
 import { ProgressStore } from '../state/store'
-import { createEmptyProgress, type Progress } from '../state/types'
+import { createEmptyProgress, PROGRESS_VERSION, type Progress } from '../state/types'
 import { addDays, dayKey, liveStreak, registerActivity } from './dates'
 import { levelFor, levelProgress, XP } from './gamification'
 import { grade, normalizeCode } from './grading'
@@ -48,17 +48,17 @@ describe('levels', () => {
 
 describe('placement', () => {
   const all = (correct: boolean) =>
-    (['variables', 'types', 'types', 'expressions', 'expressions', 'conditionals', 'conditionals', 'loops', 'loops', 'input', 'errors', 'errors', 'math', 'printf'] as const).map((area) => ({ area, correct }))
+    (['variables', 'types', 'input', 'input', 'math', 'math', 'errors', 'printf', 'conditionals', 'conditionals', 'loops', 'loops', 'exceptions', 'exceptions'] as const).map((area) => ({ area, correct }))
 
-  it('recommends Mixed Problems when everything is right', () => {
+  it('recommends the last unit when everything is right', () => {
     expect(evaluatePlacement(all(true)).startUnitId).toBe('u8')
   })
 
   it('starts at the first unit with a mistake and explains why', () => {
     const answers = all(true).map((a) => (a.area === 'loops' ? { ...a, correct: false } : a))
     const r = evaluatePlacement(answers)
-    expect(r.startUnitId).toBe('u4')
-    expect(r.message).toMatch(/You seem comfortable with .* but loops could use some practice/)
+    expect(r.startUnitId).toBe('u7')
+    expect(r.message).toMatch(/You seem comfortable with .* but loops could use a little practice/)
   })
 
   it('starts beginners at unit 1', () => {
@@ -219,15 +219,15 @@ describe('practice', () => {
     const p = fresh()
     const l1 = getLesson('u1-l1')!
     p.lessons[l1.id] = { firstCompletedAt: 1, lastCompletedAt: 1, bestAccuracy: 0.5, timesCompleted: 1, perfect: false }
-    p.history = ['v-01', 'v-02', 'v-05', 'v-06'].map((qid, i) => ({ qid, topic: 'variables' as const, difficulty: 1 as const, correct: i % 2 === 0, solved: true, at: i, source: 'lesson' as const }))
+    p.history = ['u1l1-01', 'u1l1-02', 'u1l1-05', 'u1l1-06'].map((qid, i) => ({ qid, topic: 'basics' as const, difficulty: 1 as const, correct: i % 2 === 0, solved: true, at: i, source: 'lesson' as const }))
     const plan = buildPractice(p, 'smart', undefined, 8, () => 0.5)
     const taught = new Set([...l1.questions, l1.challenge])
     expect(plan.qids.length).toBeGreaterThan(0)
     expect(plan.qids.every((id) => taught.has(id))).toBe(true)
-    expect(plan.qids).toContain('v-02')
-    expect(plan.qids).toContain('v-06')
+    expect(plan.qids).toContain('u1l1-02')
+    expect(plan.qids).toContain('u1l1-06')
     const mistakes = buildPractice(p, 'mistakes')
-    expect(new Set(mistakes.qids)).toEqual(new Set(['v-02', 'v-06']))
+    expect(new Set(mistakes.qids)).toEqual(new Set(['u1l1-02', 'u1l1-06']))
   })
 })
 
@@ -238,23 +238,25 @@ describe('grading', () => {
   })
 
   it('accepts equivalent fill-in answers by running them', () => {
-    const q = getQuestion('w-06')
-    expect(grade(q, { type: 'blanks', values: ['<=', 'i = i + 1'] }).correct).toBe(true)
-    expect(grade(q, { type: 'blanks', values: ['<', 'i++'] }).correct).toBe(false)
+    // the listed answer is >=, but > also makes the program print pass for a score of 75
+    const q = getQuestion('u6l3-05')
+    expect(grade(q, { type: 'blanks', values: ['>='] }).correct).toBe(true)
+    expect(grade(q, { type: 'blanks', values: ['>'] }).correct).toBe(true)
+    expect(grade(q, { type: 'blanks', values: ['<'] }).correct).toBe(false)
   })
 
   it('rejects decoy lines in arrange questions', () => {
-    const q = getQuestion('cp4-06')
+    const q = getQuestion('u1l1-07')
     if (q.type !== 'arrange') throw new Error('expected arrange')
-    const withDecoy = [q.lines[0], q.lines[1], q.distractors![0], q.lines[2], q.lines[3]]
+    const withDecoy = [q.lines[0], q.lines[1], q.distractors![0], q.lines[2], q.lines[3], q.lines[4]]
     expect(grade(q, { type: 'arrange', lines: withDecoy }).correct).toBe(false)
     expect(grade(q, { type: 'arrange', lines: q.lines }).correct).toBe(true)
   })
 
   it('grades typed output leniently about trailing spaces only', () => {
-    const q = getQuestion('nl-04')
-    expect(grade(q, { type: 'text', value: '1 2 3 \n2 4 6 \n' }).correct).toBe(true)
-    expect(grade(q, { type: 'text', value: '1 2 3\n2 4 7' }).correct).toBe(false)
+    const q = getQuestion('u5l3-09')
+    expect(grade(q, { type: 'text', value: 'Ann      7 \nBob     12 \n' }).correct).toBe(true)
+    expect(grade(q, { type: 'text', value: 'Ann      7\nBob     13' }).correct).toBe(false)
   })
 })
 
@@ -307,5 +309,41 @@ describe('progress store', () => {
     expect(other.importJson(json)).toBe(true)
     expect(other.getSnapshot().profile.name).toBe('Ada')
     expect(other.importJson('{"nope": true}')).toBe(false)
+  })
+})
+
+describe('saved progress', () => {
+  const rec = { firstCompletedAt: 1, lastCompletedAt: 1, bestAccuracy: 1, timesCompleted: 1, perfect: true }
+
+  it('keeps the learner but starts the rewritten course fresh', () => {
+    const old = {
+      ...createEmptyProgress(),
+      version: 1,
+      onboarded: true,
+      xp: 400,
+      profile: { name: 'Sam', createdAt: 5, avatar: 'robot' },
+      achievements: { 'first-lesson': 9 },
+      lessons: { 'u1-l1': rec },
+      units: { u1: { checkpointPassedAt: 3 } },
+      final: { stagesDone: ['final-1'], code: {} },
+    }
+    const p = migrate(old)!
+    expect(p.version).toBe(PROGRESS_VERSION)
+    expect(p.profile).toMatchObject({ name: 'Sam', createdAt: 5, avatar: 'lion' })
+    expect(p).toMatchObject({ onboarded: true, xp: 400, achievements: { 'first-lesson': 9 } })
+    expect(p.lessons).toEqual({})
+    expect(p.units).toEqual({})
+    expect(p.final.stagesDone).toEqual([])
+  })
+
+  it('leaves a current save untouched', () => {
+    const current = { ...createEmptyProgress(), onboarded: true, lessons: { 'u1-l1': rec }, final: { stagesDone: ['final-2'], code: {} } }
+    const p = migrate(JSON.parse(JSON.stringify(current)))!
+    expect(Object.keys(p.lessons)).toEqual(['u1-l1'])
+    expect(p.final.stagesDone).toEqual(['final-2'])
+  })
+
+  it('rejects a save from a newer version', () => {
+    expect(migrate({ ...createEmptyProgress(), version: PROGRESS_VERSION + 1 })).toBeNull()
   })
 })

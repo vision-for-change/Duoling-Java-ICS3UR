@@ -89,11 +89,11 @@ export function DashboardPage() {
 
   const byteLine = !activeToday
     ? streak > 0
-      ? `Your ${streak}-day streak is waiting. One lesson keeps it alive!`
-      : 'Ready to brew some Java? One short lesson starts your streak!'
+      ? `Your ${streak}-day streak is waiting for you. One lesson keeps it going.`
+      : 'Ready to write some Java? One short lesson gets your streak started.'
     : todayXp >= goal
-      ? 'Daily goal smashed! Everything extra is bonus XP.'
-      : `${goal - todayXp} XP to go for today's goal. You've got this!`
+      ? 'You hit your daily goal. Anything extra is bonus XP.'
+      : `${goal - todayXp} XP to go for today's goal. You can do it.`
 
   const nextUnit = next && next.unitId ? getUnit(next.unitId) : undefined
   // the next few lessons on the path that aren't finished yet
@@ -124,7 +124,7 @@ export function DashboardPage() {
             }
           >
             {unlockedAchievements.length === 0 ? (
-              <p className="text-sm text-espresso-500">Finish your first lesson to earn your first badge!</p>
+              <p className="text-sm text-espresso-500">Finish your first lesson and you will earn your first badge.</p>
             ) : (
               <div className="grid grid-cols-3 gap-3">
                 {unlockedAchievements.slice(0, 6).map((a) => (
@@ -239,7 +239,7 @@ export function DashboardPage() {
         >
           {weak.length === 0 ? (
             <p className="text-espresso-600">
-              {p.stats.answered < 6 ? 'Answer a few more questions and Byte will spot what needs practice.' : 'No weak topics right now. A quick mixed review keeps it that way!'}
+              {p.stats.answered < 6 ? 'Answer a few more questions and we will find what needs practice.' : 'Nothing is giving you trouble right now. A quick mixed review keeps it that way.'}
             </p>
           ) : (
             <>
@@ -331,7 +331,7 @@ export function DashboardPage() {
           </Card>
           <Card title="Weakest topics" icon={<TrendingDown className="text-berry-500" size={22} />}>
             {weak.length === 0 ? (
-              <p className="text-sm text-espresso-500">Nothing below 80% yet. Keep it up!</p>
+              <p className="text-sm text-espresso-500">Nothing is below 80% yet. Keep it up.</p>
             ) : (
               <ul className="space-y-2">
                 {weak.slice(0, 4).map((s) => (

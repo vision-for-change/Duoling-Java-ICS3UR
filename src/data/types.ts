@@ -6,21 +6,24 @@
  */
 
 export type TopicId =
+  | 'basics'
   | 'variables'
   | 'types'
+  | 'input'
   | 'arithmetic'
+  | 'math'
+  | 'errors'
+  | 'printf'
+  | 'expressions'
   | 'boolean-logic'
   | 'conditionals'
   | 'nested-if'
   | 'while-loops'
-  | 'for-loops'
   | 'do-while'
-  | 'input'
-  | 'errors'
+  | 'loop-control'
+  | 'for-loops'
+  | 'switch'
   | 'try-catch'
-  | 'math'
-  | 'printf'
-  | 'mixed'
 
 /** 1 = Beginner (green), 2 = Intermediate (yellow), 3 = Advanced (red) */
 export type Difficulty = 1 | 2 | 3
@@ -302,13 +305,13 @@ export interface UnitContent {
 export type PlacementArea =
   | 'variables'
   | 'types'
-  | 'expressions'
+  | 'input'
+  | 'math'
+  | 'errors'
+  | 'printf'
   | 'conditionals'
   | 'loops'
-  | 'input'
-  | 'errors'
-  | 'math'
-  | 'printf'
+  | 'exceptions'
 
 export interface PlacementItem {
   area: PlacementArea

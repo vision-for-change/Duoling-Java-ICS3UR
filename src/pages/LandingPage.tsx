@@ -46,7 +46,7 @@ export function LandingPage() {
             Learn Java one <span className="relative whitespace-nowrap text-brew-500">byte<svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 120 12" aria-hidden><path d="M2 8 Q30 2 60 7 T118 5" stroke="#ffc21f" strokeWidth="5" fill="none" strokeLinecap="round" /></svg></span> at a time.
           </motion.h1>
           <motion.p initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="mt-5 max-w-lg text-lg leading-relaxed text-espresso-600">
-            Bite-sized lessons, instant feedback and a friendly lion who cheers you on. Go from your first variable to building a real program, with streaks, XP and badges along the way.
+            Short lessons, quick feedback and a friendly lion in your corner. We start with your very first variable and finish with a real program that you built yourself.
           </motion.p>
           <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="mt-8 flex flex-col gap-3 sm:flex-row">
             <ButtonLink to={cta.to} size="lg" className="whitespace-nowrap">
@@ -94,9 +94,9 @@ export function LandingPage() {
       <section className="border-y-2 border-espresso-100 bg-white">
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-2">
           <div>
-            <h2 className="text-4xl font-bold">Learn by doing, not by reading walls of text.</h2>
+            <h2 className="text-4xl font-bold">We learn Java by doing it, not by staring at walls of text.</h2>
             <p className="mt-4 text-lg leading-relaxed text-espresso-600">
-              Every lesson follows the same rhythm: a tiny explanation, a real example you can run, then quick questions with instant feedback. Get one wrong? Byte shows you <em>why</em>, gives you another try, and follows up with an easier question.
+              Every lesson follows the same rhythm. First a short explanation, then an example you can run yourself, then a few questions with feedback right away. Get one wrong? Byte shows you <em>why</em>, gives you another try, and follows up with an easier question.
             </p>
             <ul className="mt-6 grid gap-2 text-espresso-700 sm:grid-cols-2">
               {['Predict the output', 'Fill in the blank', 'Find the bug', 'Arrange the code', 'Fix broken programs', 'Write real code'].map((t) => (
@@ -119,7 +119,7 @@ export function LandingPage() {
               ))}
             </div>
             <MascotSays mood="happy" size={70} tone="success">
-              Nice! <code className="font-mono">+</code> adds two ints: 5 + 3 = 8. <span className="font-bold text-sun-700">+10 XP</span>
+              Right! With two ints, <code className="font-mono">+</code> adds them: 5 + 3 is 8. <span className="font-bold text-sun-700">+10 XP</span>
             </MascotSays>
           </div>
         </div>
@@ -127,12 +127,12 @@ export function LandingPage() {
 
       {/* features */}
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-        <h2 className="text-center text-4xl font-bold">Everything a first-time coder needs</h2>
+        <h2 className="text-center text-4xl font-bold">Everything you need for your first year of Java</h2>
         <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-          <Feature icon={<Map className="text-brew-600" />} tint="bg-brew-100" title="A clear path" body="8 units, from variables to mixed problems, ending with a real multi-stage project." />
-          <Feature icon={<Brain className="text-grape-600" />} tint="bg-grape-100" title="Adapts to you" body="Questions get harder as you improve. Practice mode drills your weakest topics." />
+          <Feature icon={<Map className="text-brew-600" />} tint="bg-brew-100" title="A clear path" body="8 units that follow our course in order, from variables to exceptions, ending with a real multi-stage project." />
+          <Feature icon={<Brain className="text-grape-600" />} tint="bg-grape-100" title="Adapts to you" body="Questions get harder as you improve, and practice mode works on the topics you find tricky." />
           <Feature icon={<FlaskConical className="text-mint-600" />} tint="bg-mint-100" title="Real Java sandbox" body="Run and edit code right in your browser, and step through it line by line." />
-          <Feature icon={<Trophy className="text-sun-700" />} tint="bg-sun-100" title="Fun to stick with" body="Earn XP, keep your streak alive, level up and unlock badges." />
+          <Feature icon={<Trophy className="text-sun-700" />} tint="bg-sun-100" title="Fun to stick with" body="Earn XP, keep your streak going, level up and collect badges." />
         </div>
       </section>
 
@@ -140,7 +140,7 @@ export function LandingPage() {
       <section className="bg-espresso-900 text-cream-50">
         <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
           <h2 className="text-center text-4xl font-bold">Your learning path</h2>
-          <p className="mt-2 text-center text-cream-200">Not sure where to start? A 3-minute placement test finds your level.</p>
+          <p className="mt-2 text-center text-cream-200">Not sure where to start? A short placement test will find your level.</p>
           <ol className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {UNITS.map((u) => {
               const s = UNIT_STYLES[u.color]

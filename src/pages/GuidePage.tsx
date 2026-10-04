@@ -50,11 +50,11 @@ export function GuidePage() {
               {concept?.kind === 'concept' && (
                 <div className="mt-3 space-y-2 text-[16px] leading-relaxed text-espresso-800">
                   <p>
-                    <span className="font-bold text-sky-700">What: </span>
+                    <span className="font-bold text-sky-700">The idea: </span>
                     <Md text={concept.what} />
                   </p>
                   <p>
-                    <span className="font-bold text-brew-700">Why: </span>
+                    <span className="font-bold text-brew-700">Why we care: </span>
                     <Md text={concept.why} />
                   </p>
                 </div>
@@ -62,7 +62,7 @@ export function GuidePage() {
               {example?.kind === 'example' && (
                 <div className="mt-4">
                   <p className="mb-2 text-[15px] text-espresso-700">
-                    <span className="font-bold text-mint-700">How: </span>
+                    <span className="font-bold text-mint-700">Watch this: </span>
                     <Md text={example.how} />
                   </p>
                   <CodeBlock code={example.code} size="sm" />
@@ -88,7 +88,7 @@ export function GuidePage() {
               {mistake?.kind === 'mistake' && (
                 <div className="mt-4">
                   <div className="mb-2 flex items-center gap-2 font-bold text-berry-600">
-                    <AppIcon name="alert" size={18} /> Common mistake: {mistake.title}
+                    <AppIcon name="alert" size={18} /> Watch out: {mistake.title}
                   </div>
                   <p className="mb-2 text-[15px] text-espresso-700">
                     <Md text={mistake.body} />

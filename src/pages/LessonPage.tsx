@@ -32,7 +32,7 @@ export function LessonPage() {
     const reward = store.finishLesson(lesson.id, lesson.title, sum)
     return {
       reward,
-      headline: sum.perfect ? 'Perfect lesson!' : 'Lesson complete! Java level up!',
+      headline: sum.perfect ? 'Perfect lesson!' : 'Lesson complete. Nice work!',
       subline: `“${lesson.title}” · ${sum.firstTry}/${sum.total} right on the first try`,
       mood: 'celebrating',
       primary: continueTarget(),
@@ -66,8 +66,8 @@ export function CheckpointPage() {
         reward,
         passed: false,
         mood: 'encouraging',
-        headline: 'So close! Let\'s review.',
-        subline: `You got ${Math.round(sum.accuracy * 100)}% on the first try, and ${Math.round(PASS_MARK * 100)}% passes the checkpoint. ${learned ? 'Practice a bit and try again!' : 'The lessons in this unit will get you there!'}`,
+        headline: 'So close. Let\'s review.',
+        subline: `You got ${Math.round(sum.accuracy * 100)}% on the first try, and you need ${Math.round(PASS_MARK * 100)}% to pass. ${learned ? 'A little practice and you will get there.' : 'The lessons in this unit will get you there.'}`,
         primary: learned ? { label: 'Practice this unit', to: `/practice/session?mode=unit&unit=${unit.id}` } : { label: `Start Unit ${unit.number}`, to: `/lesson/${firstLesson.id}` },
         secondary: { label: 'Back to the path', to: '/learn' },
       }

@@ -2,627 +2,656 @@ import { j, topic } from '../helpers'
 import type { UnitContent } from '../types'
 
 const questions = [
-  // ---------------- Lesson 1: Arithmetic Operators ----------------
-  ...topic('arithmetic', [
+  // ---------------- Lesson 1: Meet the Scanner ----------------
+  ...topic('input', [
     {
-      id: 'a-01',
-      type: 'predict-output',
-      difficulty: 1,
-      concept: 'operators',
-      prompt: 'What does this program print?',
-      code: j`
-int x = 9;
-int y = 4;
-System.out.println(x * y);`,
-      optionStyle: 'output',
-      options: [
-        { text: '36' },
-        { text: '13', feedback: '`*` means multiply, not add.' },
-        { text: '94', feedback: 'That would be joining text, but x and y are numbers, so they\'re multiplied.' },
-        { text: '5' },
-      ],
-      answer: 0,
-      explanation: '`*` is multiplication: 9 × 4 = 36.',
-    },
-    {
-      id: 'a-02',
+      id: 'u2l1-01',
       type: 'multiple-choice',
       difficulty: 1,
-      concept: 'modulo',
-      prompt: 'What is the value of `17 % 5`?',
+      concept: 'import',
+      prompt: 'Which line goes at the top of your file so you can use `Scanner`?',
       optionStyle: 'code',
       options: [
-        { text: '2' },
-        { text: '3', feedback: '3 is `17 / 5`. The `%` operator gives the REMAINDER.' },
-        { text: '3.4', feedback: '`%` gives the whole-number remainder, never a decimal like this.' },
-        { text: '85', feedback: 'That\'s 17 × 5. `%` is the remainder operator.' },
+        { text: 'import java.util.Scanner;' },
+        { text: 'import Scanner;', feedback: 'Java needs to know which package Scanner lives in, so the full name is required. It is in `java.util`.' },
+        { text: 'include java.util.Scanner;', feedback: '`include` belongs to other languages. In Java the word is `import`.' },
+        { text: 'using java.util.Scanner;', feedback: '`using` is from C#. Java says `import`.' },
       ],
       answer: 0,
-      explanation: '17 = 5 × 3 + **2**, so the remainder `17 % 5` is 2.',
+      explanation: 'Scanner lives in a package called `java.util`, and we have to import it before Java will recognize the name.',
     },
     {
-      id: 'a-03',
-      type: 'predict-output',
+      id: 'u2l1-02',
+      type: 'multiple-choice',
       difficulty: 1,
-      concept: 'int-division',
-      prompt: 'What does this program print?',
-      code: j`System.out.println(7 / 2);`,
-      optionStyle: 'output',
+      concept: 'create',
+      prompt: 'Which line creates a Scanner that reads from the keyboard?',
+      optionStyle: 'code',
       options: [
-        { text: '3' },
-        { text: '3.5', feedback: 'Both 7 and 2 are ints, so Java does integer division and throws away the .5.' },
-        { text: '4', feedback: 'Integer division chops off the decimals: it never rounds up.' },
-        { text: '3.0', feedback: 'The result is an int, so no decimal point is printed.' },
+        { text: 'Scanner console = new Scanner(System.in);' },
+        { text: 'Scanner console = new Scanner(System.out);', feedback: '`System.out` is for printing to the screen. Input comes in through `System.in`.' },
+        { text: 'Scanner console = Scanner(System.in);', feedback: 'To build a new Scanner you need the word `new`.' },
+        { text: 'Scanner console = new Scanner();', feedback: 'The Scanner has to be told where to read from, and that is `System.in`.' },
       ],
       answer: 0,
-      explanation: 'When both sides of `/` are ints, Java does **integer division**: 7 / 2 = 3 (the .5 is discarded).',
+      explanation: '`System.in` is the keyboard. When we hand it to a new Scanner, the Scanner is ready to read whatever the user types.',
     },
     {
-      id: 'a-04',
+      id: 'u2l1-03',
       type: 'true-false',
       difficulty: 1,
-      concept: 'int-division',
-      prompt: 'In Java, `8 / 3` evaluates to `2`.',
-      answer: true,
-      wrongFeedback: '8 and 3 are both ints, so the decimal part of 2.66… is thrown away.',
-      explanation: '8 / 3 is 2.66… in math, but with two ints Java keeps only the whole part: **2**.',
+      concept: 'create',
+      prompt: 'The Scanner variable has to be called `console`, or the program will not compile.',
+      answer: false,
+      wrongFeedback: 'I like the name `console`, but it is only a variable name. Anything legal works, like `in`, `keyboard` or `sc`.',
+      explanation: 'The name is entirely up to you, so pick something that makes sense when you read it. The important parts are `new Scanner(System.in)` and the import.',
     },
     {
-      id: 'a-05',
-      type: 'type-output',
-      difficulty: 2,
-      concept: 'modulo',
-      prompt: 'Type exactly what this program prints.',
-      code: j`
-int minutes = 135;
-int hours = minutes / 60;
-int mins = minutes % 60;
-System.out.println(hours + "h " + mins + "m");`,
-      answer: '2h 15m',
-      explanation: '`/` gives the number of whole hours (135 / 60 = 2) and `%` gives the leftover minutes (135 % 60 = 15).',
-    },
-    {
-      id: 'a-06',
+      id: 'u2l1-04',
       type: 'fill-blank',
-      difficulty: 2,
-      concept: 'int-division',
-      prompt: 'Fill in the blank so `avg` becomes `3.5`.',
+      difficulty: 1,
+      concept: 'next',
+      prompt: 'Fill in the blank so the program reads one word from the user.',
       code: j`
-int sum = 7;
-double avg = sum / ___;
-System.out.println(avg);`,
-      blanks: [['2.0', '2d', '2.0d', '(double) 2', '2.']],
-      expectedOutput: '3.5',
-      hint: 'If both sides of / are ints, the answer is an int. How can you make one side a double?',
-      explanation: 'Dividing by the double `2.0` makes Java use decimal division: 7 / 2.0 = 3.5.',
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner console = new Scanner(System.in);
+        String name = console.___();
+        System.out.println("Hello, " + name);
+    }
+}`,
+      stdin: 'Maya\n',
+      blanks: [['next']],
+      bank: ['next', 'nextInt', 'nextDouble', 'read'],
+      expectedOutput: 'Hello, Maya',
+      explanation: '`next()` reads one word and hands it back as a String. `nextInt` would be looking for a number, and there is no `read` method.',
     },
     {
-      id: 'a-07',
+      id: 'u2l1-05',
+      type: 'predict-output',
+      difficulty: 2,
+      concept: 'next',
+      prompt: 'The user types `Ada Lovelace`. What does this program print?',
+      code: j`
+Scanner console = new Scanner(System.in);
+String first = console.next();
+String last = console.next();
+System.out.println(last + ", " + first);`,
+      stdin: 'Ada Lovelace\n',
+      optionStyle: 'output',
+      options: [
+        { text: 'Lovelace, Ada' },
+        { text: 'Ada, Lovelace', feedback: 'Look at the order in the last line. `last` goes first.' },
+        { text: 'Ada Lovelace', feedback: 'That is what was typed, but the program rearranges the two words and adds a comma.' },
+        { text: 'last, first', feedback: 'There are no quotes around `last` and `first`, so Java prints the words stored in them.' },
+      ],
+      answer: 0,
+      highlightLines: [2, 3],
+      explanation: 'The first `next()` grabs Ada, and the second one grabs Lovelace. Each call picks up where the last one stopped, and then the print statement flips them around.',
+    },
+    {
+      id: 'u2l1-06',
+      type: 'error-type',
+      difficulty: 2,
+      concept: 'import',
+      prompt: 'What happens when we try to run this program?',
+      code: j`
+public class Main {
+    public static void main(String[] args) {
+        Scanner console = new Scanner(System.in);
+        String word = console.next();
+        System.out.println(word);
+    }
+}`,
+      stdin: 'hello\n',
+      answer: 'syntax',
+      feedback: {
+        runtime: 'The program never starts running. Java is confused before that point.',
+        logic: 'It never runs, so there is no wrong answer yet.',
+        none: 'Look at the very top of the file. Is anything missing?',
+      },
+      highlightLines: [3],
+      explanation: 'There is no import, so Java has no idea what a `Scanner` is. It reports *cannot find symbol* on line 3. Add `import java.util.Scanner;` above the class.',
+    },
+    {
+      id: 'u2l1-07',
       type: 'find-bug',
       difficulty: 2,
-      concept: 'int-division',
-      prompt: 'The average should be `47.5`, but this prints `47.0`. Tap the line that causes it.',
+      concept: 'next',
+      prompt: 'This program will not compile. Tap the line with the bug.',
       code: j`
-int total = 95;
-int count = 2;
-double average = total / count;
-System.out.println(average);`,
+Scanner console = new Scanner(System.in);
+System.out.print("Your name: ");
+String name = console.nextString();
+System.out.println("Hi " + name);`,
+      stdin: 'Sam\n',
       bugLines: [3],
-      bugKind: 'logic',
       fixedCode: j`
-int total = 95;
-int count = 2;
-double average = (double) total / count;
-System.out.println(average);`,
-      explanation: '`total / count` is integer division (47), and it happens BEFORE the result is stored in the double. Cast one side: `(double) total / count`.',
+Scanner console = new Scanner(System.in);
+System.out.print("Your name: ");
+String name = console.next();
+System.out.println("Hi " + name);`,
+      bugKind: 'syntax',
+      explanation: 'There is no `nextString` in Scanner. To read a word you use `next()`. Method names have to match exactly, so a made-up one means *cannot find symbol*.',
     },
     {
-      id: 'a-08',
+      id: 'u2l1-08',
       type: 'type-output',
-      difficulty: 3,
-      concept: 'modulo',
-      prompt: 'Type exactly what this program prints.',
+      difficulty: 2,
+      concept: 'next',
+      prompt: 'The user types `one two three`. Type exactly what this program prints.',
       code: j`
-int seconds = 3725;
-int h = seconds / 3600;
-int m = seconds % 3600 / 60;
-int s = seconds % 60;
-System.out.println(h + ":" + m + ":" + s);`,
-      answer: '1:2:5',
-      explanation: '3725 / 3600 = 1 hour. 3725 % 3600 = 125 seconds left, and 125 / 60 = 2 minutes. 3725 % 60 = 5 seconds.',
+Scanner console = new Scanner(System.in);
+String a = console.next();
+String b = console.next();
+System.out.println(b + a);`,
+      stdin: 'one two three\n',
+      answer: 'twoone',
+      highlightLines: [2, 3],
+      explanation: '`a` gets `one`, `b` gets `two`, and `three` is never read. We print `b` first and then `a` with no space between, so it comes out as `twoone`.',
     },
+    {
+      id: 'u2l1-09',
+      type: 'write-code',
+      difficulty: 2,
+      concept: 'create',
+      prompt: 'Create a Scanner, read the user\'s first name with `next()`, and print `Welcome, ` followed by the name and an exclamation mark.',
+      starter: j`
+// 1. create a Scanner called console
 
-    // ---------------- Lesson 2: Order of Operations ----------------
-    {
-      id: 'p-01',
-      type: 'predict-output',
-      difficulty: 1,
-      concept: 'precedence',
-      prompt: 'What does this program print?',
-      code: j`System.out.println(10 - 2 * 3);`,
-      optionStyle: 'output',
-      options: [
-        { text: '4' },
-        { text: '24', feedback: 'Multiplication happens BEFORE subtraction, so it\'s 10 - 6.' },
-        { text: '6' },
-        { text: '1' },
+// 2. read the name with next()
+
+// 3. print: Welcome, <name>!
+`,
+      solution: j`
+Scanner console = new Scanner(System.in);
+String name = console.next();
+System.out.println("Welcome, " + name + "!");`,
+      tests: [
+        { label: 'Priya', stdin: 'Priya\n', output: 'Welcome, Priya!' },
+        { label: 'Omar', stdin: 'Omar\n', output: 'Welcome, Omar!' },
       ],
-      answer: 0,
-      explanation: '`*` has higher precedence than `-`: 2 * 3 = 6 first, then 10 - 6 = 4.',
-    },
-    {
-      id: 'p-02',
-      type: 'multiple-choice',
-      difficulty: 1,
-      concept: 'precedence',
-      prompt: 'In `a + b * c - d`, which operator is evaluated **first**?',
-      optionStyle: 'code',
-      options: [
-        { text: '*' },
-        { text: '+', feedback: '`+` and `-` wait until multiplication and division are done.' },
-        { text: '-', feedback: '`-` has the same (lower) level as `+`.' },
-        { text: '=', feedback: 'There\'s no `=` in this expression.' },
+      mustInclude: [
+        { pattern: 'new\\s+Scanner\\s*\\(\\s*System\\.in\\s*\\)', message: 'Create the Scanner with `new Scanner(System.in)`.' },
+        { pattern: '\\.next\\(\\)', message: 'Read the name with `next()`.' },
       ],
-      answer: 0,
-      explanation: '`*`, `/` and `%` come before `+` and `-`. So `b * c` is computed first.',
-    },
-    {
-      id: 'p-03',
-      type: 'predict-output',
-      difficulty: 2,
-      concept: 'left-to-right',
-      prompt: 'What does this program print?',
-      code: j`System.out.println(20 / 4 * 5);`,
-      optionStyle: 'output',
-      options: [
-        { text: '25' },
-        { text: '1', feedback: '`/` and `*` have the SAME precedence, so Java goes left to right: 20 / 4 first.' },
-        { text: '100' },
-        { text: '0' },
-      ],
-      answer: 0,
-      explanation: 'Same-level operators run left to right: (20 / 4) * 5 = 5 * 5 = 25.',
-    },
-    {
-      id: 'p-04',
-      type: 'type-output',
-      difficulty: 2,
-      concept: 'precedence',
-      prompt: 'Type exactly what this program prints.',
-      code: j`System.out.println((8 + 4) / 3 % 3);`,
-      answer: '1',
-      explanation: 'Parentheses first: 12. Then left to right: 12 / 3 = 4, and 4 % 3 = 1.',
-    },
-    {
-      id: 'p-05',
-      type: 'predict-output',
-      difficulty: 2,
-      concept: 'precedence',
-      prompt: 'What does this program print?',
-      code: j`System.out.println(5 + 3 % 2 * 4);`,
-      optionStyle: 'output',
-      options: [
-        { text: '9' },
-        { text: '16', feedback: '`(5 + 3)` would only be first with parentheses. `%` and `*` go before `+`.' },
-        { text: '1' },
-        { text: '4' },
-      ],
-      answer: 0,
-      explanation: '`%` and `*` first, left to right: 3 % 2 = 1, then 1 * 4 = 4. Finally 5 + 4 = 9.',
-    },
-    {
-      id: 'p-06',
-      type: 'fill-blank',
-      difficulty: 2,
-      concept: 'parentheses',
-      prompt: 'Add parentheses so the program prints `36`.',
-      code: j`System.out.println(___2 + 4___ * 6);`,
-      blanks: [['('], [')']],
-      expectedOutput: '36',
-      explanation: 'Without parentheses it would be 2 + 24 = 26. With `(2 + 4) * 6` the addition happens first: 6 * 6 = 36.',
-    },
-    {
-      id: 'p-07',
-      type: 'true-false',
-      difficulty: 2,
-      concept: 'casting',
-      prompt: '`(double) 7 / 2` evaluates to `3.5`.',
-      answer: true,
-      wrongFeedback: 'A cast applies to the value right after it (7), before the division happens.',
-      explanation: 'The cast binds tightly: `(double) 7` becomes 7.0, and then 7.0 / 2 = 3.5.',
-    },
-    {
-      id: 'p-08',
-      type: 'type-output',
-      difficulty: 3,
-      concept: 'casting',
-      prompt: 'Type exactly what this program prints.',
-      code: j`
-int a = 7;
-int b = 2;
-double r1 = a / b;
-double r2 = (double) a / b;
-double r3 = (double) (a / b);
-System.out.println(r1 + " " + r2 + " " + r3);`,
-      answer: '3.0 3.5 3.0',
-      highlightLines: [3, 4, 5],
-      explanation: '`r1`: int division 3 → 3.0. `r2`: 7.0 / 2 = 3.5. `r3`: the parentheses divide first (3), THEN convert → 3.0.',
+      explanation: 'Make the Scanner, read one word into a String, and join it into the message. The program works for any name because it prints what was typed, not a name you wrote yourself.',
     },
   ]),
 
-  // ---------------- Lesson 3: Comparisons ----------------
-  ...topic('boolean-logic', [
+  // ---------------- Lesson 2: nextInt and nextDouble ----------------
+  ...topic('input', [
     {
-      id: 'cmp-01',
-      type: 'predict-output',
-      difficulty: 1,
-      concept: 'comparison',
-      prompt: 'What does this program print?',
-      code: j`
-int x = 7;
-System.out.println(x > 5);`,
-      optionStyle: 'output',
-      options: [
-        { text: 'true' },
-        { text: 'false', feedback: '7 really is greater than 5.' },
-        { text: '7' },
-        { text: 'x > 5', feedback: 'There are no quotes, so Java evaluates the comparison.' },
-      ],
-      answer: 0,
-      explanation: 'A comparison produces a boolean. 7 > 5 is **true**.',
-    },
-    {
-      id: 'cmp-02',
+      id: 'u2l2-01',
       type: 'multiple-choice',
       difficulty: 1,
-      concept: 'assign-vs-equals',
-      prompt: 'Which operator checks whether two ints are **equal**?',
+      concept: 'next-int',
+      prompt: 'The user is going to type `42`. Which line reads it into a variable?',
       optionStyle: 'code',
       options: [
-        { text: '==' },
-        { text: '=', feedback: '`=` assigns (stores) a value. It doesn\'t compare.' },
-        { text: '===', feedback: '`===` exists in JavaScript, not in Java.' },
-        { text: '!=', feedback: '`!=` means NOT equal.' },
+        { text: 'int n = console.nextInt();' },
+        { text: 'int n = console.next();', feedback: '`next()` hands back a String, and a String will not fit inside an `int` box.' },
+        { text: 'String n = console.nextInt();', feedback: '`nextInt()` gives back a number, and a number will not fit inside a String box.' },
+        { text: 'int n = console.readInt();', feedback: 'There is no `readInt`. The name is `nextInt`.' },
       ],
       answer: 0,
-      explanation: '`==` compares; `=` assigns. Mixing them up is one of the most common Java bugs.',
+      explanation: 'Match the method to the type. `nextInt()` reads a whole number and gives back an `int`.',
     },
     {
-      id: 'cmp-03',
+      id: 'u2l2-02',
+      type: 'multiple-choice',
+      difficulty: 1,
+      concept: 'next-double',
+      prompt: 'The user is going to type `3.75`. Which method should read it?',
+      optionStyle: 'code',
+      options: [
+        { text: 'nextDouble()' },
+        { text: 'nextInt()', feedback: 'A whole-number reader cannot handle a decimal point. It would stop the program with an error.' },
+        { text: 'next()', feedback: '`next()` gives back a String, and you cannot do math with text.' },
+        { text: 'nextDecimal()', feedback: 'Nice guess, but Java calls decimals doubles, so the method is `nextDouble`.' },
+      ],
+      answer: 0,
+      explanation: 'Decimal numbers are `double`s in Java, so the method that reads them is `nextDouble()`.',
+    },
+    {
+      id: 'u2l2-03',
+      type: 'predict-output',
+      difficulty: 1,
+      concept: 'next-int',
+      prompt: 'The user types `7`. What does this program print?',
+      code: j`
+Scanner console = new Scanner(System.in);
+int n = console.nextInt();
+System.out.println(n * n);`,
+      stdin: '7\n',
+      optionStyle: 'output',
+      options: [
+        { text: '49' },
+        { text: '7', feedback: 'The program prints `n * n`, not `n`.' },
+        { text: '77', feedback: '`n` is an `int`, so the star multiplies. It does not repeat the digit.' },
+        { text: '14', feedback: 'That is 7 plus 7. The star means multiply.' },
+      ],
+      answer: 0,
+      explanation: '`nextInt()` reads the 7 as a real number, so Java can multiply it: 7 times 7 is 49.',
+    },
+    {
+      id: 'u2l2-04',
       type: 'true-false',
       difficulty: 1,
-      concept: 'comparison',
-      prompt: 'The expression `5 <= 5` is `true`.',
-      answer: true,
-      wrongFeedback: '`<=` means "less than OR equal to", and 5 is equal to 5.',
-      explanation: '`<=` is true when the left side is smaller than **or equal to** the right side.',
+      concept: 'type-match',
+      prompt: '`nextInt()` can read the input `3.5`.',
+      answer: false,
+      wrongFeedback: 'An `int` cannot have a decimal part. When `nextInt()` sees 3.5 the program stops with an InputMismatchException.',
+      explanation: 'The method has to match what the user types. Whole numbers go with `nextInt()`, and decimals need `nextDouble()`.',
     },
     {
-      id: 'cmp-04',
+      id: 'u2l2-05',
+      type: 'fill-blank',
+      difficulty: 1,
+      concept: 'next-double',
+      prompt: 'Fill in the blank so the program doubles a price.',
+      code: j`
+Scanner console = new Scanner(System.in);
+double price = console.___();
+System.out.println(price * 2);`,
+      stdin: '4.50\n',
+      blanks: [['nextDouble']],
+      bank: ['nextDouble', 'nextInt', 'next', 'nextLine'],
+      expectedOutput: '9.0',
+      explanation: 'A price has a decimal point, so `nextDouble()` is the right reader. Then 4.5 times 2 gives 9.0.',
+    },
+    {
+      id: 'u2l2-06',
       type: 'predict-output',
       difficulty: 2,
-      concept: 'comparison',
-      prompt: 'What does this program print?',
+      concept: 'next-int',
+      prompt: 'The user types `12 30` on one line. What does this program print?',
       code: j`
-int a = 4, b = 9;
-System.out.println(a * 2 > b);`,
+Scanner console = new Scanner(System.in);
+int a = console.nextInt();
+int b = console.nextInt();
+System.out.println(a + b);`,
+      stdin: '12 30\n',
       optionStyle: 'output',
       options: [
-        { text: 'false' },
-        { text: 'true', feedback: '`a * 2` is computed first: 8 > 9 is false.' },
-        { text: '8' },
-        { text: 'Compile error', feedback: 'Arithmetic inside a comparison is fine.' },
+        { text: '42' },
+        { text: '1230', feedback: 'Both values are `int`s, so the plus adds them. It only joins things when text is involved.' },
+        { text: '12', feedback: 'There are two `nextInt()` calls, and both values get used.' },
+        { text: '12 30', feedback: 'The program prints the sum, not the input.' },
       ],
       answer: 0,
-      explanation: 'Arithmetic happens before comparison: 4 * 2 = 8, and 8 > 9 is **false**.',
+      explanation: 'The two numbers can be on the same line, because the Scanner splits the input at spaces. 12 plus 30 is 42.',
     },
     {
-      id: 'cmp-05',
+      id: 'u2l2-07',
       type: 'error-type',
       difficulty: 2,
-      concept: 'assign-vs-equals',
-      prompt: 'What is wrong with this code?',
+      concept: 'type-match',
+      prompt: 'The user types the word `seven`. What happens?',
       code: j`
-int lives = 3;
-boolean gameOver = (lives = 0);`,
-      answer: 'syntax',
+Scanner console = new Scanner(System.in);
+System.out.print("How many? ");
+int count = console.nextInt();
+System.out.println("You asked for " + count);`,
+      stdin: 'seven\n',
+      answer: 'runtime',
       feedback: {
-        runtime: 'javac catches this before the program runs.',
-        logic: 'It doesn\'t compile at all.',
-        none: 'Look closely at the operator inside the parentheses.',
+        syntax: 'The code is perfectly valid Java. Nothing is wrong until someone types the wrong thing.',
+        logic: 'It does not finish and print a wrong answer. It crashes before that.',
+        none: 'Think about what `nextInt()` does when it finds a word instead of a number.',
       },
-      highlightLines: [2],
-      explanation: '`lives = 0` is an ASSIGNMENT whose value is the int 0, and an int can\'t be stored in a boolean. To compare, write `lives == 0`.',
+      highlightLines: [3],
+      explanation: 'The code compiles fine, but `nextInt()` cannot turn the word `seven` into a number. The program crashes with an InputMismatchException while it is running.',
     },
     {
-      id: 'cmp-06',
-      type: 'fill-blank',
-      difficulty: 2,
-      concept: 'comparison',
-      prompt: 'Make `passed` true when `score` is **60 or more**.',
+      id: 'u2l2-08',
+      type: 'predict-output',
+      difficulty: 3,
+      concept: 'mixing',
+      prompt: 'The user types `5` and then `2.5`. What does this program print?',
       code: j`
-int score = 72;
-boolean passed = score ___ 60;
-System.out.println(passed);`,
-      blanks: [['>=']],
-      bank: ['>=', '>', '==', '=<'],
-      explanation: '"60 or more" includes 60 itself, so use `>=`. (`>` would fail a score of exactly 60, and `=<` isn\'t a Java operator.)',
-    },
-    {
-      id: 'cmp-07',
-      type: 'multiple-choice',
-      difficulty: 2,
-      concept: 'comparison',
-      prompt: 'Given `char grade = \'B\';` which expression is **true**?',
-      optionStyle: 'code',
+Scanner console = new Scanner(System.in);
+int boxes = console.nextInt();
+double weight = console.nextDouble();
+System.out.println(boxes * weight);`,
+      stdin: '5\n2.5\n',
+      optionStyle: 'output',
       options: [
-        { text: "grade == 'B'" },
-        { text: 'grade == "B"', feedback: '"B" is a String; you can\'t compare a char with a String using ==.' },
-        { text: "grade = 'B'", feedback: 'That\'s an assignment, not a comparison.' },
-        { text: "grade > 'C'", feedback: 'chars compare by their codes: \'B\' (66) is less than \'C\' (67).' },
+        { text: '12.5' },
+        { text: '12', feedback: 'One of the values is a `double`, so the answer keeps its decimal part.' },
+        { text: '7.5', feedback: 'That is 5 plus 2.5. The star multiplies.' },
+        { text: '52.5', feedback: 'The star does math. It does not glue the digits together.' },
       ],
       answer: 0,
-      explanation: 'chars are compared with `==` against another char in single quotes: `grade == \'B\'` is true.',
+      explanation: '`nextInt()` reads the 5 and `nextDouble()` reads the 2.5. An int times a double gives a double, so 5 times 2.5 is 12.5.',
     },
     {
-      id: 'cmp-08',
-      type: 'type-output',
-      difficulty: 3,
-      concept: 'comparison',
-      prompt: 'Type exactly what this program prints.',
-      code: j`
-int x = 10;
-int y = 3;
-boolean a = x % y == 1;
-boolean b = x / y >= 4;
-System.out.println(a + " " + b + " " + (a != b));`,
-      answer: 'true false true',
-      explanation: '10 % 3 = 1, so `a` is true. 10 / 3 = 3 and 3 >= 4 is false, so `b` is false. true != false is **true**.',
-    },
+      id: 'u2l2-09',
+      type: 'write-code',
+      difficulty: 2,
+      concept: 'next-int',
+      prompt: 'Read two whole numbers from the user and print their sum.',
+      starter: j`
+// 1. create a Scanner
 
-    // ---------------- Lesson 4: Logical Operators ----------------
+// 2. read two ints
+
+// 3. print their sum
+`,
+      solution: j`
+Scanner console = new Scanner(System.in);
+int a = console.nextInt();
+int b = console.nextInt();
+System.out.println(a + b);`,
+      tests: [
+        { label: 'positive numbers', stdin: '3 4\n', output: '7' },
+        { label: 'one is negative', stdin: '10\n-4\n', output: '6' },
+      ],
+      mustInclude: [{ pattern: 'nextInt\\s*\\(', message: 'Use `nextInt()` to read the whole numbers.' }],
+      explanation: 'Two `nextInt()` calls read two numbers, and it does not matter whether the user types them on one line or two.',
+    },
+  ]),
+
+  // ---------------- Lesson 3: Putting input to work ----------------
+  ...topic('input', [
     {
-      id: 'l-01',
+      id: 'u2l3-01',
       type: 'predict-output',
       difficulty: 1,
-      concept: 'and',
-      prompt: 'What does this program print?',
-      code: j`System.out.println(true && false);`,
+      concept: 'mixing',
+      prompt: 'The user types `Sam 16`. What does this program print?',
+      code: j`
+Scanner console = new Scanner(System.in);
+String name = console.next();
+int age = console.nextInt();
+System.out.println(name + " is " + age);`,
+      stdin: 'Sam 16\n',
       optionStyle: 'output',
       options: [
-        { text: 'false' },
-        { text: 'true', feedback: '`&&` needs BOTH sides to be true.' },
-        { text: 'true && false' },
-        { text: 'Compile error' },
+        { text: 'Sam is 16' },
+        { text: '16 is Sam', feedback: 'The Scanner reads in the order the user typed, and the first word is Sam.' },
+        { text: 'name is age', feedback: 'There are no quotes around `name` and `age`, so Java prints what they hold.' },
+        { text: 'Sam is age', feedback: 'Look closely at the last piece. `age` has no quotes, so Java prints the number inside it.' },
       ],
       answer: 0,
-      explanation: '`&&` (AND) is true only when both sides are true. One side is false, so the result is **false**.',
+      explanation: 'The first read gets the word Sam and the second gets the number 16. Then we join them with the text in the middle.',
     },
     {
-      id: 'l-02',
-      type: 'predict-output',
-      difficulty: 1,
-      concept: 'or',
-      prompt: 'What does this program print?',
-      code: j`System.out.println(false || true);`,
-      optionStyle: 'output',
-      options: [
-        { text: 'true' },
-        { text: 'false', feedback: '`||` only needs ONE side to be true.' },
-        { text: 'false || true' },
-        { text: 'Compile error' },
-      ],
-      answer: 0,
-      explanation: '`||` (OR) is true when at least one side is true.',
-    },
-    {
-      id: 'l-03',
+      id: 'u2l3-02',
       type: 'multiple-choice',
       difficulty: 1,
-      concept: 'not',
-      prompt: '`!true` evaluates to…',
+      concept: 'order',
+      prompt: 'Your program asks for a name and then an age. The user types `Ria 15`. Which pair of calls matches?',
       optionStyle: 'code',
       options: [
-        { text: 'false' },
-        { text: 'true', feedback: '`!` flips a boolean to the opposite value.' },
-        { text: '0', feedback: 'Java booleans are never numbers.' },
-        { text: 'Compile error', feedback: '`!` works on any boolean.' },
+        { text: 'console.next(); then console.nextInt();' },
+        { text: 'console.nextInt(); then console.next();', feedback: 'The first thing the user typed is Ria, and that is not a number, so `nextInt()` would crash.' },
+        { text: 'console.nextInt(); then console.nextInt();', feedback: 'Ria is not a number, so the first `nextInt()` would crash.' },
+        { text: 'console.nextDouble(); then console.next();', feedback: 'Ria is not a decimal either. The order has to follow what was typed.' },
       ],
       answer: 0,
-      explanation: '`!` (NOT) flips true to false and false to true.',
+      explanation: 'The Scanner reads values from left to right, in the order they were typed. Ria is text, so it comes first, and 15 is a whole number, so it comes second.',
     },
     {
-      id: 'l-04',
-      type: 'predict-output',
-      difficulty: 2,
-      concept: 'and',
-      prompt: 'What does this program print?',
-      code: j`
-int temp = 25;
-boolean niceDay = temp > 20 && temp < 30;
-System.out.println(niceDay);`,
-      optionStyle: 'output',
-      options: [
-        { text: 'true' },
-        { text: 'false', feedback: 'Check each side: 25 > 20 is true and 25 < 30 is true.' },
-        { text: '25' },
-        { text: 'Compile error' },
-      ],
-      answer: 0,
-      explanation: 'Both comparisons are true (25 > 20 and 25 < 30), so `&&` gives **true**.',
+      id: 'u2l3-03',
+      type: 'true-false',
+      difficulty: 1,
+      concept: 'prompt',
+      prompt: 'The line `System.out.print("Enter a number: ");` is what makes the program stop and wait for the user to type.',
+      answer: false,
+      wrongFeedback: 'That line only shows some text. The program waits when it reaches a Scanner call, like `nextInt()`.',
+      explanation: 'A prompt is just a polite message so the user knows what to type. The pause happens at the `console.next...()` call, and it ends when the user hits Enter.',
     },
     {
-      id: 'l-05',
-      type: 'error-type',
-      difficulty: 2,
-      concept: 'range',
-      prompt: 'What is wrong with this code?',
-      code: j`
-int x = 5;
-boolean inRange = 1 <= x <= 10;`,
-      answer: 'syntax',
-      feedback: {
-        runtime: 'This fails during compilation, not while running.',
-        logic: 'It never compiles, so it can\'t produce a wrong answer.',
-        none: 'Math allows `1 ≤ x ≤ 10`, but what does Java do with `1 <= x` first?',
-      },
-      highlightLines: [2],
-      explanation: '`1 <= x` becomes a boolean (true), and Java can\'t compare `true <= 10`. Write two comparisons joined with `&&`: `1 <= x && x <= 10`.',
-    },
-    {
-      id: 'l-06',
+      id: 'u2l3-04',
       type: 'fill-blank',
       difficulty: 2,
-      concept: 'or',
-      prompt: 'Make `canEnter` true if the person is a member **OR** has a pass.',
+      concept: 'mixing',
+      prompt: 'The user types `3` and then `12.5`. Fill in the blanks so the program works out the pay.',
       code: j`
-boolean member = false;
-boolean hasPass = true;
-boolean canEnter = member ___ hasPass;
-System.out.println(canEnter);`,
-      blanks: [['||']],
-      bank: ['||', '&&', '!', '=='],
-      explanation: '`||` is true when at least one side is true, which is exactly "member OR has a pass".',
+Scanner console = new Scanner(System.in);
+int hours = console.___();
+double rate = console.___();
+System.out.println(hours * rate);`,
+      stdin: '3\n12.5\n',
+      blanks: [['nextInt'], ['nextDouble']],
+      bank: ['nextInt', 'nextDouble', 'next', 'nextLine'],
+      expectedOutput: '37.5',
+      explanation: 'Hours are whole, so `nextInt()`. The rate has a decimal point, so `nextDouble()`. Then 3 times 12.5 gives 37.5.',
     },
     {
-      id: 'l-07',
+      id: 'u2l3-05',
       type: 'predict-output',
-      difficulty: 3,
-      concept: 'logic-precedence',
-      prompt: 'What does this program print?',
+      difficulty: 2,
+      concept: 'calculate',
+      prompt: 'The user types `40` and then `15`. What does this program print?',
       code: j`
-boolean a = true, b = false, c = true;
-System.out.println(a || b && !c);`,
+Scanner console = new Scanner(System.in);
+double cost = console.nextDouble();
+int percent = console.nextInt();
+double tip = cost * percent / 100;
+System.out.println(cost + tip);`,
+      stdin: '40\n15\n',
       optionStyle: 'output',
       options: [
-        { text: 'true' },
-        { text: 'false', feedback: '`&&` is evaluated before `||`, so this means `a || (b && !c)`.' },
-        { text: 'Compile error' },
-        { text: 'a || b && !c' },
+        { text: '46.0' },
+        { text: '6.0', feedback: 'That is only the tip. The last line adds the tip to the cost.' },
+        { text: '40.0', feedback: 'The tip is added on top before printing.' },
+        { text: '55.0', feedback: 'That would be 40 plus 15. We work out 15 percent of 40 first.' },
       ],
       answer: 0,
-      explanation: 'Order: `!` first, then `&&`, then `||`. `b && !c` = false && false = false. Then `a || false` = **true**.',
+      explanation: '15 percent of 40 is 6.0, so the tip is 6.0. Then 40.0 plus 6.0 gives 46.0.',
     },
     {
-      id: 'l-08',
+      id: 'u2l3-06',
       type: 'type-output',
-      difficulty: 3,
-      concept: 'logic-precedence',
-      prompt: 'Type exactly what this program prints (three lines).',
+      difficulty: 2,
+      concept: 'calculate',
+      prompt: 'The user types `6 7`. Type exactly what this program prints.',
       code: j`
-int x = 8;
-boolean p = x % 2 == 0;
-boolean q = x > 10;
-System.out.println(p && !q);
-System.out.println(!(p || q));
-System.out.println(p != q);`,
-      answer: 'true\nfalse\ntrue',
-      explanation: '`p` is true (8 is even) and `q` is false. `p && !q` = true. `p || q` = true, so `!(...)` = false. `p != q` = true.',
+Scanner console = new Scanner(System.in);
+int a = console.nextInt();
+int b = console.nextInt();
+System.out.println(a + " x " + b + " = " + (a * b));`,
+      stdin: '6 7\n',
+      answer: '6 x 7 = 42',
+      explanation: 'The pieces of text are joined with the numbers, and the multiplication sits in brackets so Java does the math first. That gives `6 x 7 = 42`.',
+    },
+    {
+      id: 'u2l3-07',
+      type: 'error-type',
+      difficulty: 2,
+      concept: 'order',
+      prompt: 'The user types `Sam 16`. What happens when we run this code?',
+      code: j`
+Scanner console = new Scanner(System.in);
+int age = console.nextInt();
+String name = console.next();
+System.out.println(name + " is " + age);`,
+      stdin: 'Sam 16\n',
+      answer: 'runtime',
+      feedback: {
+        syntax: 'The code compiles without a problem. The trouble only appears when the program meets the input.',
+        logic: 'It does not finish and print something wrong. It crashes on the way.',
+        none: 'Compare the order of the reads with the order the user typed things in.',
+      },
+      highlightLines: [2],
+      explanation: 'The first thing typed is Sam, but line 2 is asking for a number. `nextInt()` cannot turn Sam into an int, so the program crashes with an InputMismatchException.',
+    },
+    {
+      id: 'u2l3-08',
+      type: 'find-bug',
+      difficulty: 3,
+      concept: 'nextline',
+      prompt: 'The user types `16`, presses Enter, and then types `Sam`. The program should print `Sam is 16`, but it prints ` is 16`. Tap the line where the name is read.',
+      code: j`
+Scanner console = new Scanner(System.in);
+int age = console.nextInt();
+String name = console.nextLine();
+System.out.println(name + " is " + age);`,
+      stdin: '16\nSam\n',
+      bugLines: [3],
+      fixedCode: j`
+Scanner console = new Scanner(System.in);
+int age = console.nextInt();
+console.nextLine();
+String name = console.nextLine();
+System.out.println(name + " is " + age);`,
+      bugKind: 'logic',
+      explanation: '`nextInt()` reads the 16 but leaves the Enter key sitting in the input. Then `nextLine()` happily reads the rest of that first line, which is empty. Use an extra `console.nextLine();` to throw the leftover away, or read words with `next()` instead.',
+    },
+    {
+      id: 'u2l3-09',
+      type: 'write-code',
+      difficulty: 3,
+      concept: 'calculate',
+      prompt: 'Read a price (a `double`) and then a quantity (an `int`). Print the total cost, which is price times quantity.',
+      starter: j`
+// 1. create a Scanner
+
+// 2. read the price, then the quantity
+
+// 3. print price * quantity
+`,
+      solution: j`
+Scanner console = new Scanner(System.in);
+double price = console.nextDouble();
+int quantity = console.nextInt();
+System.out.println(price * quantity);`,
+      tests: [
+        { label: '2.5 each, 4 items', stdin: '2.5\n4\n', output: '10.0' },
+        { label: '1.25 each, 3 items', stdin: '1.25 3\n', output: '3.75' },
+      ],
+      mustInclude: [
+        { pattern: 'nextDouble\\s*\\(', message: 'The price has a decimal, so read it with `nextDouble()`.' },
+        { pattern: 'nextInt\\s*\\(', message: 'The quantity is a whole number, so read it with `nextInt()`.' },
+      ],
+      explanation: 'Read in the order the user types, using the method that matches each type, and then print the product.',
     },
   ]),
 
   // ---------------- Unit 2 checkpoint ----------------
-  ...topic('arithmetic', [
+  ...topic('input', [
     {
-      id: 'cp2-01',
-      type: 'type-output',
-      difficulty: 3,
-      concept: 'precedence',
-      prompt: 'Type exactly what this program prints.',
-      code: j`
-int a = 5, b = 3;
-System.out.println(a + b * 2 + "" + a % b);`,
-      answer: '112',
-      explanation: '`b * 2` = 6, then 5 + 6 = 11 (still numbers). `11 + ""` turns it into text "11", and then `a % b` (2) is joined: "112".',
-    },
-    {
-      id: 'cp2-02',
-      type: 'predict-output',
-      topic: 'boolean-logic',
+      id: 'u2cp-01',
+      type: 'multiple-choice',
       difficulty: 2,
-      concept: 'or',
-      prompt: 'What does this program print?',
-      code: j`
-double price = 19.99;
-int qty = 3;
-boolean freeShipping = price * qty >= 50 || qty > 5;
-System.out.println(freeShipping);`,
-      optionStyle: 'output',
+      concept: 'setup',
+      prompt: 'Which pair of lines gets a program ready to read from the keyboard?',
       options: [
-        { text: 'true' },
-        { text: 'false', feedback: 'Only ONE side of `||` needs to be true. Is 19.99 × 3 at least 50?' },
-        { text: '59.97' },
-        { text: 'Compile error' },
+        { text: 'import java.util.Scanner; at the top, then Scanner console = new Scanner(System.in); inside main' },
+        { text: 'Only Scanner console = new Scanner(System.in); inside main', feedback: 'Without the import at the top, Java does not know what a Scanner is.' },
+        { text: 'import java.util.Scanner; at the top, then Scanner console = new Scanner(System.out); inside main', feedback: 'The import is right, but `System.out` is for printing. Input comes from `System.in`.' },
+        { text: 'import Scanner; at the top, then Scanner console = new Scanner(System.in); inside main', feedback: 'The import needs the whole package name, `java.util.Scanner`.' },
       ],
       answer: 0,
-      explanation: '19.99 × 3 = 59.97, which is >= 50, so the left side is true, and `||` only needs one true side.',
+      explanation: 'Two jobs: tell Java where Scanner lives with the import, and connect a new Scanner to the keyboard with `System.in`.',
     },
     {
-      id: 'cp2-03',
-      type: 'find-bug',
-      topic: 'boolean-logic',
-      difficulty: 3,
-      concept: 'range',
-      prompt: 'This should print whether `n` is between 1 and 100 **inclusive**. For n = 100 it prints `false`. Tap the buggy line.',
+      id: 'u2cp-02',
+      type: 'predict-output',
+      difficulty: 2,
+      concept: 'mixing',
+      prompt: 'The user types `Mia 4 2.5`. What does this program print?',
       code: j`
-int n = 100;
-boolean valid = n > 1 && n < 100;
-System.out.println(valid);`,
-      bugLines: [2],
-      bugKind: 'logic',
-      fixedCode: j`
-int n = 100;
-boolean valid = n >= 1 && n <= 100;
-System.out.println(valid);`,
-      explanation: 'An inclusive range needs `>=` and `<=`. With `>` and `<`, the edge values 1 and 100 are rejected: a classic off-by-one error.',
+Scanner console = new Scanner(System.in);
+String name = console.next();
+int cups = console.nextInt();
+double price = console.nextDouble();
+System.out.println(name + " owes " + cups * price);`,
+      stdin: 'Mia 4 2.5\n',
+      optionStyle: 'output',
+      options: [
+        { text: 'Mia owes 10.0' },
+        { text: 'Mia owes 6.5', feedback: 'That is 4 plus 2.5. The star multiplies them.' },
+        { text: 'Mia owes 42.5', feedback: 'The star does math. It does not put digits side by side.' },
+        { text: 'Mia owes 10', feedback: 'One of the numbers is a `double`, so the answer is a `double` too, and it prints with the decimal.' },
+      ],
+      answer: 0,
+      explanation: 'The three reads pick up Mia, 4 and 2.5 in order. Then 4 times 2.5 is 10.0, which is joined onto the text.',
     },
     {
-      id: 'cp2-04',
+      id: 'u2cp-03',
+      type: 'error-type',
+      difficulty: 3,
+      concept: 'type-match',
+      prompt: 'The user types `4.5`. What happens when we run this code?',
+      code: j`
+Scanner console = new Scanner(System.in);
+System.out.print("How many pizzas? ");
+int pizzas = console.nextInt();
+System.out.println(pizzas * 10);`,
+      stdin: '4.5\n',
+      answer: 'runtime',
+      feedback: {
+        syntax: 'The code is valid. Nothing breaks until the user types something unexpected.',
+        logic: 'It does not finish with a wrong number. It stops before that.',
+        none: 'Is 4.5 a whole number?',
+      },
+      highlightLines: [3],
+      explanation: '4.5 is not a whole number, so `nextInt()` stops the program with an InputMismatchException. Later in the course you will learn to catch problems like this.',
+    },
+    {
+      id: 'u2cp-04',
       type: 'fill-blank',
-      topic: 'boolean-logic',
-      difficulty: 3,
-      concept: 'logic-precedence',
-      prompt: 'A year is a leap year if it\'s divisible by 4 **and** not by 100, **or** if it\'s divisible by 400. Complete the check.',
+      difficulty: 2,
+      concept: 'mixing',
+      prompt: 'The user types a word, then a whole number. Fill in the blanks.',
       code: j`
-int year = 2024;
-boolean leap = (year % 4 == 0 ___ year % 100 != 0) ___ year % 400 == 0;
-System.out.println(leap);`,
-      blanks: [['&&'], ['||']],
-      bank: ['&&', '||', '!', '=='],
-      explanation: 'Inside the parentheses both parts must hold (`&&`). The divisible-by-400 rule is an alternative, so it joins with `||`.',
+Scanner console = new Scanner(System.in);
+String pet = console.___();
+int years = console.___();
+System.out.println(pet + " is " + years);`,
+      stdin: 'Rex 5\n',
+      blanks: [['next'], ['nextInt']],
+      bank: ['next', 'nextInt', 'nextDouble', 'nextLine'],
+      expectedOutput: 'Rex is 5',
+      explanation: 'A word is read with `next()`, and a whole number with `nextInt()`. The calls follow the same order the user typed things.',
     },
     {
-      id: 'cp2-05',
+      id: 'u2cp-05',
+      type: 'find-bug',
+      difficulty: 3,
+      concept: 'type-match',
+      prompt: 'This program should read a whole number of players, but it will not compile. Tap the buggy line.',
+      code: j`
+Scanner console = new Scanner(System.in);
+System.out.print("Players: ");
+int players = console.nextDouble();
+System.out.println("Teams of 5: " + players / 5);`,
+      stdin: '20\n',
+      bugLines: [3],
+      fixedCode: j`
+Scanner console = new Scanner(System.in);
+System.out.print("Players: ");
+int players = console.nextInt();
+System.out.println("Teams of 5: " + players / 5);`,
+      bugKind: 'syntax',
+      explanation: '`nextDouble()` hands back a `double`, and a `double` cannot be stored in an `int` box. Use `nextInt()` to read a whole number.',
+    },
+    {
+      id: 'u2cp-06',
       type: 'write-code',
       difficulty: 3,
-      concept: 'precedence',
-      prompt: 'Convert Celsius to Fahrenheit with **f = c × 9 / 5 + 32** and print `f`.',
+      concept: 'calculate',
+      prompt: 'Read three test marks (as `double`s) and print their total.',
       starter: j`
-double c = 25;
-// compute f
-
-// print f
+// read three marks and print the total
 `,
       solution: j`
-double c = 25;
-double f = c * 9 / 5 + 32;
-System.out.println(f);`,
+Scanner console = new Scanner(System.in);
+double a = console.nextDouble();
+double b = console.nextDouble();
+double c = console.nextDouble();
+System.out.println(a + b + c);`,
       tests: [
-        { label: 'c = 25', output: '77.0' },
-        { label: 'c = 100', set: { c: '100' }, output: '212.0' },
-        { label: 'c = -40', set: { c: '-40' }, output: '-40.0' },
+        { label: 'whole marks', stdin: '80 90 85\n', output: '255.0' },
+        { label: 'decimal marks', stdin: '72.5\n88.5\n90\n', output: '251.0' },
       ],
-      explanation: 'Because `c` is a double, `c * 9 / 5` uses decimal math. For 25: 225 / 5 = 45, plus 32 = 77.0.',
-    },
-    {
-      id: 'cp2-06',
-      type: 'true-false',
-      difficulty: 3,
-      concept: 'int-division',
-      prompt: 'In Java, `5 / 2 * 2 == 5` is `true`.',
-      answer: false,
-      wrongFeedback: 'Evaluate step by step with integer division: what is 5 / 2?',
-      explanation: '5 / 2 is 2 (integer division), 2 * 2 = 4, and 4 == 5 is **false**. Integer division loses information!',
+      mustInclude: [{ pattern: 'nextDouble\\s*\\(', message: 'Marks can have decimals, so read them with `nextDouble()`.' }],
+      explanation: 'Three `nextDouble()` calls read three numbers in a row, and then we add them together.',
     },
   ]),
 ]
@@ -632,215 +661,205 @@ export const unit2: UnitContent = {
   unit: {
     id: 'u2',
     number: 2,
-    title: 'Expressions',
-    tagline: 'Calculate with operators and ask true/false questions.',
+    title: 'Reading Input',
+    tagline: 'Let your programs listen to the person using them.',
     color: 'sky',
-    icon: 'calculator',
-    topics: ['arithmetic', 'boolean-logic'],
-    checkpoint: ['cp2-01', 'cp2-02', 'cp2-03', 'cp2-04', 'cp2-05', 'cp2-06'],
+    icon: 'keyboard',
+    topics: ['input'],
+    checkpoint: ['u2cp-01', 'u2cp-02', 'u2cp-03', 'u2cp-04', 'u2cp-05', 'u2cp-06'],
     lessons: [
       {
         id: 'u2-l1',
         unitId: 'u2',
-        title: 'Arithmetic Operators',
-        summary: '+, -, *, / and the mysterious %.',
-        topic: 'arithmetic',
+        title: 'Meet the Scanner',
+        summary: 'Import it, create it, and read a word.',
+        topic: 'input',
         teach: [
           {
             kind: 'concept',
-            title: 'Doing math',
-            what: 'Java has five arithmetic operators: `+` add, `-` subtract, `*` multiply, `/` divide and `%` **remainder** (also called modulo).',
-            why: 'Totals, averages, scores, timers: almost every program calculates something. Operators build new values from old ones.',
+            title: 'Time to let your program listen',
+            what: 'A **Scanner** is a tool that reads whatever the user types on the keyboard. Using it takes two steps. First you import it, and then you create one connected to the keyboard with `System.in`. I like to name mine `console`, because that is what it is.',
+            why: 'A program that only talks gets boring quickly. Quizzes, calculators and games all need to ask the user something and use the answer.',
             mood: 'excited',
           },
           {
             kind: 'example',
-            title: 'All five operators',
-            how: 'With two ints, `/` gives only the whole part, and `%` gives what\'s left over.',
+            title: 'Asking for a name',
+            how: 'The `import` goes at the very top, above the class. Then `console.next()` reads one word and hands it back as a String.',
             code: j`
-int a = 17;
-int b = 5;
-System.out.println(a + b);
-System.out.println(a - b);
-System.out.println(a * b);
-System.out.println(a / b);
-System.out.println(a % b);`,
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner console = new Scanner(System.in);
+        System.out.print("What is your name? ");
+        String name = console.next();
+        System.out.println("Nice to meet you, " + name + "!");
+    }
+}`,
+            stdin: 'Maya\n',
             notes: [
-              { line: 6, text: '17 / 5 is 3, because integer division drops the .4' },
-              { line: 7, text: '17 % 5 is 2, the remainder (17 = 5×3 + 2)' },
+              { line: 1, text: 'Tell Java where Scanner lives. This line goes above the class.' },
+              { line: 5, text: 'Create a Scanner connected to the keyboard (System.in).' },
+              { line: 6, text: 'print, not println, so the user types on the same line as the question.' },
+              { line: 7, text: 'next() waits for the user, then reads one word.' },
+            ],
+          },
+          {
+            kind: 'tip',
+            title: 'What next() really does',
+            body: '`next()` reads one **word**. It stops at the first space or Enter. If the user types two words, the second one just waits in line for the next call.',
+            bullets: [
+              'Always show a prompt with `print` first, so the user knows what to type.',
+              'In the lessons I show only the lines inside `main`, but you must still type the import yourself.',
             ],
           },
           {
             kind: 'mistake',
-            title: 'The integer division surprise',
-            body: 'If BOTH sides of `/` are ints, the decimals are thrown away, even when you store the result in a double. Make one side a double to keep them.',
+            title: 'Forgetting the import',
+            body: 'Without the import, Java has never heard of Scanner. You will see *cannot find symbol* even though the rest of the code is fine.',
             wrong: j`
-double avg = 7 / 2;
-System.out.println(avg);`,
+public class Main {
+    public static void main(String[] args) {
+        Scanner console = new Scanner(System.in);
+        String word = console.next();
+        System.out.println(word);
+    }
+}`,
             right: j`
-double avg = 7 / 2.0;
-System.out.println(avg);`,
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner console = new Scanner(System.in);
+        String word = console.next();
+        System.out.println(word);
+    }
+}`,
+            stdin: 'hello\n',
           },
         ],
-        questions: ['a-01', 'a-02', 'a-03', 'a-04', 'a-05', 'a-06', 'a-07'],
-        challenge: 'a-08',
+        questions: ['u2l1-01', 'u2l1-02', 'u2l1-03', 'u2l1-04', 'u2l1-05', 'u2l1-06', 'u2l1-07', 'u2l1-08'],
+        challenge: 'u2l1-09',
       },
       {
         id: 'u2-l2',
         unitId: 'u2',
-        title: 'Order of Operations',
-        summary: 'Precedence, parentheses and casting.',
-        topic: 'arithmetic',
+        title: 'nextInt and nextDouble',
+        summary: 'Read whole numbers and decimals.',
+        topic: 'input',
         teach: [
           {
             kind: 'concept',
-            title: 'Who goes first?',
-            what: 'Java follows math rules: `*`, `/` and `%` happen before `+` and `-`. Operators on the same level go **left to right**. Parentheses always go first.',
-            why: 'Without a fixed order, `2 + 3 * 4` could mean 20 or 14. Precedence gives every expression exactly one answer.',
+            title: 'Match the reader to the value',
+            what: 'The Scanner has a different reader for each kind of value. `next()` reads a word, `nextInt()` reads a whole number, and `nextDouble()` reads a decimal number. The method you pick has to match the type of the variable you store it in.',
+            why: 'You cannot do math with text. If you want to add up prices or work out an average, the input has to arrive as a real number, and that is what these two methods give you.',
             mood: 'thinking',
           },
           {
             kind: 'example',
-            title: 'Precedence in action',
-            how: 'Watch how the same numbers give different results.',
+            title: 'One int and one double',
+            how: 'Each reader takes the next piece of input and turns it into the right type. The prompts are there so the user knows what is coming.',
             code: j`
-System.out.println(2 + 3 * 4);
-System.out.println((2 + 3) * 4);
-System.out.println(20 / 2 * 5);
-System.out.println(10 - 4 - 3);`,
+Scanner console = new Scanner(System.in);
+System.out.print("How old are you? ");
+int age = console.nextInt();
+System.out.print("How tall are you in metres? ");
+double height = console.nextDouble();
+System.out.println("Next year you will be " + (age + 1) + " and about " + height + " m tall.");`,
+            stdin: '15\n1.7\n',
             notes: [
-              { line: 1, text: '3 * 4 first → 2 + 12 = 14' },
-              { line: 2, text: 'Parentheses first → 5 * 4 = 20' },
-              { line: 3, text: 'Same level, left to right → 10 * 5 = 50' },
-              { line: 4, text: '(10 - 4) - 3 = 3' },
+              { line: 3, text: 'nextInt() gives back a whole number we can do math with.' },
+              { line: 5, text: 'nextDouble() gives back a decimal number.' },
+              { line: 6, text: 'The brackets make Java add 1 before joining it to the text.' },
             ],
           },
           {
             kind: 'tip',
-            title: 'Casting',
-            body: 'A cast converts a value to another type. It binds tightly to the value right after it:',
-            bullets: [
-              '`(double) 7 / 2` → 7.0 / 2 → 3.5',
-              '`(double) (7 / 2)` → (double) 3 → 3.0',
-              '`(int) 3.9` → 3 (casting chops, it doesn\'t round)',
-            ],
+            title: 'Spaces and Enter both work',
+            body: 'The Scanner treats spaces and new lines the same way, as gaps between values. So `12 30` on one line and `12` Enter `30` on two lines give exactly the same result.',
           },
           {
             kind: 'mistake',
-            title: 'Averages without parentheses',
-            body: 'Division happens before addition, so you must group the sum yourself.',
+            title: 'The wrong reader for the value',
+            body: '`nextInt()` only understands whole numbers. Hand it a decimal and the program crashes in the middle of running.',
             wrong: j`
-double avg = 80 + 90 / 2.0;
-System.out.println(avg);`,
+Scanner console = new Scanner(System.in);
+int price = console.nextInt();
+System.out.println(price);`,
             right: j`
-double avg = (80 + 90) / 2.0;
-System.out.println(avg);`,
+Scanner console = new Scanner(System.in);
+double price = console.nextDouble();
+System.out.println(price);`,
+            stdin: '3.5\n',
           },
         ],
-        questions: ['p-01', 'p-02', 'p-03', 'p-07', 'p-04', 'p-05', 'p-06'],
-        challenge: 'p-08',
+        questions: ['u2l2-01', 'u2l2-02', 'u2l2-03', 'u2l2-04', 'u2l2-05', 'u2l2-06', 'u2l2-07', 'u2l2-08'],
+        challenge: 'u2l2-09',
       },
       {
         id: 'u2-l3',
         unitId: 'u2',
-        title: 'Comparisons',
-        summary: '==, !=, <, >, <=, >= and booleans.',
-        topic: 'boolean-logic',
+        title: 'Putting Input to Work',
+        summary: 'Read, calculate, print.',
+        topic: 'input',
         teach: [
           {
             kind: 'concept',
-            title: 'True or false?',
-            what: 'Comparison operators compare two values and produce a **boolean**: `==` equal, `!=` not equal, `<`, `>`, `<=`, `>=`.',
-            why: 'Programs make decisions: Is the password right? Is the score high enough? Comparisons turn those questions into true/false answers.',
-            mood: 'thinking',
+            title: 'Read, calculate, print',
+            what: 'Most programs follow the same three-step rhythm. They **read** some input, they **calculate** something with it, and they **print** the answer. The only rule is to read the values in the same order the user types them.',
+            why: 'Once you can do this, you can build things that feel real: a tip calculator, a unit converter, a grade averager. This pattern shows up in almost every program you will write this year.',
+            mood: 'encouraging',
           },
           {
             kind: 'example',
-            title: 'Comparing values',
-            how: 'A comparison can be printed or stored in a boolean variable.',
+            title: 'A tip calculator',
+            how: 'The program reads a bill and a tip percentage, works out the tip, and prints the total. Notice that each read picks the method that matches the type.',
             code: j`
-int age = 16;
-System.out.println(age >= 16);
-System.out.println(age == 18);
-System.out.println(age != 18);
-boolean canVote = age >= 18;
-System.out.println(canVote);`,
+Scanner console = new Scanner(System.in);
+System.out.print("Meal cost: ");
+double cost = console.nextDouble();
+System.out.print("Tip percent: ");
+int percent = console.nextInt();
+double tip = cost * percent / 100;
+System.out.println("Tip: " + tip);
+System.out.println("Total: " + (cost + tip));`,
+            stdin: '40\n15\n',
             notes: [
-              { line: 2, text: '16 >= 16 → true' },
-              { line: 5, text: 'The result of a comparison can be stored in a boolean.' },
-            ],
-          },
-          {
-            kind: 'mistake',
-            title: '= versus ==',
-            body: '`=` STORES a value (assignment). `==` ASKS whether two values are equal (comparison). Using `=` where you meant `==` is a classic bug.',
-            wrong: j`
-int x = 10;
-boolean isTen = (x = 10);`,
-            right: j`
-int x = 10;
-boolean isTen = (x == 10);
-System.out.println(isTen);`,
-          },
-        ],
-        questions: ['cmp-01', 'cmp-02', 'cmp-03', 'cmp-04', 'cmp-05', 'cmp-06', 'cmp-07'],
-        challenge: 'cmp-08',
-      },
-      {
-        id: 'u2-l4',
-        unitId: 'u2',
-        title: 'Logical Operators',
-        summary: 'Combine conditions with &&, || and !.',
-        topic: 'boolean-logic',
-        teach: [
-          {
-            kind: 'concept',
-            title: 'Combining conditions',
-            what: '`&&` (AND) is true only if **both** sides are true. `||` (OR) is true if **at least one** side is true. `!` (NOT) flips true and false.',
-            why: 'Real decisions depend on several things: "You can ride if you\'re tall enough AND have a ticket."',
-            mood: 'excited',
-          },
-          {
-            kind: 'example',
-            title: 'AND, OR, NOT',
-            how: 'Each side of `&&` / `||` is its own true/false question.',
-            code: j`
-int age = 15;
-boolean hasTicket = true;
-System.out.println(age >= 12 && hasTicket);
-System.out.println(age < 12 || age > 65);
-System.out.println(!hasTicket);`,
-            notes: [
-              { line: 3, text: 'true && true → true' },
-              { line: 4, text: 'false || false → false' },
-              { line: 5, text: '!true → false' },
+              { line: 3, text: 'Read the cost first, because that is what the prompt asked for first.' },
+              { line: 6, text: 'Calculate the tip. 15 percent of 40 is 6.0.' },
+              { line: 8, text: 'Brackets so the numbers are added before they are joined to the text.' },
             ],
           },
           {
             kind: 'tip',
-            title: 'Order & shortcuts',
-            body: 'Logical operators have their own precedence:',
+            title: 'A trick for reading whole lines',
+            body: '`console.nextLine()` reads an entire line, spaces included, which is handy for a full name. The catch is that `nextInt()` and `nextDouble()` leave the Enter key behind, so a `nextLine()` right after them reads an empty line.',
             bullets: [
-              '`!` first, then `&&`, then `||`.',
-              '`a || b && c` means `a || (b && c)`. Add parentheses when in doubt.',
-              'Short-circuit: if the left side of `&&` is false, Java skips the right side (the answer is already false).',
+              'After a number, call `console.nextLine();` once on its own to throw the leftover away.',
+              'Or just use `next()` for single words and skip the problem.',
             ],
           },
           {
             kind: 'mistake',
-            title: 'Chained comparisons',
-            body: 'Math lets you write 1 ≤ x ≤ 10, but Java doesn\'t. Split it into two comparisons joined with `&&`.',
+            title: 'The nextLine surprise',
+            body: 'Here the program asks for an age and then a name. The name comes out empty, because `nextLine()` reads what is left over from the age line.',
             wrong: j`
-int x = 5;
-boolean ok = 1 <= x <= 10;`,
+Scanner console = new Scanner(System.in);
+int age = console.nextInt();
+String name = console.nextLine();
+System.out.println(name + " is " + age);`,
             right: j`
-int x = 5;
-boolean ok = 1 <= x && x <= 10;
-System.out.println(ok);`,
+Scanner console = new Scanner(System.in);
+int age = console.nextInt();
+console.nextLine();
+String name = console.nextLine();
+System.out.println(name + " is " + age);`,
+            stdin: '16\nSam\n',
           },
         ],
-        questions: ['l-01', 'l-02', 'l-03', 'l-04', 'l-05', 'l-06', 'l-07'],
-        challenge: 'l-08',
+        questions: ['u2l3-01', 'u2l3-02', 'u2l3-03', 'u2l3-04', 'u2l3-05', 'u2l3-06', 'u2l3-07', 'u2l3-08'],
+        challenge: 'u2l3-09',
       },
     ],
   },

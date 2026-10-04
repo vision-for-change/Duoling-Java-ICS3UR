@@ -1,5 +1,6 @@
 import type {
   CatchClause,
+  SwitchCase,
   ClassDecl,
   Declarator,
   Expr,
@@ -443,8 +444,7 @@ class Parser {
         case 'try':
           return this.parseTry()
         case 'switch':
-          this.unsupported('switch statements are not supported in the sandbox yet. Try an if / else if chain.')
-          break
+          return this.parseSwitch()
         case 'final': {
           this.advance()
           if (!this.isTypeStart()) this.fail('<identifier> expected')
@@ -529,6 +529,45 @@ class Parser {
       if (this.cur.kind === 'ident' || this.cur.kind === 'keyword' || this.cur.kind === 'int' || this.cur.kind === 'string' || this.cur.kind === 'double' || this.cur.kind === 'char') this.failAfterPrev("';' expected")
     }
     return { kind: 'VarDecl', type, isFinal, declarators, ...this.pos(start) }
+  }
+
+  private parseSwitch(): Stmt {
+    const t = this.advance()
+    const arrowMsg = 'Arrow-style switch cases are not supported in the sandbox yet. Use case X: with break instead.'
+    this.expect('(')
+    const selector = this.parseExpression()
+    this.expect(')')
+    this.expect('{')
+    const cases: SwitchCase[] = []
+    let hasDefault = false
+    let current: SwitchCase | null = null
+    while (!this.is('}')) {
+      if (this.cur.kind === 'eof') this.fail('reached end of file while parsing')
+      if (this.is('case') || this.is('default')) {
+        const start = this.advance()
+        if (start.value === 'default') {
+          if (this.is('->')) this.unsupported(arrowMsg)
+          this.expect(':')
+          if (hasDefault) this.fail('duplicate default label', start)
+          hasDefault = true
+          current = { label: null, body: [], ...this.pos(start), end: this.prev.end }
+          cases.push(current)
+          continue
+        }
+        do {
+          const label = this.parseTernary()
+          if (this.is('->')) this.unsupported(arrowMsg)
+          current = { label, body: [], ...this.pos(start), end: this.prev.end }
+          cases.push(current)
+        } while (this.accept(','))
+        this.expect(':')
+        continue
+      }
+      if (!current) this.fail("case, default, or '}' expected")
+      current.body.push(this.parseStatement())
+    }
+    this.advance()
+    return this.finish({ kind: 'Switch', selector, cases, hasDefault, ...this.pos(t) })
   }
 
   private parseTry(): Stmt {
@@ -717,7 +756,7 @@ class Parser {
           return { kind: 'New', typeName, args, ...P, end: this.prev.end }
         }
         if (t.value === 'this' || t.value === 'super') this.unsupported(`'${t.value}' is not supported in the sandbox (no objects yet).`)
-        if (t.value === 'switch') this.unsupported('switch is not supported in the sandbox yet.')
+        if (t.value === 'switch') this.unsupported('Switch expressions are not supported in the sandbox yet. Use a switch statement with break.')
         if (PRIMITIVES.has(t.value) && this.isAt(1, '.')) {
           this.unsupported('Class literals are not supported in the sandbox.')
         }

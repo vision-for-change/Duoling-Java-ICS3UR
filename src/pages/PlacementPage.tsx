@@ -56,8 +56,8 @@ export function PlacementPage() {
     const skipped = UNITS.findIndex((u) => u.id === unit.id)
     return {
       reward,
-      headline: 'Placement complete!',
-      subline: skipped > 0 ? `You'll start at Unit ${unit.number}: ${unit.title}. Earlier units stay open for review.` : 'You\'ll start at the very beginning, the perfect place to build strong foundations.',
+      headline: 'All done with the placement test.',
+      subline: skipped > 0 ? `You'll start at Unit ${unit.number}: ${unit.title}. Earlier units stay open for review.` : 'You will start at the very beginning, which is a great place to build strong foundations.',
       mood: 'celebrating',
       primary: { label: `Start Unit ${unit.number}`, to: '/learn' },
       secondary: { label: 'Go to dashboard', to: '/home' },
@@ -75,10 +75,10 @@ export function PlacementPage() {
           <Mascot mood="thinking" size={150} float />
           <h1 className="mt-4 text-4xl font-bold">How much Java do you already know?</h1>
           <p className="mt-3 max-w-lg text-lg text-espresso-600">
-            {placementItems.length} quick questions covering variables, data types, expressions, conditionals, loops, input, errors, Math and printf. No hearts, no pressure. Tap <b>"I don't know yet"</b> whenever you're unsure.
+            {placementItems.length} quick questions that walk through the course, from variables to loops and exceptions. No hearts, no pressure. Tap <b>"I don't know yet"</b> whenever you're unsure.
           </p>
           <MascotSays mood="encouraging" size={70} className="mt-6 text-left">
-            It's not a test you can fail. It just helps me pick your starting point!
+            This is not a test you can fail. It just helps me pick the right place for you to start.
           </MascotSays>
           <div className="mt-auto flex w-full flex-col gap-3 pt-10">
             <Button size="lg" full onClick={() => setStarted(true)} autoFocus>

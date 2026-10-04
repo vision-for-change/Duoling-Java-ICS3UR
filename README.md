@@ -1,8 +1,9 @@
 # ByteBrew: learn Java one byte at a time
 
-ByteBrew is a gamified, beginner-friendly Java course for high-school students. Learners follow a path of
-bite-sized lessons with **Byte**, a lion mascot, answer interactive questions with instant feedback, earn XP,
-keep a daily streak, unlock badges and finish with a real multi-stage project.
+ByteBrew is a gamified, beginner-friendly Java course for high-school students, built around the ICS3UR topic
+outline. Learners follow a path of short lessons written the way a teacher would explain them, with **Byte**, a
+lion mascot, answer interactive questions with instant feedback, earn XP, keep a daily streak, collect badges and
+finish with a real multi-stage project.
 
 Everything runs in the browser, including a **Java sandbox** that compiles and runs beginner Java programs,
 so examples are runnable, coding exercises are graded by actually executing the learner's code, and any
@@ -37,10 +38,23 @@ Progress is stored in the browser (`localStorage`), so no account or server is n
 
 **Learning experience**
 - **Landing page → onboarding → placement test.** New learners pick a daily goal and their experience level.
-  The 14-question placement test covers variables, types, expressions, conditionals, loops, input, errors,
-  Math and printf, then recommends a starting unit ("You seem comfortable with X, but Y could use some practice").
-  Earlier units are *placed out* but stay open for review.
-- **Learning path** with 8 units and 32 lessons (+ a checkpoint per unit and the Final Challenge), drawn as a
+  The 14-question placement test walks through the course in order, then recommends a starting unit
+  ("You seem comfortable with X, but Y could use a little practice"). Earlier units are *placed out* but stay
+  open for review.
+- **The course**, in the order of the teacher's outline:
+  1. **Getting Started**: `class Main`, variables, the 8 primitive types, Strings (and why they are not primitive),
+     constants with `final`
+  2. **Reading Input**: `Scanner` with `next`, `nextInt` and `nextDouble`
+  3. **Math in Java**: the arithmetic operators (integer vs float division, modulus), assignment operators,
+     casting, the two jobs of `+`, the Math class and random numbers
+  4. **Errors and Debugging**: syntax errors, logic and run-time errors, how to debug
+  5. **Formatting with printf**: placeholders, decimals, width and alignment
+  6. **Making Decisions**: statements and expressions, relational operators, `if`/`else`, `else if`, nested ifs,
+     logical operators and truth tables (AND, OR, NOT, XOR)
+  7. **Loops**: `while`, `do-while`, `break` and `continue`, `for`, nested `for`
+  8. **Switch and Exceptions**: `switch` (with fall-through), `try`/`catch`, `ArithmeticException`,
+     `InputMismatchException` and `Exception e`
+- **Learning path** with 8 units and 36 lessons (+ a checkpoint per unit and the Final Challenge), drawn as a
   winding path of nodes with Byte standing next to the suggested next lesson. **Nothing is locked:** learners can
   jump to any lesson, take any unit checkpoint early (passing it completes the unit) or open the Final Challenge
   at any time. The *Next* marker follows the learner, suggesting the next lesson after the one they just did.
@@ -61,8 +75,8 @@ Progress is stored in the browser (`localStorage`), so no account or server is n
 - **Practice:** smart sessions built from weak topics (accuracy under 80%) and recently missed questions,
   per-topic practice with mastery bars, "fix your mistakes", and unit reviews.
 - **Java Sandbox page** for free experimentation, with interactive console input.
-- **Final Challenge (Byte's Café Kiosk):** 5 guided stages (constants + printf menu, validated input with
-  `hasNextInt()`, `try/catch` quantities, nested-if discounts, `Math.round` money maths and a formatted receipt),
+- **Final Challenge (Byte's Café Kiosk):** 5 guided stages (constants + printf menu, a do-while order loop with
+  `switch`, crash-proof input with `try/catch`, nested-if member discounts, `Math.round` money maths and a formatted receipt),
   each checked by automated tests, with progressive hints. Stages can be done in any order: each one starts
   with the earlier parts already written.
 
@@ -74,7 +88,7 @@ Progress is stored in the browser (`localStorage`), so no account or server is n
 - Hearts (optional, 3/5/8 per lesson). Running out never blocks learning: keep going without hearts or restart.
 - 18 achievements (First Lesson, 7 Day Streak, First Bug Fixed, Loop Master, Logic Master, Java Apprentice,
   Perfect Lesson, Café Champion…), with progress bars for locked ones.
-- Animations for correct/incorrect answers, XP, combos ("You're on fire!"), level-ups, achievements and
+- Animations for correct/incorrect answers, XP, combos, level-ups, achievements and
   lesson completion; synthesized sound effects (toggleable); reduced-motion support.
 
 **Dashboard & profile**: level and XP progress, streak, lessons done, accuracy, unit progress, topic mastery
@@ -97,7 +111,7 @@ src/
 │   └── index.ts         runJava(source, { stdin, interactive, trace }) → RunResult
 ├── data/            Course content as plain, serialisable data
 │   ├── types.ts         content model (units, lessons, teaching cards, 9 question types)
-│   ├── units/unit1-8.ts lessons + ~250 questions, written with the j`…` code tag
+│   ├── units/unit1-8.ts 36 lessons + ~400 questions, written with the j`…` code tag
 │   ├── placement.ts     placement test
 │   ├── final.ts         Final Challenge stages
 │   └── curriculum.ts    indexes and lookups
@@ -139,16 +153,16 @@ same way since it is plain data.
 
 ### The Java sandbox
 
-The sandbox implements the Java subset taught in the course: `int/double/boolean/char/long/float/String`,
-all operators with Java precedence and integer-overflow semantics, casts, `final`, `if/else`, `while`,
-`do-while`, `for`, `break/continue`, `Scanner` (with input simulated exactly like the real class),
+The sandbox implements the Java subset taught in the course: all 8 primitive types and `String`,
+all operators with Java precedence and integer-overflow semantics, casts, `final`, `if/else`, `switch`
+(with fall-through, on `int`, `char` and `String`), `while`, `do-while`, `for`, `break/continue`, `Scanner` (with input simulated exactly like the real class),
 `try/catch/finally`, exceptions (`ArithmeticException`, `InputMismatchException`, …), `Math`, `String`
 methods, `printf`/`String.format`, and static methods. It reports **real javac-style compile errors**
 ("variable x might not have been initialized", "possible lossy conversion from double to int",
 "unreachable statement"…) and explains them in beginner language.
 
-It is honest about its limits: arrays, objects, `switch` and generics produce a clear "not supported in the
-sandbox yet" message instead of pretending to run. Infinite loops are stopped after 100,000 steps with an
+It is honest about its limits: arrays, objects, generics, arrow-style `switch` cases and switch expressions produce
+a clear "not supported in the sandbox yet" message instead of pretending to run. Infinite loops are stopped after 100,000 steps with an
 explanation. Programs that read input become interactive: the console asks the learner for each line and the
 deterministic program is re-run with the input so far.
 
@@ -158,7 +172,7 @@ deterministic program is re-run with the input so far.
 checked by executing the code (and no other option may match), each error-type answer by compiling/running it,
 every word-bank decoy must be graded wrong, every coding task's reference solution must pass its tests while the
 starter code must fail, and every teaching example must run. `npm run validate:java` goes further and compiles
-and runs all ~500 programs with a real JDK, asserting the sandbox produces identical compile errors,
+and runs every program in the course with a real JDK, asserting the sandbox produces identical compile errors,
 exceptions and output.
 
 ---
@@ -169,10 +183,10 @@ Questions live next to their lessons in `src/data/units/`. A minimal example:
 
 ```ts
 {
-  id: 'w-01',
+  id: 'u7l1-02',
   type: 'predict-output',
   difficulty: 1,               // 1 beginner, 2 intermediate, 3 advanced
-  concept: 'while',            // used to pick easier follow-ups
+  concept: 'counting',         // used to pick easier follow-ups
   prompt: 'What does this program print?',
   code: j`
 int i = 0;
@@ -183,14 +197,14 @@ while (i < 3) {
   optionStyle: 'output',
   options: [
     { text: '0\n1\n2' },
-    { text: '1\n2\n3', feedback: 'i starts at 0, and it is printed BEFORE it is increased.' },
+    { text: '1\n2\n3', feedback: 'The counter starts at 0, and it is printed BEFORE it is increased.' },
   ],
   answer: 0,
   explanation: 'i = 0, 1, 2 pass the test i < 3 …',
 }
 ```
 
-Add the id to a lesson's `questions` (or `challenge`), run `npm test`, and the validator will tell you if the
+Write in a teacher's voice (plain words, "we" and "you", no em dashes and no emojis). Add the id to a lesson's `questions` (or `challenge`), run `npm test`, and the validator will tell you if the
 answer doesn't match what Java really does.
 
 ---

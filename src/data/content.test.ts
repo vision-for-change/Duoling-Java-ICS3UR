@@ -58,7 +58,6 @@ describe('curriculum structure', () => {
     const counts: Record<string, number> = {}
     for (const q of QUESTIONS) counts[q.topic] = (counts[q.topic] ?? 0) + 1
     for (const [topic, n] of Object.entries(counts)) expect(n, topic).toBeGreaterThanOrEqual(10)
-    expect(counts.mixed).toBeGreaterThanOrEqual(15)
     expect(QUESTIONS.length).toBeGreaterThanOrEqual(200)
   })
 })

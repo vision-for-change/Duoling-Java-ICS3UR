@@ -1,8 +1,5 @@
 @import 'tailwindcss';
 
-/* ------------------------------------------------------------------
-   ByteBrew design tokens: a warm café palette with bright accents.
-   ------------------------------------------------------------------ */
 @theme {
   --font-display: 'Fredoka Variable', 'Fredoka', ui-rounded, system-ui, sans-serif;
   --font-sans: 'Nunito Variable', 'Nunito', ui-rounded, system-ui, sans-serif;

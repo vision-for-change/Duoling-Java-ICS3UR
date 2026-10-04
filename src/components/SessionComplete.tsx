@@ -91,7 +91,7 @@ export function SessionComplete({ info, summaryState }: { info: FinishInfo; summ
           {reward?.streakExtended && reward.streak > 0 && (
             <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.3 }} className="rounded-2xl border-2 border-brew-300 bg-brew-50 px-4 py-3 font-display text-lg font-semibold text-brew-700">
               <AppIcon name="flame" size={22} className="mr-1.5 inline-block align-[-4px] fill-brew-300" />
-              {reward.streak} day streak{reward.streak > 1 ? '! You\'re on fire!' : ' started! Come back tomorrow.'}
+              {reward.streak} day streak{reward.streak > 1 ? '. Keep it going!' : ' started. Come back tomorrow to keep it alive.'}
             </motion.div>
           )}
           {reward?.dailyGoalReached && (

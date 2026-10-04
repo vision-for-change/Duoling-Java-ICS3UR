@@ -11,7 +11,7 @@ import { store } from '../state/store'
 import { AppIcon } from '../components/AppIcon'
 
 const LEVELS = [
-  { id: 'new', icon: 'sprout', title: "I'm brand new to Java", body: 'Start from the very first lesson. Byte will guide you step by step.' },
+  { id: 'new', icon: 'sprout', title: "I'm brand new to Java", body: 'Start from the very first lesson, and we will go step by step.' },
   { id: 'little', icon: 'compass', title: 'I know a little', body: 'Take a quick placement test (14 questions, about 5 minutes).' },
   { id: 'lot', icon: 'rocket', title: 'I know quite a bit', body: 'Take the placement test and skip the units you already know.' },
 ] as const
@@ -65,7 +65,7 @@ export function OnboardingPage() {
               className="flex flex-1 flex-col"
             >
               <MascotSays mood="excited" size={120} className="mt-6">
-                <span className="text-lg">Hi! I'm <b>Byte</b>, your lion guide. I brew Java, the programming language!</span>
+                <span className="text-lg">Hi! I'm <b>Byte</b>. I'll be your guide through Java, one small step at a time.</span>
               </MascotSays>
               <label htmlFor="name" className="mt-10 block font-display text-2xl font-semibold">
                 What should I call you?

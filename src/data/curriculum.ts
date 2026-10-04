@@ -75,21 +75,24 @@ export interface TopicInfo {
 }
 
 export const TOPICS: TopicInfo[] = [
+  { id: 'basics', label: 'Program Basics', short: 'Basics', icon: 'book', unitId: 'u1' },
   { id: 'variables', label: 'Variables & Constants', short: 'Variables', icon: 'package', unitId: 'u1' },
   { id: 'types', label: 'Data Types & Strings', short: 'Data types', icon: 'type', unitId: 'u1' },
-  { id: 'arithmetic', label: 'Arithmetic Expressions', short: 'Arithmetic', icon: 'divide', unitId: 'u2' },
-  { id: 'boolean-logic', label: 'Boolean Logic', short: 'Boolean logic', icon: 'scale', unitId: 'u2' },
-  { id: 'conditionals', label: 'if / else', short: 'if / else', icon: 'git-branch', unitId: 'u3' },
-  { id: 'nested-if', label: 'Nested & Combined Conditions', short: 'Nested if', icon: 'layers', unitId: 'u3' },
-  { id: 'while-loops', label: 'while Loops', short: 'while loops', icon: 'repeat', unitId: 'u4' },
-  { id: 'for-loops', label: 'for & Nested Loops', short: 'for loops', icon: 'repeat-once', unitId: 'u4' },
-  { id: 'do-while', label: 'do-while & Choosing Loops', short: 'do-while', icon: 'recycle', unitId: 'u4' },
-  { id: 'input', label: 'Scanner & hasNextInt()', short: 'Input', icon: 'keyboard', unitId: 'u5' },
-  { id: 'errors', label: 'Types of Errors', short: 'Errors', icon: 'bug', unitId: 'u5' },
-  { id: 'try-catch', label: 'try / catch', short: 'try / catch', icon: 'shield', unitId: 'u5' },
-  { id: 'math', label: 'The Math Class', short: 'Math', icon: 'ruler', unitId: 'u6' },
-  { id: 'printf', label: 'printf Formatting', short: 'printf', icon: 'printer', unitId: 'u7' },
-  { id: 'mixed', label: 'Mixed Problems', short: 'Mixed', icon: 'puzzle', unitId: 'u8' },
+  { id: 'input', label: 'Scanner Input', short: 'Input', icon: 'keyboard', unitId: 'u2' },
+  { id: 'arithmetic', label: 'Operators & Casting', short: 'Operators', icon: 'divide', unitId: 'u3' },
+  { id: 'math', label: 'The Math Class', short: 'Math', icon: 'ruler', unitId: 'u3' },
+  { id: 'errors', label: 'Errors & Debugging', short: 'Errors', icon: 'bug', unitId: 'u4' },
+  { id: 'printf', label: 'printf Formatting', short: 'printf', icon: 'printer', unitId: 'u5' },
+  { id: 'expressions', label: 'Expressions & Relational Operators', short: 'Expressions', icon: 'calculator', unitId: 'u6' },
+  { id: 'boolean-logic', label: 'Logical Operators', short: 'Logic', icon: 'scale', unitId: 'u6' },
+  { id: 'conditionals', label: 'if / else', short: 'if / else', icon: 'git-branch', unitId: 'u6' },
+  { id: 'nested-if', label: 'Nested ifs', short: 'Nested if', icon: 'layers', unitId: 'u6' },
+  { id: 'while-loops', label: 'while Loops', short: 'while loops', icon: 'repeat', unitId: 'u7' },
+  { id: 'do-while', label: 'do-while Loops', short: 'do-while', icon: 'recycle', unitId: 'u7' },
+  { id: 'loop-control', label: 'break & continue', short: 'break / continue', icon: 'footsteps', unitId: 'u7' },
+  { id: 'for-loops', label: 'for & Nested Loops', short: 'for loops', icon: 'repeat-once', unitId: 'u7' },
+  { id: 'switch', label: 'switch Statements', short: 'switch', icon: 'puzzle', unitId: 'u8' },
+  { id: 'try-catch', label: 'try / catch', short: 'try / catch', icon: 'shield', unitId: 'u8' },
 ]
 
 const topicIndex = new Map(TOPICS.map((t) => [t.id, t]))

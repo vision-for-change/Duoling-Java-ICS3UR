@@ -8,10 +8,10 @@ import { Md } from './Md'
 import type { Phase } from './questions/types'
 import { outputHint } from './questions/CodeQuestions'
 
-const CORRECT = ['Nice! You got it!', 'Brewed to perfection!', 'Correct!', 'Java-tastic!', 'Spot on!', 'Exactly right!']
-const SECOND = ['Got it on the second try!', 'That\'s the spirit! Mistakes help you learn.']
-const RETRY = ['Almost! Let\'s look at what happened.', 'Not quite. Take another look.', 'Close! Check the highlighted part.']
-const FAILED = ['Here\'s how it works.', 'Let\'s learn from this one.']
+const CORRECT = ['Yes, exactly right.', 'Nice work. That is it.', 'Correct, well done.', 'There you go.', 'Spot on.', 'Good thinking.']
+const SECOND = ['You got it on the second try. That is how learning works.', 'Good. You learned something from that one, and that is what mistakes are for.']
+const RETRY = ['Not quite, but you are close. Take another look.', 'Hmm, not this time. Read it again, slowly.', 'Almost. Check the highlighted part.']
+const FAILED = ['Let me show you how this one works.', 'This one is tricky. Here is what is going on.']
 
 function pick(list: string[], seed: string) {
   let h = 0
@@ -59,7 +59,7 @@ function wrongFeedback(q: Question, grade: GradeResult | null, lastResponseText?
     const bad = grade.blankResults.map((ok, i) => (ok ? null : i + 1)).filter(Boolean)
     if (bad.length && bad.length < grade.blankResults.length) return `Blank${bad.length > 1 ? 's' : ''} ${bad.join(' and ')} ${bad.length > 1 ? 'need' : 'needs'} another look. The others are right.`
   }
-  if (q.type === 'find-bug') return q.hint ?? 'That line is fine. Read each line and ask: does it do what the comment/goal says?'
+  if (q.type === 'find-bug') return q.hint ?? 'That line is fine. Go through the lines one at a time, and ask yourself whether each one does what we want.'
   if ((q.type === 'write-code' || q.type === 'fix-code') && grade?.codeResult) {
     const cr = grade.codeResult
     if (cr.blockingError) return 'Your code doesn\'t compile yet. Check the highlighted line.'
@@ -111,10 +111,10 @@ export function FeedbackPanel(props: FeedbackPanelProps) {
   const heading = placement
     ? correct
       ? 'Correct!'
-      : 'Noted. Let\'s keep going.'
+      : 'That is okay. Let us keep going.'
     : correct
       ? combo >= 3
-        ? `You're on fire! ${combo} in a row`
+        ? `That is ${combo} in a row. Nice streak!`
         : attempt > 1
           ? pick(SECOND, seed)
           : pick(CORRECT, seed)
@@ -180,7 +180,7 @@ export function FeedbackPanel(props: FeedbackPanelProps) {
                 )}
                 {correct && grade?.alternative && <p className="mt-1 text-sm font-semibold text-mint-700">Your answer works too. Nice thinking!</p>}
                 {!correct && !retry && followupAdded && !placement && (
-                  <p className="mt-1 text-sm font-bold text-espresso-600">Byte added an easier question on this idea to help it stick.</p>
+                  <p className="mt-1 text-sm font-bold text-espresso-600">Here is an easier one on the same idea, to help it stick.</p>
                 )}
                 {q?.type === 'find-bug' && !retry && (
                   <details className="mt-2">

@@ -374,7 +374,7 @@ export function SessionPlayer({ initial, onFinish, exitTo, noun = 'lesson' }: Se
         <div className="flex flex-col items-center text-center">
           <Mascot mood="encouraging" size={110} />
           <h2 className="mt-2 text-2xl font-bold">Out of hearts</h2>
-          <p className="mt-1 text-espresso-600">Mistakes are how programmers learn! Keep going without hearts, or start fresh.</p>
+          <p className="mt-1 text-espresso-600">Mistakes are how we all learn. Keep going without hearts, or start this lesson fresh.</p>
           <div className="mt-5 flex w-full flex-col gap-2">
             <Button
               full

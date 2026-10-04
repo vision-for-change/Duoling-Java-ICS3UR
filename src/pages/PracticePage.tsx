@@ -30,7 +30,7 @@ export function PracticePage() {
       <div className="mx-auto flex max-w-xl flex-col items-center py-10 text-center">
         <Mascot mood="thinking" size={140} float />
         <h1 className="mt-4 text-3xl font-bold">Practice unlocks after your first lesson</h1>
-        <p className="mt-2 text-espresso-600">Byte builds practice sessions from what you've already learned, and focuses on what you find tricky.</p>
+        <p className="mt-2 text-espresso-600">Practice sessions are built from what you have already learned, with extra focus on whatever you find tricky.</p>
         <ButtonLink to="/learn" size="lg" className="mt-6">
           Go to the path
         </ButtonLink>
@@ -53,7 +53,7 @@ export function PracticePage() {
           </div>
           <div className="rounded-3xl border-2 border-espresso-100 bg-white p-5 text-sm text-espresso-600">
             <div className="mb-1 font-display text-lg font-semibold text-espresso-900">How practice works</div>
-            Byte looks at your answer history, finds topics under 80% accuracy and the questions you missed, and mixes them into short sessions. Get them right and your mastery bars grow!
+            I look at your answer history, find the topics under 80% and the questions you missed, and mix them into short sessions. Get them right and your mastery bars grow.
           </div>
         </>
       }
@@ -76,7 +76,7 @@ export function PracticePage() {
                 ))}
               </ul>
             ) : (
-              <p className="mt-1 text-white/90">No weak spots yet. Nice! A mixed review keeps everything fresh.</p>
+              <p className="mt-1 text-white/90">No weak spots yet, which is great. A mixed review keeps everything fresh.</p>
             )}
           </div>
           <ButtonLink to="/practice/session?mode=smart" variant="sun" size="lg" icon={<Target size={20} />}>
@@ -155,7 +155,7 @@ export function PracticeSessionPage() {
     if (mode === 'mistakes') return <Navigate to="/practice" replace />
     return (
       <div className="flex min-h-dvh flex-col items-center justify-center gap-4 p-6 text-center">
-        <MascotSays mood="thinking">Nothing to practice here yet. Finish a lesson first!</MascotSays>
+        <MascotSays mood="thinking">There is nothing to practice yet. Finish a lesson first, and then come back.</MascotSays>
         <ButtonLink to="/learn">Go to the path</ButtonLink>
       </div>
     )
@@ -166,7 +166,7 @@ export function PracticeSessionPage() {
     const reward = store.finishPractice(plan.title, sum)
     return {
       reward,
-      headline: sum.accuracy >= 0.8 ? 'Practice complete. Great work!' : 'Practice complete!',
+      headline: sum.accuracy >= 0.8 ? 'Practice complete. Nice work.' : 'Practice complete!',
       subline: `${sum.firstTry}/${sum.total} right on the first try. Every mistake you fix makes the idea stick.`,
       primary: { label: 'Back to practice', to: '/practice' },
       secondary: { label: 'Continue learning', to: '/learn' },

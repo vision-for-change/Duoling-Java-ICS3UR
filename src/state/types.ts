@@ -6,7 +6,11 @@
  */
 import type { Difficulty, PlacementArea, TopicId } from '../data/types'
 
-export const PROGRESS_VERSION = 1
+/**
+ * 2: the course was rewritten (new units, lessons and questions), so lesson progress from
+ * version 1 no longer lines up with anything. See `migrate` in repository.ts.
+ */
+export const PROGRESS_VERSION = 2
 
 export type SessionSource = 'lesson' | 'practice' | 'checkpoint' | 'placement'
 
@@ -108,7 +112,7 @@ export const DEFAULT_SETTINGS: Settings = {
 export function createEmptyProgress(now = Date.now()): Progress {
   return {
     version: PROGRESS_VERSION,
-    profile: { name: '', createdAt: now, avatar: 'robot' },
+    profile: { name: '', createdAt: now, avatar: 'lion' },
     onboarded: false,
     settings: { ...DEFAULT_SETTINGS },
     xp: 0,

@@ -44,6 +44,8 @@ interface LoopCtx {
   breakDAs: DA[]
   hasBreak: boolean
   hasContinue: boolean
+  /** a switch takes `break` but not `continue` */
+  isSwitch?: boolean
 }
 
 interface StmtResult {
@@ -383,6 +385,48 @@ class Checker {
           completes: !infinite || ctx.hasBreak,
         }
       }
+      case 'Switch': {
+        const after = this.value(s.selector, da)
+        const st = s.selector.t!
+        if (!['int', 'char', 'short', 'byte', 'String'].includes(st)) {
+          if (['long', 'float', 'double', 'boolean'].includes(st)) err(`selector type ${st} is not allowed`, s.selector)
+          err(`incompatible types: ${typeLabel(st)} cannot be converted to int`, s.selector)
+        }
+        this.pushScope()
+        const ctx: LoopCtx = { breakDAs: [], hasBreak: false, hasContinue: false, isSwitch: true }
+        this.loops.push(ctx)
+        const seen = new Set<string>()
+        let last: StmtResult | null = null
+        for (const c of s.cases) {
+          if (c.label) {
+            this.expr(c.label, copyDA(after))
+            if (c.label.cv === undefined) err('constant expression required', c.label)
+            this.assignable(st, c.label)
+            const key = typeof c.label.cv + ':' + String(c.label.cv)
+            if (seen.has(key)) err('duplicate case label', c.label)
+            seen.add(key)
+          }
+          // every label is a way in, so the statements right after it are reachable
+          let cur = copyDA(after)
+          let completes = true
+          for (const b of c.body) {
+            if (!completes) err('unreachable statement', b)
+            const r = this.stmt(b, cur)
+            cur = r.da
+            completes = r.completes
+          }
+          last = { da: cur, completes }
+        }
+        this.loops.pop()
+        this.popScope()
+        const ends: DA[] = [...ctx.breakDAs]
+        if (last && last.completes) ends.push(last.da)
+        if (!s.hasDefault) ends.push(copyDA(after))
+        return {
+          da: mergeAll(ends),
+          completes: !s.hasDefault || ctx.hasBreak || !last || last.completes,
+        }
+      }
       case 'Break': {
         const ctx = this.loops[this.loops.length - 1]
         if (!ctx) err('break outside switch or loop', s)
@@ -391,7 +435,7 @@ class Checker {
         return { da: deadDA(), completes: false }
       }
       case 'Continue': {
-        const ctx = this.loops[this.loops.length - 1]
+        const ctx = [...this.loops].reverse().find((c) => !c.isSwitch)
         if (!ctx) err('continue outside of loop', s)
         ctx.hasContinue = true
         return { da: deadDA(), completes: false }

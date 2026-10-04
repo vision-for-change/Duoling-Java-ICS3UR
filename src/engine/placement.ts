@@ -44,11 +44,11 @@ export function evaluatePlacement(answers: PlacementAnswer[], now = Date.now()):
 
   let message: string
   if (comfortable.length === 0) {
-    message = "Let's start from the very beginning. Byte will guide you one small step at a time."
+    message = 'No worries at all. We will start right at the beginning and take it one small step at a time.'
   } else if (needsWork.length === 0) {
-    message = 'Impressive! You already know the fundamentals. Jump into the Mixed Problems and aim for the Final Challenge.'
+    message = 'Wow, you already know most of this! Head for the later units, take the checkpoints as you go, and then try the Final Challenge.'
   } else {
-    message = `You seem comfortable with ${joinList(comfortable.slice(0, 3))}, but ${joinList(needsWork.slice(0, 2))} could use some practice.`
+    message = `You seem comfortable with ${joinList(comfortable.slice(0, 3))}, but ${joinList(needsWork.slice(0, 2))} could use a little practice. That is where we will begin.`
   }
 
   return { completedAt: now, skipped: false, scores, startUnitId, message }
@@ -60,6 +60,6 @@ export function skippedPlacement(now = Date.now()): PlacementResult {
     skipped: true,
     scores: {},
     startUnitId: UNITS[0].id,
-    message: "You're starting from the beginning. Every Java expert started with their first variable!",
+    message: 'Starting from the beginning is a great choice. Every programmer I know began with their very first variable.',
   }
 }
