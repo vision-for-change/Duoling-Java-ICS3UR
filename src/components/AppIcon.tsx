@@ -21,6 +21,7 @@ import {
   GraduationCap,
   HeartCrack,
   Keyboard,
+  Landmark,
   Layers,
   Lightbulb,
   Medal,
@@ -36,6 +37,7 @@ import {
   Rocket,
   Ruler,
   Scale,
+  ShoppingCart,
   ShieldCheck,
   Sparkles,
   Sprout,
@@ -54,6 +56,8 @@ import type { IconName } from '../data/types'
 
 const ICONS: Record<IconName, LucideIcon> = {
   alert: TriangleAlert,
+  bank: Landmark,
+  cart: ShoppingCart,
   bomb: Bomb,
   book: BookOpen,
   'brick-wall': BrickWall,

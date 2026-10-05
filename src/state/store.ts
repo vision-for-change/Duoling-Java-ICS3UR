@@ -4,8 +4,8 @@
  * through a ProgressRepository.
  */
 import { checkpointId, UNITS } from '../data/curriculum'
-import { finalStages } from '../data/final'
-import type { Difficulty, TopicId } from '../data/types'
+import { getProject } from '../data/projects'
+import type { Difficulty, ProjectId, TopicId } from '../data/types'
 import { getAchievement, newlyEarned } from '../engine/achievements'
 import { dayKey, registerActivity } from '../engine/dates'
 import { levelFor, XP, type LevelInfo } from '../engine/gamification'
@@ -297,7 +297,7 @@ export class ProgressStore {
   }
 
   /**
-   * The learner chose to jump ahead to a lesson, a checkpoint or the Final Challenge. Everything passed over
+   * The learner chose to jump ahead to a lesson, a checkpoint or the final project. Everything passed over
    * is marked as skipped (not completed, and still open to finish later), and the target is opened.
    * Returns how many steps were skipped.
    */
@@ -357,15 +357,22 @@ export class ProgressStore {
     if (p.final.stagesDone.includes(stageId)) return null
     const breakdown: { label: string; xp: number }[] = [{ label: `Stage: ${title}`, xp: XP.finalStage }]
     const done = [...p.final.stagesDone, stageId]
-    const finished = finalStages.every((s) => done.includes(s.id)) && !p.final.completedAt
-    if (finished) breakdown.push({ label: 'Final Challenge complete', xp: XP.finalComplete })
+    const stages = getProject(p.project)?.stages ?? []
+    const finished = stages.length > 0 && stages.every((s) => done.includes(s.id)) && !p.final.completedAt
+    if (finished) breakdown.push({ label: 'Final project complete', xp: XP.finalComplete })
     const base: Progress = { ...p, final: { ...p.final, stagesDone: done, completedAt: finished ? Date.now() : p.final.completedAt } }
     const { next, reward, events } = this.reward(base, breakdown, {
       kind: 'final',
-      title: finished ? 'Completed the Java Final Challenge!' : `Final Challenge: “${title}” done`,
+      title: finished ? `Finished the ${getProject(p.project)!.title} project!` : `Final project: “${title}” done`,
     })
     this.commit(next, events)
     return reward
+  }
+
+  /** Pick (or switch) the final project. Work on other projects is kept, in case the learner switches back. */
+  chooseProject(id: ProjectId) {
+    if (!getProject(id) || this.state.project === id) return
+    this.commit({ ...this.state, project: id })
   }
 
   resetProgress() {

@@ -46,7 +46,7 @@ export function evaluatePlacement(answers: PlacementAnswer[], now = Date.now()):
   if (comfortable.length === 0) {
     message = 'No worries at all. We will start right at the beginning and take it one small step at a time.'
   } else if (needsWork.length === 0) {
-    message = 'Wow, you already know most of this! Head for the later units, take the checkpoints as you go, and then try the Final Challenge.'
+    message = 'Wow, you already know most of this! Head for the later units, take the checkpoints as you go, and then build your final project.'
   } else {
     message = `You seem comfortable with ${joinList(comfortable.slice(0, 3))}, but ${joinList(needsWork.slice(0, 2))} could use a little practice. That is where we will begin.`
   }

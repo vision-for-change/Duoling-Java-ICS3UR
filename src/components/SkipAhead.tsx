@@ -2,6 +2,7 @@ import { useState, type ReactNode } from 'react'
 import { BookOpenText, Check, Flag, ListTree, Lock, Play, SkipForward, Trophy } from 'lucide-react'
 import { useNavigate } from 'react-router'
 import { UNITS, checkpointId } from '../data/curriculum'
+import { getProject } from '../data/projects'
 import { canOpen, isFinalUnlocked, nodeStatus, type NodeStatus } from '../engine/progression'
 import { UNIT_STYLES } from '../lib/unitStyles'
 import { store } from '../state/store'
@@ -9,7 +10,7 @@ import type { Progress } from '../state/types'
 import { Button } from './Button'
 import { Modal } from './Modal'
 
-/** Something the learner can open: a lesson, a unit checkpoint or the Final Challenge. */
+/** Something the learner can open: a lesson, a unit checkpoint or the final project. */
 export interface NavTarget {
   id: string
   title: string
@@ -91,6 +92,7 @@ export function useCourseNavigation(): { open: (t: NavTarget) => void; dialog: R
 
 /** The whole course in one list, so a learner can pick any lesson. Locked ones go through the skip dialog. */
 export function CourseOutline({ open, onClose, progress: p, onPick }: { open: boolean; onClose: () => void; progress: Progress; onPick: (t: NavTarget) => void }) {
+  const finalTitle = `Final project: ${getProject(p.project)?.title ?? 'your program'}`
   const finalStatus: NodeStatus = p.final.completedAt ? 'completed' : isFinalUnlocked(p) ? 'unlocked' : 'locked'
   return (
     <Modal open={open} onClose={onClose} title="Course outline" size="lg">
@@ -137,12 +139,12 @@ export function CourseOutline({ open, onClose, progress: p, onPick }: { open: bo
             type="button"
             onClick={() => {
               onClose()
-              onPick({ id: 'final', title: 'Java Final Challenge', to: '/final', status: finalStatus })
+              onPick({ id: 'final', title: finalTitle, to: '/final', status: finalStatus })
             }}
             className="flex w-full items-center gap-3 rounded-xl border-2 border-transparent px-3 py-2 text-left transition hover:border-espresso-100 hover:bg-cream-100"
           >
             {finalStatus === 'locked' ? <Lock size={18} strokeWidth={2.6} className="text-espresso-300" aria-hidden /> : <Flag size={18} strokeWidth={2.6} className="text-brew-500" aria-hidden />}
-            <span className={`flex-1 font-semibold ${finalStatus === 'locked' ? 'text-espresso-400' : 'text-espresso-900'}`}>Java Final Challenge</span>
+            <span className={`flex-1 font-semibold ${finalStatus === 'locked' ? 'text-espresso-400' : 'text-espresso-900'}`}>{finalTitle}</span>
             <span className="text-xs font-bold text-espresso-400">{STATUS_LABEL[finalStatus]}</span>
           </button>
         </section>

@@ -169,8 +169,8 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   },
   {
     id: 'cafe-champion',
-    title: 'Café Champion',
-    description: 'Complete the Java Final Challenge.',
+    title: 'Project Champion',
+    description: 'Finish your final project.',
     icon: 'flag',
     color: 'brew',
     check: (p) => !!p.final.completedAt,

@@ -4,14 +4,16 @@
  * This is the single document a backend would store per user. Everything in
  * it is plain JSON (timestamps are epoch ms, days are "YYYY-MM-DD" in local time).
  */
-import type { Difficulty, PlacementArea, TopicId } from '../data/types'
+import type { Difficulty, PlacementArea, ProjectId, TopicId } from '../data/types'
 
 /**
  * 2: the course was rewritten (new units, lessons and questions), so lesson progress from
  * version 1 no longer lines up with anything. See `migrate` in repository.ts.
  * 3: lessons unlock in order, and `skipped` / `unlocked` record the ones the learner jumped past or opened early.
+ * 4: the café kiosk final was replaced by four projects. `project` is the one the learner picked,
+ *    and old kiosk stages in `final` are dropped.
  */
-export const PROGRESS_VERSION = 3
+export const PROGRESS_VERSION = 4
 
 export type SessionSource = 'lesson' | 'practice' | 'checkpoint' | 'placement'
 
@@ -103,6 +105,9 @@ export interface Progress {
     programsRun: number
     bugsFixed: number
   }
+  /** the final project the learner chose when they started (null until they pick one) */
+  project: ProjectId | null
+  /** stage ids are project specific (cart-1, guesser-2, ...); completedAt is set when the chosen project is finished */
   final: { stagesDone: string[]; completedAt?: number; code: Record<string, string> }
 }
 
@@ -132,6 +137,7 @@ export function createEmptyProgress(now = Date.now()): Progress {
     placement: null,
     activity: [],
     stats: { answered: 0, correct: 0, bestCombo: 0, practiceSessions: 0, programsRun: 0, bugsFixed: 0 },
+    project: null,
     final: { stagesDone: [], code: {} },
   }
 }

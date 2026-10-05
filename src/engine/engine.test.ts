@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { getLesson, getQuestion, getUnit, LESSONS, UNITS } from '../data/curriculum'
-import { finalStages } from '../data/final'
+import { getProject, PROJECTS } from '../data/projects'
 import { MemoryRepository, migrate } from '../state/repository'
 import { ProgressStore } from '../state/store'
 import { createEmptyProgress, PROGRESS_VERSION, type Progress } from '../state/types'
@@ -316,10 +316,12 @@ describe('progress store', () => {
     expect(store.finishCheckpoint('u1', sum, true).xp).toBe(50)
   })
 
-  it('completes the final challenge once every stage is done, in any order', async () => {
+  it('completes the chosen project once every stage is done, in any order', async () => {
     const store = new ProgressStore(new MemoryRepository())
     await store.hydrate()
-    const order = [...finalStages].reverse()
+    store.chooseProject('bank')
+    expect(store.getSnapshot().project).toBe('bank')
+    const order = [...getProject('bank')!.stages].reverse()
     for (const s of order.slice(0, -1)) {
       expect(store.completeFinalStage(s.id, s.title)?.xp).toBe(XP.finalStage)
       expect(store.getSnapshot().final.completedAt).toBeUndefined()
@@ -328,6 +330,24 @@ describe('progress store', () => {
     expect(store.completeFinalStage(last.id, last.title)?.xp).toBe(XP.finalStage + XP.finalComplete)
     expect(store.getSnapshot().final.completedAt).toBeTypeOf('number')
     expect(store.completeFinalStage(last.id, last.title)).toBeNull()
+  })
+
+  it('only counts stages of the chosen project towards finishing it', async () => {
+    const store = new ProgressStore(new MemoryRepository())
+    await store.hydrate()
+    store.chooseProject('cart')
+    for (const s of getProject('guesser')!.stages) store.completeFinalStage(s.id, s.title)
+    expect(store.getSnapshot().final.completedAt).toBeUndefined()
+    store.chooseProject('guesser')
+    store.chooseProject('nope' as never)
+    expect(store.getSnapshot().project).toBe('guesser')
+  })
+
+  it('offers four projects, each with its own stage ids and a video', () => {
+    expect(PROJECTS.map((p) => p.id)).toEqual(['cart', 'guesser', 'bank', 'grades'])
+    const ids = PROJECTS.flatMap((p) => p.stages.map((s) => s.id))
+    expect(new Set(ids).size).toBe(ids.length)
+    for (const p of PROJECTS) for (const s of p.stages) expect(s.id.startsWith(p.id + '-')).toBe(true)
   })
 
   it('round-trips through export / import', async () => {
@@ -368,10 +388,20 @@ describe('saved progress', () => {
   })
 
   it('leaves a current save untouched', () => {
-    const current = { ...createEmptyProgress(), onboarded: true, lessons: { 'u1-l1': rec }, final: { stagesDone: ['final-2'], code: {} } }
+    const current = { ...createEmptyProgress(), onboarded: true, project: 'grades' as const, lessons: { 'u1-l1': rec }, final: { stagesDone: ['grades-2'], code: {} } }
     const p = migrate(JSON.parse(JSON.stringify(current)))!
     expect(Object.keys(p.lessons)).toEqual(['u1-l1'])
-    expect(p.final.stagesDone).toEqual(['final-2'])
+    expect(p.final.stagesDone).toEqual(['grades-2'])
+    expect(p.project).toBe('grades')
+  })
+
+  it('drops the old café kiosk progress and asks for a project', () => {
+    const v3 = { ...createEmptyProgress(), version: 3, onboarded: true, lessons: { 'u1-l1': rec }, final: { stagesDone: ['final-1', 'final-2'], completedAt: 4, code: { 'final-1': 'x' } } } as Partial<Progress>
+    delete v3.project
+    const p = migrate(v3)!
+    expect(Object.keys(p.lessons)).toEqual(['u1-l1'])
+    expect(p.final).toEqual({ stagesDone: [], code: {} })
+    expect(p.project).toBeNull()
   })
 
   it('rejects a save from a newer version', () => {

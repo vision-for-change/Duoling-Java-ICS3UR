@@ -8,7 +8,7 @@ import { PageLayout } from '../components/Navbar'
 import { ProgressBar } from '../components/ProgressBar'
 import { LevelBadge, StatTile } from '../components/Stats'
 import { getTopic, getUnit, TOPICS, TOTAL_LESSONS, UNITS } from '../data/curriculum'
-import { finalStages } from '../data/final'
+import { getProject, stagesDoneIn } from '../data/projects'
 import { ACHIEVEMENTS } from '../engine/achievements'
 import { lastDays, relativeTime } from '../engine/dates'
 import { completedLessonCount, isFinalUnlocked, isPlacedOut, isUnitComplete, isUnitRevealed, lessonStatus, nextStep, unitProgress, upcomingLessons } from '../engine/progression'
@@ -79,6 +79,7 @@ export function WeekStrip({ days, today }: { days: Record<string, { xp: number }
 
 export function DashboardPage() {
   const { progress: p, streak, activeToday, level, todayXp, topics, today } = useDerived()
+  const project = getProject(p.project)
   const next = nextStep(p)
   const weak = weakTopics(topics)
   const strong = strongTopics(topics)
@@ -195,7 +196,7 @@ export function DashboardPage() {
             <div className="mt-5 flex flex-wrap gap-3">
               {next ? (
                 <ButtonLink to={next.kind === 'lesson' ? `/lesson/${next.id}` : next.kind === 'checkpoint' ? `/checkpoint/${next.unitId}` : '/final'} variant="secondary" size="lg">
-                  {next.kind === 'lesson' ? 'Continue learning' : next.kind === 'checkpoint' ? 'Start checkpoint' : 'Start the Final Challenge'}
+                  {next.kind === 'lesson' ? 'Continue learning' : next.kind === 'checkpoint' ? 'Start checkpoint' : 'Start your final project'}
                 </ButtonLink>
               ) : (
                 <ButtonLink to="/practice" variant="secondary" size="lg">
@@ -284,10 +285,16 @@ export function DashboardPage() {
               <li>
                 <Link to={isFinalUnlocked(p) ? '/final' : '/learn#final'} className="flex items-center justify-between rounded-xl bg-espresso-50 px-2 py-2 text-sm font-bold text-espresso-600 hover:bg-cream-100">
                   <span className="flex items-center gap-2">
-                    <AppIcon name="flag" size={18} /> Final Challenge
+                    <AppIcon name={project?.icon ?? 'flag'} size={18} /> {project ? project.title : 'Final project'}
                   </span>
                   <span className="text-espresso-400">
-                    {p.final.completedAt ? '✓ done' : p.final.stagesDone.length ? `${p.final.stagesDone.length}/${finalStages.length} stages` : isFinalUnlocked(p) ? 'ready!' : 'locked'}
+                    {project && stagesDoneIn(project, p.final.stagesDone) === project.stages.length
+                      ? 'done'
+                      : project && stagesDoneIn(project, p.final.stagesDone) > 0
+                        ? `${stagesDoneIn(project, p.final.stagesDone)}/${project.stages.length} stages`
+                        : isFinalUnlocked(p)
+                          ? 'ready!'
+                          : 'locked'}
                   </span>
                 </Link>
               </li>

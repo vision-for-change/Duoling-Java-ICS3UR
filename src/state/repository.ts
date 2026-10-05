@@ -102,7 +102,8 @@ export function migrate(raw: unknown): Progress | null {
         history: Array.isArray(r.history) ? r.history : [],
         placement: r.placement ?? null,
         activity: Array.isArray(r.activity) ? r.activity : [],
-        final: { ...empty.final, ...r.final },
+        // the café kiosk (version 3 and older) is gone, so its stages are dropped
+        final: r.version < 4 ? { ...empty.final } : { ...empty.final, ...r.final },
       }
   return {
     ...empty,
@@ -115,6 +116,7 @@ export function migrate(raw: unknown): Progress | null {
     stats: { ...empty.stats, ...r.stats },
     skipped: r.skipped ?? {},
     unlocked: r.unlocked ?? {},
+    project: r.version < 4 ? null : (r.project ?? null),
     days: r.days ?? {},
     achievements: r.achievements ?? {},
   }

@@ -31,6 +31,8 @@ export type Difficulty = 1 | 2 | 3
 /** Names of the line icons drawn by `AppIcon` (src/components/AppIcon.tsx). */
 export type IconName =
   | 'alert'
+  | 'bank'
+  | 'cart'
   | 'bomb'
   | 'book'
   | 'brick-wall'
@@ -329,4 +331,23 @@ export interface FinalStage {
   tests: CodeTest[]
   hints: string[]
   mustInclude?: { pattern: string; message: string }[]
+  /** "I don't get it" explanations: the ideas this stage uses, explained properly */
+  explain: { title: string; body: string; code?: string }[]
+}
+
+/** The four final projects a learner can choose from. */
+export type ProjectId = 'cart' | 'guesser' | 'bank' | 'grades'
+
+export interface FinalProject {
+  id: ProjectId
+  title: string
+  tagline: string
+  /** one or two sentences for the project picker */
+  pitch: string
+  icon: IconName
+  /** the course ideas the finished program uses */
+  concepts: string[]
+  /** walkthrough video for the finished program */
+  videoUrl: string
+  stages: FinalStage[]
 }

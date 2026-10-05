@@ -7,6 +7,7 @@
  * lessons that were passed over as "skipped" so they can be finished later, and opens the one chosen.
  */
 import { checkpointId, UNITS } from '../data/curriculum'
+import { getProject } from '../data/projects'
 import type { Lesson, Unit } from '../data/types'
 import type { Progress } from '../state/types'
 
@@ -70,7 +71,7 @@ function isOpen(p: Progress, s: PathStep): boolean {
   return isDone(p, g) || isPlacedOut(p, unitOfStep(g))
 }
 
-/** True when every lesson of the course is finished, so the Final Challenge is next. */
+/** True when every lesson of the course is finished, so the final project is next. */
 function lastLessonDone(p: Progress): boolean {
   const last = UNITS[UNITS.length - 1]
   return !!p.lessons[last.lessons[last.lessons.length - 1].id]
@@ -84,7 +85,7 @@ export function isFinalUnlocked(p: Progress): boolean {
 export function nextStep(p: Progress): NextStep | null {
   const cur = PATH.find((s) => isOpen(p, s) && !isDone(p, s) && !p.skipped[s.id] && !isPlacedOut(p, unitOfStep(s)))
   if (cur) return cur
-  if (isFinalUnlocked(p) && !p.final.completedAt) return { kind: 'final', id: 'final', unitId: null, title: 'Java Final Challenge' }
+  if (isFinalUnlocked(p) && !p.final.completedAt) return { kind: 'final', id: 'final', unitId: null, title: `Final project: ${getProject(p.project)?.title ?? 'your program'}` }
   // nothing new is waiting: bring the learner back to something they skipped, or to the first unfinished step
   return PATH.find((s) => !isDone(p, s) && p.skipped[s.id]) ?? PATH.find((s) => !isDone(p, s)) ?? null
 }

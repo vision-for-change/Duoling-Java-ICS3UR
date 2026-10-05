@@ -37,7 +37,8 @@ Progress is stored in the browser (`localStorage`), so no account or server is n
 ## What's inside
 
 **Learning experience**
-- **Landing page → onboarding → placement test.** New learners pick a daily goal and their experience level.
+- **Landing page → onboarding → placement test.** New learners first choose the **final project** they want to
+  build (Shopping Cart, Number Guesser, Mini Banking or Grade Analyzer), then pick a daily goal and their experience level.
   The 14-question placement test walks through the course in order, then recommends a starting unit
   ("You seem comfortable with X, but Y could use a little practice"). Earlier units are *placed out* but stay
   open for review.
@@ -54,7 +55,7 @@ Progress is stored in the browser (`localStorage`), so no account or server is n
   7. **Loops**: `while`, `do-while`, `break` and `continue`, `for`, nested `for`
   8. **Switch and Exceptions**: `switch` (with fall-through), `try`/`catch`, `ArithmeticException`,
      `InputMismatchException` and `Exception e`
-- **Learning path** with 8 units and 36 lessons (+ a checkpoint per unit and the Final Challenge), drawn as a
+- **Learning path** with 8 units and 36 lessons (+ a checkpoint per unit and the final project), drawn as a
   winding path of nodes with Byte standing next to the current lesson. **Learning is sequential by default:** a new
   learner starts at Unit 1, Lesson 1 and sees only Unit 1. Finishing a lesson unlocks the next one, and finishing the
   last lesson of a unit reveals the next unit. Each lesson shows one of five states: *completed*, *current*, *unlocked*,
@@ -80,10 +81,18 @@ Progress is stored in the browser (`localStorage`), so no account or server is n
 - **Practice:** smart sessions built from weak topics (accuracy under 80%) and recently missed questions,
   per-topic practice with mastery bars, "fix your mistakes", and unit reviews.
 - **Java Sandbox page** for free experimentation, with interactive console input.
-- **Final Challenge (Byte's Café Kiosk):** 5 guided stages (constants + printf menu, a do-while order loop with
-  `switch`, crash-proof input with `try/catch`, nested-if member discounts, `Math.round` money maths and a formatted receipt),
-  each checked by automated tests, with progressive hints. Stages can be done in any order: each one starts
-  with the earlier parts already written.
+- **Final project, chosen at the start.** After the 8 units, the learner builds the project they picked, guided
+  stage by stage (4 or 5 stages each). The finished program is the code from the teacher's handout, and each project
+  links its YouTube walkthrough video:
+  - **Shopping Cart**: menu loop with `switch`, `nextDouble` prices, a running total, 13% tax at checkout
+  - **Number Guesser**: two player game with 10 attempts, too high / too low, `while (true)` + `InputMismatchException`
+  - **Mini Banking**: balance, deposits and withdrawals with an `else if` chain for bad amounts and insufficient funds
+  - **Grade Analyzer**: a `for` loop with `i--` to re-ask bad grades, the average with `printf("%.2f%%")`, letter grades
+
+  Every stage is checked by automated tests and has progressive hints, plus an **"I don't get it"** panel that explains
+  the ideas properly and points to the video. After a failed test run, Byte suggests the explanation and the video.
+  Stages can be done in any order (each one starts with the earlier parts already written), and the project can be
+  switched later on the **/project** page without losing saved code.
 
 **Gamification**
 - XP: +10 per correct answer (+20 for advanced), +5 on a second try, +50 per lesson (+10 if perfect),
@@ -92,7 +101,7 @@ Progress is stored in the browser (`localStorage`), so no account or server is n
 - Daily streak with a weekly calendar, and a configurable daily XP goal.
 - Hearts (optional, 3/5/8 per lesson). Running out never blocks learning: keep going without hearts or restart.
 - 18 achievements (First Lesson, 7 Day Streak, First Bug Fixed, Loop Master, Logic Master, Java Apprentice,
-  Perfect Lesson, Café Champion…), with progress bars for locked ones.
+  Perfect Lesson, Project Champion…), with progress bars for locked ones.
 - Animations for correct/incorrect answers, XP, combos, level-ups, achievements and
   lesson completion; synthesized sound effects (toggleable); reduced-motion support.
 
@@ -118,7 +127,7 @@ src/
 │   ├── types.ts         content model (units, lessons, teaching cards, 9 question types)
 │   ├── units/unit1-8.ts 36 lessons + ~400 questions, written with the j`…` code tag
 │   ├── placement.ts     placement test
-│   ├── final.ts         Final Challenge stages
+│   ├── projects.ts      the four final projects (stages, tests, explanations, video links)
 │   └── curriculum.ts    indexes and lookups
 ├── engine/          Pure game & learning logic (no React)
 │   ├── session.ts       adaptive session state machine (lessons, checkpoints, practice, placement)
@@ -142,7 +151,7 @@ src/
 │   ├── Stats (XPDisplay, StreakDisplay, HeartsDisplay, LevelBadge), AchievementBadge,
 │   └── Navbar (AppShell), Modal, Celebrations, SessionPlayer, SessionComplete, TeachCardView
 ├── pages/           Landing, Onboarding, Placement, Dashboard, Learn, Lesson/Checkpoint,
-│                    Practice, Sandbox, Achievements, Profile, Guide, Final
+│                    Practice, Sandbox, Achievements, Profile, Guide, Final, Project
 └── lib/             highlighter, friendly error explanations, sound, confetti, unit colours
 ```
 

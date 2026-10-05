@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect, useState, type ReactNode } from 'react'
 import { MotionConfig } from 'motion/react'
-import { createBrowserRouter, Navigate, Outlet, RouterProvider, ScrollRestoration } from 'react-router'
+import { createBrowserRouter, Navigate, Outlet, RouterProvider, ScrollRestoration, useLocation } from 'react-router'
 import { CelebrationLayer } from './components/Celebrations'
 import { Mascot } from './components/Mascot'
 import { AppShell } from './components/Navbar'
@@ -23,6 +23,7 @@ const PlacementPage = lazy(() => import('./pages/PlacementPage').then((m) => ({ 
 const PracticePage = lazy(() => import('./pages/PracticePage').then((m) => ({ default: m.PracticePage })))
 const PracticeSessionPage = lazy(() => import('./pages/PracticePage').then((m) => ({ default: m.PracticeSessionPage })))
 const ProfilePage = lazy(() => import('./pages/ProfilePage').then((m) => ({ default: m.ProfilePage })))
+const ProjectPage = lazy(() => import('./pages/ProjectPage').then((m) => ({ default: m.ProjectPage })))
 const SandboxPage = lazy(() => import('./pages/SandboxPage').then((m) => ({ default: m.SandboxPage })))
 
 function Loading() {
@@ -33,10 +34,15 @@ function Loading() {
   )
 }
 
-/** Only onboarded learners can enter the app; everyone else starts on the landing page. */
+/**
+ * Only onboarded learners can enter the app; everyone else starts on the landing page.
+ * Learners who started before the final projects existed are asked to pick one first.
+ */
 function RequireOnboarding({ children }: { children: ReactNode }) {
   const p = useProgress()
+  const location = useLocation()
   if (!p.onboarded) return <Navigate to="/" replace />
+  if (!p.project && location.pathname !== '/project') return <Navigate to="/project" replace />
   return <>{children}</>
 }
 
@@ -91,6 +97,7 @@ const router = createBrowserRouter([
               { path: '/profile', element: <ProfilePage /> },
               { path: '/guide/:unitId', element: <GuidePage /> },
               { path: '/final', element: <FinalPage /> },
+              { path: '/project', element: <ProjectPage /> },
             ],
           },
         ],

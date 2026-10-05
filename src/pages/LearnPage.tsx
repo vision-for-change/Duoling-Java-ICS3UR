@@ -8,6 +8,7 @@ import { PageLayout } from '../components/Navbar'
 import { ProgressBar } from '../components/ProgressBar'
 import { CourseOutline, OutlineButton, useCourseNavigation, type NavTarget } from '../components/SkipAhead'
 import { UNITS } from '../data/curriculum'
+import { getProject, stagesDoneIn } from '../data/projects'
 import { isFinalUnlocked, isUnitComplete, isUnitRevealed, nextStep, unitProgress } from '../engine/progression'
 import { UNIT_STYLES } from '../lib/unitStyles'
 import { useDerived } from '../state/hooks'
@@ -17,19 +18,27 @@ import { AppIcon } from '../components/AppIcon'
 function FinalNode({ onSkip }: { onSkip: (t: NavTarget) => void }) {
   const { progress: p } = useDerived()
   const unlocked = isFinalUnlocked(p)
-  const done = !!p.final.completedAt
-  const started = p.final.stagesDone.length > 0
+  const project = getProject(p.project)
+  const doneCount = project ? stagesDoneIn(project, p.final.stagesDone) : 0
+  const done = !!project && doneCount === project.stages.length
+  const started = doneCount > 0
+  const title = project ? project.title : 'Your final project'
   return (
     <div
       id="final"
       className={`mx-auto max-w-md scroll-mt-24 rounded-3xl border-2 p-6 text-center ${unlocked ? 'border-espresso-900 bg-gradient-to-br from-sun-200 via-brew-100 to-mint-100 shadow-[0_5px_0_var(--color-espresso-900)]' : 'border-dashed border-espresso-200 bg-white'}`}
     >
-      <AppIcon name={done ? 'trophy' : 'flag'} size={52} strokeWidth={2} className="mx-auto text-brew-600" />
-      <h2 className="mt-2 text-2xl font-bold">Java Final Challenge</h2>
-      <p className="mt-1 text-espresso-600">Build Byte's Café Kiosk: input validation, loops, try/catch, Math and a printf receipt, in 5 guided stages.</p>
+      <AppIcon name={done ? 'trophy' : (project?.icon ?? 'flag')} size={52} strokeWidth={2} className="mx-auto text-brew-600" />
+      <div className="mt-2 text-xs font-extrabold tracking-widest text-brew-600 uppercase">Final project</div>
+      <h2 className="text-2xl font-bold">{title}</h2>
+      {project && (
+        <p className="mt-1 text-espresso-600">
+          {project.pitch} You will build it in {project.stages.length} guided stages, with a video walkthrough to help.
+        </p>
+      )}
       {unlocked ? (
         <ButtonLink to="/final" size="lg" className="mt-4" variant={done ? 'secondary' : 'primary'}>
-          {done ? 'Open the kiosk again' : started ? 'Continue the challenge' : 'Start the challenge'}
+          {done ? 'Open your program again' : started ? 'Keep building' : 'Start building'}
         </ButtonLink>
       ) : (
         <>
@@ -37,8 +46,8 @@ function FinalNode({ onSkip }: { onSkip: (t: NavTarget) => void }) {
             <Lock size={16} /> Unlocks when you finish the last lesson of Unit 8
           </p>
           <div className="mt-3">
-            <Button variant="secondary" onClick={() => onSkip({ id: 'final', title: 'Java Final Challenge', to: '/final', status: 'locked' })}>
-              Skip to the Final Challenge
+            <Button variant="secondary" onClick={() => onSkip({ id: 'final', title: `Final project: ${title}`, to: '/final', status: 'locked' })}>
+              Skip to the final project
             </Button>
           </div>
         </>

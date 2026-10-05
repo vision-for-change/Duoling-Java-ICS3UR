@@ -9,7 +9,7 @@ import { outputsMatch, runJava, type RunResult } from '../java'
 import { runCodeTask } from '../engine/codeRunner'
 import { arrangeProgram, blankCount, fillBlanks, grade } from '../engine/grading'
 import { getQuestion, LESSONS, QUESTIONS, UNITS } from './curriculum'
-import { finalStages } from './final'
+import { ALL_PROJECT_STAGES, PROJECTS } from './projects'
 import { placementItems } from './placement'
 import type { ErrorKind, Question, Verify } from './types'
 
@@ -194,14 +194,25 @@ describe('teaching cards run', () => {
   }
 })
 
-describe('final challenge', () => {
-  for (const stage of finalStages) {
+describe('final projects', () => {
+  for (const stage of ALL_PROJECT_STAGES) {
     it(stage.id, () => {
       const sol = runCodeTask(stage.solution, stage.tests, stage.solution, stage.mustInclude)
       expect(sol.passed, JSON.stringify(sol.tests.map((t) => [t.reason, t.actual]))).toBe(true)
       for (const t of sol.tests) expect(t.result.status).toBe('ok')
       const starter = runCodeTask(stage.starter, stage.tests, stage.solution, stage.mustInclude)
       expect(starter.passed).toBe(false)
+      expect(stage.explain.length).toBeGreaterThan(0)
     })
   }
+  it('has four projects with a video each, ending in a crash-proof program', () => {
+    expect(PROJECTS.map((p) => p.title)).toEqual(['Shopping Cart', 'Number Guesser', 'Mini Banking', 'Grade Analyzer'])
+    for (const p of PROJECTS) {
+      expect(p.videoUrl).toMatch(/^https:\/\/www\.youtube\.com\/watch\?v=[\w-]+$/)
+      const last = p.stages[p.stages.length - 1].solution
+      expect(last).toMatch(/\btry\b/)
+      expect(last).toMatch(/\bcatch\b/)
+      expect(last).toMatch(/nextInt\(\)/)
+    }
+  })
 })

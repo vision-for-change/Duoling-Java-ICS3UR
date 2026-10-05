@@ -13,7 +13,7 @@ import { runJava } from '../java'
 import { applySet } from '../engine/codeRunner'
 import { arrangeProgram, fillBlanks } from '../engine/grading'
 import { LESSONS, QUESTIONS } from './curriculum'
-import { finalStages } from './final'
+import { ALL_PROJECT_STAGES } from './projects'
 import { placementItems } from './placement'
 
 interface Program {
@@ -72,7 +72,7 @@ function collect(): Program[] {
       }
     })
   }
-  for (const s of finalStages) {
+  for (const s of ALL_PROJECT_STAGES) {
     s.tests.forEach((t, i) => add(`${s.id}:solution#${i}`, s.solution, t.stdin ?? ''))
     add(`${s.id}:starter`, s.starter, s.tests[0].stdin ?? '')
   }

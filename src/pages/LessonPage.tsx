@@ -13,7 +13,7 @@ const PASS_MARK = 0.6
 function continueTarget(): { label: string; to: string } {
   const next = nextStep(store.getSnapshot())
   if (!next) return { label: 'Back to the path', to: '/learn' }
-  if (next.kind === 'final') return { label: 'Take the Final Challenge', to: '/final' }
+  if (next.kind === 'final') return { label: 'Build your final project', to: '/final' }
   return { label: 'Continue', to: '/learn' }
 }
 
@@ -81,8 +81,8 @@ export function CheckpointPage() {
       reward,
       passed: true,
       headline: `Unit ${unit.number} complete!`,
-      subline: allDone ? 'You finished every unit. Time for the Java Final Challenge!' : `You mastered ${unit.title}.`,
-      primary: allDone ? { label: 'Open the Final Challenge', to: '/final' } : continueTarget(),
+      subline: allDone ? 'You finished every unit. Time to build your final project!' : `You mastered ${unit.title}.`,
+      primary: allDone ? { label: 'Build your final project', to: '/final' } : continueTarget(),
       secondary: { label: 'Dashboard', to: '/home' },
     }
   }

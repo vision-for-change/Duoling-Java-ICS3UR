@@ -5,6 +5,8 @@ import { useNavigate, useSearchParams } from 'react-router'
 import { Button } from '../components/Button'
 import { Logo } from '../components/Logo'
 import { MascotSays } from '../components/Mascot'
+import { ProjectPicker } from '../components/ProjectPicker'
+import type { ProjectId } from '../data/types'
 import { skippedPlacement } from '../engine/placement'
 import { useProgress } from '../state/hooks'
 import { store } from '../state/store'
@@ -31,10 +33,12 @@ export function OnboardingPage() {
   const [name, setName] = useState(p.profile.name)
   const [goal, setGoal] = useState(p.settings.dailyGoal)
   const [level, setLevel] = useState<(typeof LEVELS)[number]['id'] | null>(params.get('mode') === 'placement' ? 'little' : null)
+  const [project, setProject] = useState<ProjectId | null>(p.project)
 
   const finish = () => {
     store.setProfileName(name)
     store.updateSettings({ dailyGoal: goal })
+    if (project) store.chooseProject(project)
     if (level === 'new') {
       store.completeOnboarding(name, skippedPlacement())
       navigate('/learn')
@@ -49,7 +53,7 @@ export function OnboardingPage() {
     <div className="flex min-h-dvh flex-col bg-cream-50">
       <header className="mx-auto flex w-full max-w-3xl items-center justify-between px-4 py-5">
         <Logo />
-        <span className="text-sm font-bold text-espresso-400">Step {step + 1} of 3</span>
+        <span className="text-sm font-bold text-espresso-400">Step {step + 1} of 4</span>
       </header>
       <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col px-4 pb-10">
           {step === 0 && (
@@ -89,9 +93,29 @@ export function OnboardingPage() {
           )}
 
           {step === 1 && (
+            <motion.div key="project" initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} className="flex flex-1 flex-col">
+              <MascotSays mood="happy" size={110} className="mt-6">
+                <span className="text-lg">
+                  {greeting} Which project do you want to build? We will learn Java together unit by unit, and at the end you will build this program yourself, step by step.
+                </span>
+              </MascotSays>
+              <div className="mt-8">
+                <ProjectPicker value={project} onChange={setProject} />
+              </div>
+              <p className="mt-3 text-sm text-espresso-400">Every project uses the same Java you learn in the course. You can switch later if you change your mind.</p>
+              <div className="mt-auto flex gap-3 pt-10">
+                <Button variant="secondary" size="lg" onClick={() => setStep(0)} icon={<ArrowLeft size={20} />} aria-label="Back" />
+                <Button size="lg" full disabled={!project} onClick={() => setStep(2)}>
+                  Continue
+                </Button>
+              </div>
+            </motion.div>
+          )}
+
+          {step === 2 && (
             <motion.div key="goal" initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} className="flex flex-1 flex-col">
               <MascotSays mood="happy" size={110} className="mt-6">
-                <span className="text-lg">{greeting} How much time do you want to spend each day?</span>
+                <span className="text-lg">Great choice! How much time do you want to spend each day?</span>
               </MascotSays>
               <div className="mt-8 grid gap-3" role="radiogroup" aria-label="Daily goal">
                 {GOALS.map((g) => (
@@ -114,15 +138,15 @@ export function OnboardingPage() {
                 ))}
               </div>
               <div className="mt-auto flex gap-3 pt-10">
-                <Button variant="secondary" size="lg" onClick={() => setStep(0)} icon={<ArrowLeft size={20} />} aria-label="Back" />
-                <Button size="lg" full onClick={() => setStep(2)}>
+                <Button variant="secondary" size="lg" onClick={() => setStep(1)} icon={<ArrowLeft size={20} />} aria-label="Back" />
+                <Button size="lg" full onClick={() => setStep(3)}>
                   Continue
                 </Button>
               </div>
             </motion.div>
           )}
 
-          {step === 2 && (
+          {step === 3 && (
             <motion.div key="level" initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} className="flex flex-1 flex-col">
               <MascotSays mood="thinking" size={110} className="mt-6">
                 <span className="text-lg">How much Java do you already know?</span>
@@ -148,7 +172,7 @@ export function OnboardingPage() {
                 ))}
               </div>
               <div className="mt-auto flex gap-3 pt-10">
-                <Button variant="secondary" size="lg" onClick={() => setStep(1)} icon={<ArrowLeft size={20} />} aria-label="Back" />
+                <Button variant="secondary" size="lg" onClick={() => setStep(2)} icon={<ArrowLeft size={20} />} aria-label="Back" />
                 <Button size="lg" full disabled={!level} onClick={finish}>
                   {level === 'new' ? 'Start learning' : 'Start placement test'}
                 </Button>
