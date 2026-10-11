@@ -103,7 +103,7 @@ function ChunkLoadError({ error, fullPage }: { error: unknown; fullPage: boolean
   if (status === 'checking') {
     return (
       <ErrorLayout fullPage={fullPage} mood="thinking" title="Loading this page…">
-        <p className="max-w-md text-espresso-600">One moment while Byte fetches it again.</p>
+        <p className="max-w-md text-espresso-600">One moment while Mr. Lauder fetches it again.</p>
       </ErrorLayout>
     )
   }
@@ -145,7 +145,7 @@ export function RouteError({ fullPage = false }: { fullPage?: boolean }) {
     )
   }
   return (
-    <ErrorLayout fullPage={fullPage} mood="surprised" title="Oops! Byte spilled the coffee">
+    <ErrorLayout fullPage={fullPage} mood="surprised" title="Oops! Mr. Lauder spilled the coffee">
       <p className="max-w-md text-espresso-600">Something went wrong on this page. Your progress is saved in this browser, so reloading is safe.</p>
       <Actions />
       <Details error={error} />

@@ -110,7 +110,7 @@ export function migrate(raw: unknown): Progress | null {
     ...r,
     ...course,
     version: PROGRESS_VERSION,
-    profile: { ...empty.profile, ...r.profile, avatar: 'lion' },
+    profile: { ...empty.profile, ...r.profile, avatar: 'lauder' },
     settings: { ...DEFAULT_SETTINGS, ...r.settings },
     streak: { ...empty.streak, ...r.streak },
     stats: { ...empty.stats, ...r.stats },

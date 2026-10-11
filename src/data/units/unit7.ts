@@ -1309,7 +1309,7 @@ System.out.println("Done!");`,
           {
             kind: 'mistake',
             title: 'The loop that never ends',
-            body: 'This loop never changes `n`, so `n > 0` stays true forever. That is called an **infinite loop**, and Byte\'s sandbox stops it for you. A real program would just freeze.',
+            body: 'This loop never changes `n`, so `n > 0` stays true forever. That is called an **infinite loop**, and Mr. Lauder\'s sandbox stops it for you. A real program would just freeze.',
             wrong: j`
 int n = 3;
 while (n > 0) {

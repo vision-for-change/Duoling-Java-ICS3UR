@@ -171,7 +171,7 @@ function Lobby({ onStart, poolSize }: { onStart: () => void; poolSize: number })
         <div className="relative flex items-end justify-between gap-2 px-4 pt-24 pb-6 sm:px-10">
           <div className="flex flex-col items-center">
             <Mascot mood="encouraging" size={130} float />
-            <span className="mt-1 rounded-full bg-espresso-900 px-2.5 py-0.5 text-xs font-extrabold tracking-wide text-white uppercase">You + Byte</span>
+            <span className="mt-1 rounded-full bg-espresso-900 px-2.5 py-0.5 text-xs font-extrabold tracking-wide text-white uppercase">You + Mr. Lauder</span>
           </div>
           <div className="pb-14 font-display text-4xl font-bold text-berry-500 sm:text-5xl">VS</div>
           <div className="flex items-end gap-1 sm:gap-4">
@@ -595,7 +595,7 @@ function DamagePopup({ popup }: { popup: Popup }) {
   )
 }
 
-/** The attack flying across the arena: Byte's code bolt, Bryan's football, Avik's robot-arm laser. */
+/** The attack flying across the arena: Mr. Lauder's code bolt, Bryan's football, Avik's robot-arm laser. */
 function Projectile({ fx }: { fx: Fx }) {
   if (fx.kind === 'laser') {
     const dx = fx.to.x - fx.from.x

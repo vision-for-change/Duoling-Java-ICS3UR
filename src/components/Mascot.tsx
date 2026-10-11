@@ -2,17 +2,22 @@ import { useId, type ReactNode } from 'react'
 import { motion } from 'motion/react'
 import type { MascotMood } from '../data/types'
 
+/*
+ * Mr. Lauder, ByteBrew's mascot, drawn from Lauder.jpg in the same chunky style as the rest of the cast:
+ * a bald head, a full salt-and-pepper beard (dark up top, grey below), strong brows with a
+ * slightly skeptical look, a dark blazer and a light patterned shirt.
+ */
 const INK = '#241812'
-const FUR = '#d98a3d'
-const FUR_DARK = '#9a5a25'
-const MUZZLE = '#f2c592'
-const MANE = '#f6b922'
-const MANE_LIGHT = '#ffd256'
-const JERSEY = '#33a24d'
-const STRIPE = '#ffc21f'
-const SLEEVE = '#34303f'
+const SKIN = '#7a4a2c'
+const SKIN_SHADE = '#5c351e'
+const BROW = '#1e1613'
+const BLAZER = '#2c2b35'
+const LAPEL = '#3f3e4b'
+const SHIRT = '#dde1e6'
+const SHIRT_DOT = '#7e848d'
+const POCKET = '#f76f22'
 const TONGUE = '#fa5d80'
-const CHEEK = '#fa5d80'
+const CHEEK = '#d9715f'
 
 interface MascotProps {
   mood?: MascotMood
@@ -35,15 +40,14 @@ const ARMS: Record<MascotMood, Arms> = {
   surprised: 'out',
 }
 
-/** A dark sleeve with a yellow cuff stripe and a furry paw at the end. */
+/** A blazer sleeve with a shirt cuff peeking out and a hand at the end. */
 function Arm({ d, hand }: { d: string; hand: [number, number] }) {
   return (
     <g>
       <path d={d} stroke={INK} strokeWidth={14} strokeLinecap="round" fill="none" />
-      <path d={d} stroke={SLEEVE} strokeWidth={8} strokeLinecap="round" fill="none" />
-      <path d={d} pathLength={100} stroke={STRIPE} strokeWidth={8} fill="none" strokeDasharray="7 100" strokeDashoffset={-64} />
-      <circle cx={hand[0]} cy={hand[1]} r={9.5} fill={FUR} stroke={INK} strokeWidth={4} />
-      <circle cx={hand[0]} cy={hand[1] + 1.5} r={3.6} fill={MUZZLE} />
+      <path d={d} stroke={BLAZER} strokeWidth={8} strokeLinecap="round" fill="none" />
+      <path d={d} pathLength={100} stroke={SHIRT} strokeWidth={8} fill="none" strokeDasharray="7 100" strokeDashoffset={-82} />
+      <circle cx={hand[0]} cy={hand[1]} r={9.5} fill={SKIN} stroke={INK} strokeWidth={4} />
     </g>
   )
 }
@@ -61,7 +65,7 @@ function ArmsFor({ arms }: { arms: Arms }) {
       return (
         <>
           <Arm d="M68 148 Q54 160 50 172" hand={[50, 174]} />
-          <Arm d="M132 146 Q152 142 146 124" hand={[145, 121]} />
+          <Arm d="M132 146 Q154 144 150 128" hand={[149, 125]} />
         </>
       )
     case 'thumb':
@@ -69,7 +73,7 @@ function ArmsFor({ arms }: { arms: Arms }) {
         <>
           <Arm d="M68 148 Q54 160 50 172" hand={[50, 174]} />
           <Arm d="M132 146 Q150 138 158 120" hand={[159, 117]} />
-          <rect x={155} y={100} width={8} height={14} rx={4} fill={FUR} stroke={INK} strokeWidth={3.5} />
+          <rect x={155} y={100} width={8} height={14} rx={4} fill={SKIN} stroke={INK} strokeWidth={3.5} />
         </>
       )
     case 'out':
@@ -98,26 +102,34 @@ interface EyeProps {
   px?: number
   py?: number
   pr?: number
+  /** heavy upper lids, for the calm, slightly skeptical look from the photo */
+  lid?: boolean
 }
 
-function Eye({ cx, cy, rx = 10, ry = 11, px = 0, py = 0, pr = 6.5 }: EyeProps) {
+function Eye({ cx, cy, rx = 9, ry = 9.5, px = 0, py = 0, pr = 5.5, lid = false }: EyeProps) {
   return (
     <g>
-      <ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill="#fff" stroke={INK} strokeWidth={3.5} />
-      <circle cx={cx + px} cy={cy + py} r={pr} fill={INK} />
-      <circle cx={cx + px + pr * 0.35} cy={cy + py - pr * 0.4} r={Math.max(1.6, pr * 0.3)} fill="#fff" />
+      <ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill="#fff" stroke={INK} strokeWidth={3.2} />
+      <circle cx={cx + px} cy={cy + py + (lid ? 1.5 : 0)} r={pr} fill={INK} />
+      <circle cx={cx + px + pr * 0.35} cy={cy + py - pr * 0.4 + (lid ? 1.5 : 0)} r={Math.max(1.5, pr * 0.3)} fill="#fff" />
+      {lid && (
+        <>
+          <path d={`M${cx - rx - 1.5} ${cy - 1} Q${cx} ${cy - ry * 0.9} ${cx + rx + 1.5} ${cy - 1} L${cx + rx + 1.5} ${cy - ry - 3} L${cx - rx - 1.5} ${cy - ry - 3} Z`} fill={SKIN} />
+          <path d={`M${cx - rx - 1} ${cy - 1} Q${cx} ${cy - ry * 0.9} ${cx + rx + 1} ${cy - 1}`} stroke={INK} strokeWidth={3} strokeLinecap="round" fill="none" />
+        </>
+      )}
     </g>
   )
 }
 
-const brow = { stroke: INK, strokeWidth: 4.5, strokeLinecap: 'round' as const, fill: 'none', opacity: 0.75 }
+const brow = { stroke: BROW, strokeWidth: 6, strokeLinecap: 'round' as const, fill: 'none' }
 const mouthLine = { stroke: INK, strokeWidth: 3.5, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const, fill: 'none' }
 
 function OpenMouth() {
   return (
     <g>
-      <path d="M87 106 Q100 132 113 106 Z" fill={INK} stroke={INK} strokeWidth={3} strokeLinejoin="round" />
-      <ellipse cx={100} cy={116} rx={6.5} ry={3.6} fill={TONGUE} />
+      <path d="M88 113 Q100 134 112 113 Z" fill={INK} stroke={INK} strokeWidth={3} strokeLinejoin="round" />
+      <ellipse cx={100} cy={124} rx={6} ry={3.4} fill={TONGUE} />
     </g>
   )
 }
@@ -127,73 +139,89 @@ function Face({ mood }: { mood: MascotMood }) {
     case 'happy':
       return (
         <g>
-          <path d="M70 63 Q80 59 90 63" {...brow} />
-          <path d="M110 63 Q120 59 130 63" {...brow} />
-          <Eye cx={80} cy={78} />
-          <Eye cx={120} cy={78} />
-          <path d="M100 103 V108 M100 108 Q91 117 84 109 M100 108 Q109 117 116 109" {...mouthLine} />
+          <path d="M71 69 Q81 65 91 69" {...brow} />
+          <path d="M109 69 Q119 65 129 69" {...brow} />
+          <Eye cx={81} cy={84} lid />
+          <Eye cx={119} cy={84} lid />
+          <path d="M89 114 Q100 123 111 114" {...mouthLine} />
         </g>
       )
     case 'excited':
       return (
         <g>
-          <path d="M69 60 Q80 54 91 59" {...brow} />
-          <path d="M109 59 Q120 54 131 60" {...brow} />
-          <Eye cx={80} cy={77} rx={11} ry={13} pr={7.5} py={-1} />
-          <Eye cx={120} cy={77} rx={11} ry={13} pr={7.5} py={-1} />
+          <path d="M70 65 Q81 58 92 64" {...brow} />
+          <path d="M108 64 Q119 58 130 65" {...brow} />
+          <Eye cx={81} cy={83} rx={10} ry={11.5} pr={6.5} py={-1} />
+          <Eye cx={119} cy={83} rx={10} ry={11.5} pr={6.5} py={-1} />
           <OpenMouth />
         </g>
       )
     case 'thinking':
+      // the photo's raised eyebrow
       return (
         <g>
-          <path d="M70 60 Q80 55 90 60" {...brow} />
-          <path d="M110 65 L130 61" {...brow} />
-          <Eye cx={80} cy={78} px={3} py={-3} />
-          <Eye cx={120} cy={78} px={3} py={-3} />
-          <path d="M100 103 V106 M93 111 Q101 108 109 112" {...mouthLine} />
+          <path d="M71 64 Q81 58 91 64" {...brow} />
+          <path d="M109 71 L129 68" {...brow} />
+          <Eye cx={81} cy={84} px={2.5} py={-2.5} lid />
+          <Eye cx={119} cy={84} px={2.5} py={-2.5} lid />
+          <path d="M92 116 Q101 113 109 117" {...mouthLine} />
         </g>
       )
     case 'confused':
       return (
         <g>
-          <path d="M70 65 Q80 59 90 63" {...brow} />
-          <path d="M111 60 L130 66" {...brow} />
-          <Eye cx={80} cy={78} />
-          <Eye cx={120} cy={80} rx={8} ry={8.5} pr={5} px={-1} />
-          <path d="M100 103 V106 M88 113 Q94 106 100 110 Q106 114 112 108" {...mouthLine} />
+          <path d="M71 70 Q81 64 91 68" {...brow} />
+          <path d="M110 64 L129 70" {...brow} />
+          <Eye cx={81} cy={84} />
+          <Eye cx={119} cy={85} rx={7.5} ry={8} pr={4.5} px={-1} />
+          <path d="M88 118 Q94 112 100 116 Q106 120 112 114" {...mouthLine} />
         </g>
       )
     case 'celebrating':
       return (
         <g>
-          <path d="M69 81 Q80 66 91 81" stroke={INK} strokeWidth={5.5} strokeLinecap="round" fill="none" />
-          <path d="M109 81 Q120 66 131 81" stroke={INK} strokeWidth={5.5} strokeLinecap="round" fill="none" />
+          <path d="M70 66 Q81 60 92 65" {...brow} />
+          <path d="M108 65 Q119 60 130 66" {...brow} />
+          <path d="M72 87 Q81 75 90 87" stroke={INK} strokeWidth={5} strokeLinecap="round" fill="none" />
+          <path d="M110 87 Q119 75 128 87" stroke={INK} strokeWidth={5} strokeLinecap="round" fill="none" />
           <OpenMouth />
         </g>
       )
     case 'encouraging':
       return (
         <g>
-          <path d="M71 64 Q80 60 89 63" {...brow} />
-          <path d="M111 63 Q120 60 129 64" {...brow} />
-          <Eye cx={80} cy={78} />
-          <Eye cx={120} cy={78} />
-          <path d="M100 103 V107 M100 107 Q94 113 89 108 M100 107 Q106 113 111 108" {...mouthLine} />
+          <path d="M72 68 Q81 65 90 67" {...brow} />
+          <path d="M110 67 Q119 65 128 68" {...brow} />
+          <Eye cx={81} cy={84} lid />
+          <Eye cx={119} cy={84} lid />
+          <path d="M88 113 Q100 125 112 113" {...mouthLine} />
         </g>
       )
     case 'surprised':
       return (
         <g>
-          <path d="M70 57 Q80 51 90 57" {...brow} />
-          <path d="M110 57 Q120 51 130 57" {...brow} />
-          <Eye cx={80} cy={78} rx={11} ry={13} pr={3.8} />
-          <Eye cx={120} cy={78} rx={11} ry={13} pr={3.8} />
-          <ellipse cx={100} cy={114} rx={5.5} ry={7} fill={INK} />
+          <path d="M71 62 Q81 55 91 61" {...brow} />
+          <path d="M109 61 Q119 55 129 62" {...brow} />
+          <Eye cx={81} cy={83} rx={10} ry={11.5} pr={3.6} />
+          <Eye cx={119} cy={83} rx={10} ry={11.5} pr={3.6} />
+          <ellipse cx={100} cy={119} rx={5} ry={6.5} fill={INK} />
         </g>
       )
   }
 }
+
+/** A few light curls so the grey part of the beard reads as a beard, not a bib. */
+const CURLS = [
+  [78, 130],
+  [90, 140],
+  [102, 145],
+  [114, 139],
+  [124, 128],
+  [94, 151],
+  [108, 151],
+  [70, 120],
+  [130, 119],
+] as const
 
 function Extras({ mood }: { mood: MascotMood }) {
   switch (mood) {
@@ -240,35 +268,34 @@ function Extras({ mood }: { mood: MascotMood }) {
   }
 }
 
-/** The mane is a ring of overlapping tufts; drawing the outline first and the fill on top keeps only the outer edge. */
-const TUFTS = Array.from({ length: 12 }, (_, i) => {
-  const a = (i * 30 * Math.PI) / 180
-  return { x: +(100 + 42 * Math.cos(a)).toFixed(1), y: +(80 + 42 * Math.sin(a)).toFixed(1) }
-})
 
-/** Byte: ByteBrew's lion mascot. */
+/** Mr. Lauder: ByteBrew's mascot. */
 export function Mascot({ mood = 'happy', size = 120, className = '', float = false, title }: MascotProps) {
   const uid = useId().replace(/:/g, '')
-  const maneId = `mane-${uid}`
-  const clipId = `jersey-${uid}`
+  const beardId = `beard-${uid}`
+  const dotsId = `dots-${uid}`
   const tilt = mood === 'confused' ? -7 : mood === 'thinking' ? 4 : 0
+  const wide = mood === 'surprised' || mood === 'excited'
 
   return (
     <div
       className={`relative inline-block shrink-0 ${float ? 'animate-float' : ''} ${className}`}
       style={{ width: size, height: size * 1.1 }}
       role="img"
-      aria-label={title ?? `Byte the lion looks ${mood}`}
+      aria-label={title ?? `Mr. Lauder looks ${mood}`}
     >
       <svg viewBox="0 0 200 220" width="100%" height="100%" overflow="visible">
         <defs>
-          <radialGradient id={maneId} cx="0.5" cy="0.42" r="0.6">
-            <stop offset="0.45" stopColor={MANE_LIGHT} />
-            <stop offset="1" stopColor={MANE} />
-          </radialGradient>
-          <clipPath id={clipId}>
-            <rect x={58} y={128} width={84} height={62} rx={24} />
-          </clipPath>
+          <linearGradient id={beardId} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#2b231f" />
+            <stop offset="0.38" stopColor="#433b36" />
+            <stop offset="0.7" stopColor="#938e89" />
+            <stop offset="1" stopColor="#cfccc7" />
+          </linearGradient>
+          <pattern id={dotsId} width="7" height="7" patternUnits="userSpaceOnUse">
+            <circle cx="2" cy="2" r="1.1" fill={SHIRT_DOT} />
+            <circle cx="5.5" cy="5.5" r="0.9" fill={SHIRT_DOT} />
+          </pattern>
         </defs>
 
         {/* floor shadow */}
@@ -276,58 +303,55 @@ export function Mascot({ mood = 'happy', size = 120, className = '', float = fal
 
         <Extras mood={mood} />
 
-        {/* legs */}
-        <rect x={70} y={180} width={24} height={22} rx={10} fill={FUR} stroke={INK} strokeWidth={4.5} />
-        <rect x={106} y={180} width={24} height={22} rx={10} fill={FUR} stroke={INK} strokeWidth={4.5} />
-        <ellipse cx={82} cy={196} rx={7} ry={3.6} fill={MUZZLE} />
-        <ellipse cx={118} cy={196} rx={7} ry={3.6} fill={MUZZLE} />
+        {/* legs and shoes */}
+        <rect x={70} y={180} width={24} height={22} rx={9} fill={BLAZER} stroke={INK} strokeWidth={4.5} />
+        <rect x={106} y={180} width={24} height={22} rx={9} fill={BLAZER} stroke={INK} strokeWidth={4.5} />
+        <ellipse cx={82} cy={201} rx={14} ry={6} fill={INK} />
+        <ellipse cx={118} cy={201} rx={14} ry={6} fill={INK} />
 
-        {/* arms, then the jersey on top so the shoulders tuck under it */}
+        {/* arms, then the blazer on top so the shoulders tuck under it */}
         <ArmsFor arms={ARMS[mood]} />
-        <rect x={58} y={128} width={84} height={62} rx={24} fill={JERSEY} stroke={INK} strokeWidth={5} />
-        <g clipPath={`url(#${clipId})`}>
-          <rect x={56} y={167} width={88} height={6} fill={STRIPE} />
-          <rect x={56} y={177} width={88} height={6} fill={STRIPE} />
-        </g>
-        <path d="M68 138 Q100 132 132 138" stroke="#fff" strokeOpacity={0.25} strokeWidth={4} strokeLinecap="round" fill="none" />
-        <text
-          x={100}
-          y={159}
-          textAnchor="middle"
-          fontSize={22}
-          fontWeight={700}
-          letterSpacing={1}
-          fontFamily="Fredoka Variable, Fredoka, sans-serif"
-          fill={STRIPE}
-          stroke={INK}
-          strokeWidth={2.4}
-          paintOrder="stroke"
-        >
-          EOM
-        </text>
+        <rect x={58} y={128} width={84} height={62} rx={24} fill={BLAZER} stroke={INK} strokeWidth={5} />
+        {/* patterned shirt in the open V of the blazer, with lapels and a pocket square */}
+        <path d="M76 130 L100 174 L124 130 Z" fill={SHIRT} />
+        <path d="M76 130 L100 174 L124 130 Z" fill={`url(#${dotsId})`} />
+        <path d="M76 130 L100 174 L124 130" stroke={INK} strokeWidth={3} strokeLinejoin="round" fill="none" />
+        <path d="M76 131 L92 162 L82 166 Z" fill={LAPEL} stroke={INK} strokeWidth={2.5} strokeLinejoin="round" />
+        <path d="M124 131 L108 162 L118 166 Z" fill={LAPEL} stroke={INK} strokeWidth={2.5} strokeLinejoin="round" />
+        <path d="M124 156 L137 156 L133 149 L129 153 L126 148 Z" fill={POCKET} stroke={INK} strokeWidth={2} strokeLinejoin="round" />
+        <circle cx={100} cy={181} r={2.6} fill={LAPEL} stroke={INK} strokeWidth={1.5} />
 
         {/* head */}
-        <g transform={`rotate(${tilt} 100 90)`}>
-          {TUFTS.map((t, i) => (
-            <circle key={`o${i}`} cx={t.x} cy={t.y} r={20} fill={MANE} stroke={INK} strokeWidth={5} />
-          ))}
-          {TUFTS.map((t, i) => (
-            <circle key={`f${i}`} cx={t.x} cy={t.y} r={20} fill={MANE} />
-          ))}
-          <circle cx={100} cy={80} r={57} fill={`url(#${maneId})`} />
+        <g transform={`rotate(${tilt} 100 92)`}>
           {/* ears */}
-          <circle cx={62} cy={38} r={13} fill={FUR} stroke={INK} strokeWidth={4.5} />
-          <circle cx={62} cy={39} r={6} fill={MUZZLE} />
-          <circle cx={138} cy={38} r={13} fill={FUR} stroke={INK} strokeWidth={4.5} />
-          <circle cx={138} cy={39} r={6} fill={MUZZLE} />
-          {/* face */}
-          <ellipse cx={100} cy={88} rx={44} ry={39} fill={FUR} stroke={INK} strokeWidth={5} />
-          <path d="M72 52 Q84 44 100 44 Q116 44 128 52" stroke={FUR_DARK} strokeOpacity={0.35} strokeWidth={4} strokeLinecap="round" fill="none" />
-          <ellipse cx={66} cy={98} rx={7} ry={4.5} fill={CHEEK} opacity={0.35} />
-          <ellipse cx={134} cy={98} rx={7} ry={4.5} fill={CHEEK} opacity={0.35} />
-          <ellipse cx={100} cy={103} rx={22} ry={16} fill={MUZZLE} stroke={INK} strokeWidth={3.5} />
-          <path d="M90 92 Q100 85 110 92 Q109 101 100 104 Q91 101 90 92 Z" fill={INK} stroke={INK} strokeWidth={2} strokeLinejoin="round" />
-          <ellipse cx={96} cy={92} rx={3.2} ry={1.8} fill="#fff" opacity={0.55} />
+          <circle cx={56} cy={92} r={9} fill={SKIN} stroke={INK} strokeWidth={4.5} />
+          <circle cx={56} cy={93} r={4} fill={SKIN_SHADE} />
+          <circle cx={144} cy={92} r={9} fill={SKIN} stroke={INK} strokeWidth={4.5} />
+          <circle cx={144} cy={93} r={4} fill={SKIN_SHADE} />
+          {/* bald head with a little shine */}
+          <ellipse cx={100} cy={86} rx={44} ry={49} fill={SKIN} stroke={INK} strokeWidth={5} />
+          <ellipse cx={82} cy={50} rx={13} ry={6.5} fill="#fff" opacity={0.18} transform="rotate(-18 82 50)" />
+          {/* forehead lines */}
+          <path d={wide ? 'M86 50 Q100 46 114 50 M89 56 Q100 53 111 56' : 'M87 55 Q100 51 113 55'} stroke={SKIN_SHADE} strokeWidth={2.5} strokeLinecap="round" fill="none" opacity={0.7} />
+          <ellipse cx={68} cy={100} rx={6} ry={3.6} fill={CHEEK} opacity={0.3} />
+          <ellipse cx={132} cy={100} rx={6} ry={3.6} fill={CHEEK} opacity={0.3} />
+          {/* nose */}
+          <path d="M100 82 Q96 93 92 96 Q100 101 108 96 Q104 93 100 82" fill={SKIN_SHADE} opacity={0.55} />
+          <path d="M92 96 Q100 101 108 96" stroke={INK} strokeWidth={3} strokeLinecap="round" fill="none" />
+          {/* the beard: dark near the face, salt-and-pepper grey at the bottom */}
+          <path
+            d="M57 92 C57 122 66 141 80 150 C88 155 94 157 100 157 C106 157 112 155 120 150 C134 141 143 122 143 92 C140 104 135 111 128 115 C120 120 112 125 100 125 C88 125 80 120 72 115 C65 111 60 104 57 92 Z"
+            fill={`url(#${beardId})`}
+            stroke={INK}
+            strokeWidth={4}
+            strokeLinejoin="round"
+          />
+          {CURLS.map(([x, y], i) => (
+            <path key={i} d={`M${x - 3.5} ${y} q3.5 -4.5 7 0`} stroke="#ece9e4" strokeOpacity={y > 128 ? 0.85 : 0.35} strokeWidth={2} strokeLinecap="round" fill="none" />
+          ))}
+          {/* moustache */}
+          <ellipse cx={100} cy={117} rx={11} ry={5} fill="#93553a" />
+          <path d="M82 107 Q91 100 100 104 Q109 100 118 107 Q112 112 100 109 Q88 112 82 107 Z" fill="#2b231f" stroke={INK} strokeWidth={2} strokeLinejoin="round" />
           <g className="origin-center" style={{ transformBox: 'fill-box' }}>
             <Face mood={mood} />
           </g>
@@ -347,7 +371,7 @@ interface SpeechProps {
   tone?: 'default' | 'success' | 'error'
 }
 
-/** Byte with a speech bubble. */
+/** Mr. Lauder with a speech bubble. */
 export function MascotSays({ mood = 'happy', size = 88, children, side = 'right', className = '', float = true, tone = 'default' }: SpeechProps) {
   const bubbleTone =
     tone === 'success'

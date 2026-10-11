@@ -1,7 +1,7 @@
 import { useId } from 'react'
 
 /**
- * Bryan and Avik, the two villains of the Practice battle, drawn as mascots in the same style as Byte:
+ * Bryan and Avik, the two villains of the Practice battle, drawn as mascots in the same style as Mr. Lauder:
  * big head, small body, thick ink outlines. Their looks come from the photos in the project folder.
  * Bryan: short spiky black hair, half-rim glasses, a huge grin and a white tee (plus a football, of course).
  * Avik: big wavy black hair, thick brows, sleepy eyes, a smirk, a black striped tee and his robotic arm.

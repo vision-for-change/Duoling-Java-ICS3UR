@@ -1,8 +1,8 @@
 # ByteBrew: learn Java one byte at a time
 
 ByteBrew is a gamified, beginner-friendly Java course for high-school students, built around the ICS3UR topic
-outline. Learners follow a path of short lessons written the way a teacher would explain them, with **Byte**, a
-lion mascot, answer interactive questions with instant feedback, earn XP, keep a daily streak, collect badges and
+outline. Learners follow a path of short lessons written the way a teacher would explain them, with **Mr. Lauder**
+as their guide (a cartoon mascot drawn from a photo of Mr. Lauder), answer interactive questions with instant feedback, earn XP, keep a daily streak, collect badges and
 finish with a real multi-stage project.
 
 Everything runs in the browser, including a **Java sandbox** that compiles and runs beginner Java programs,
@@ -56,7 +56,7 @@ Progress is stored in the browser (`localStorage`), so no account or server is n
   8. **Switch and Exceptions**: `switch` (with fall-through), `try`/`catch`, `ArithmeticException`,
      `InputMismatchException` and `Exception e`
 - **Learning path** with 8 units and 36 lessons (+ a checkpoint per unit and the final project), drawn as a
-  winding path of nodes with Byte standing next to the current lesson. **Learning is sequential by default:** a new
+  winding path of nodes with Mr. Lauder standing next to the current lesson. **Learning is sequential by default:** a new
   learner starts at Unit 1, Lesson 1 and sees only Unit 1. Finishing a lesson unlocks the next one, and finishing the
   last lesson of a unit reveals the next unit. Each lesson shows one of five states: *completed*, *current*, *unlocked*,
   *skipped* or *locked*.
@@ -73,7 +73,7 @@ Progress is stored in the browser (`localStorage`), so no account or server is n
   fix the broken program, and write code (code completion). Every question has a difficulty
   (green Beginner / yellow Intermediate / red Advanced) and an explanation of *why* the answer is right.
 - **Adaptive difficulty.** Correct first tries raise the target difficulty; mistakes lower it. A wrong answer
-  never reveals the solution immediately: Byte gives targeted feedback for the specific wrong choice, highlights
+  never reveals the solution immediately: Mr. Lauder gives targeted feedback for the specific wrong choice, highlights
   the relevant code and offers a second try. After a mistake an **easier follow-up on the same concept** is
   inserted, and a question failed twice comes back later in the lesson.
 - **Watch it run:** step through any program with the current line highlighted, a variable table (changed
@@ -97,7 +97,7 @@ Progress is stored in the browser (`localStorage`), so no account or server is n
   - **Grade Analyzer**: a `for` loop with `i--` to re-ask bad grades, the average with `printf("%.2f%%")`, letter grades
 
   Every stage is checked by automated tests and has progressive hints, plus an **"I don't get it"** panel that explains
-  the ideas properly and points to the video. After a failed test run, Byte suggests the explanation and the video.
+  the ideas properly and points to the video. After a failed test run, Mr. Lauder suggests the explanation and the video.
   Stages can be done in any order (each one starts with the earlier parts already written), and the project can be
   switched later on the **/project** page without losing saved code.
 - **Project warm-up.** Before a project starts, a short, silly 4-question quiz built from the six class sayings

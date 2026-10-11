@@ -7,7 +7,7 @@ export function NotFoundPage() {
       <Mascot mood="confused" size={150} float />
       <h1 className="text-4xl font-bold">404: page not found</h1>
       <p className="max-w-md text-espresso-600">
-        Byte looked everywhere but this page threw a <code className="font-mono font-bold text-brew-600">PageNotFoundException</code>.
+        Mr. Lauder looked everywhere but this page threw a <code className="font-mono font-bold text-brew-600">PageNotFoundException</code>.
       </p>
       <ButtonLink to="/" size="lg">
         Take me home

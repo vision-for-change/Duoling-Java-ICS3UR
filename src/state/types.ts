@@ -126,7 +126,7 @@ export const DEFAULT_SETTINGS: Settings = {
 export function createEmptyProgress(now = Date.now()): Progress {
   return {
     version: PROGRESS_VERSION,
-    profile: { name: '', createdAt: now, avatar: 'lion' },
+    profile: { name: '', createdAt: now, avatar: 'lauder' },
     onboarded: false,
     settings: { ...DEFAULT_SETTINGS },
     xp: 0,

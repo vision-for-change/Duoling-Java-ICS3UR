@@ -358,7 +358,7 @@ export function SessionPlayer({ initial, onFinish, exitTo, noun = 'lesson' }: Se
         <div className="flex flex-col items-center text-center">
           <Mascot mood="surprised" size={110} />
           <h2 className="mt-2 text-2xl font-bold">Leave this {noun}?</h2>
-          <p className="mt-1 text-espresso-600">Your answers so far help Byte track your progress, but you won't get the {noun} XP.</p>
+          <p className="mt-1 text-espresso-600">Your answers so far help Mr. Lauder track your progress, but you won't get the {noun} XP.</p>
           <div className="mt-5 flex w-full flex-col gap-2">
             <Button full onClick={() => setQuitOpen(false)} data-autofocus>
               Keep learning

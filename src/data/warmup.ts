@@ -24,7 +24,7 @@ export interface WarmupQuestion {
   saying: (typeof SAYINGS)[number]
   /** wrong options, each with its own funny reaction */
   decoys: { text: string; reaction: string }[]
-  /** what Byte says when you get it right */
+  /** what Mr. Lauder says when you get it right */
   correctReaction: string
 }
 

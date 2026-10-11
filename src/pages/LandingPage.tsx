@@ -46,7 +46,7 @@ export function LandingPage() {
             Learn Java one <span className="relative whitespace-nowrap text-brew-500">byte<svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 120 12" aria-hidden><path d="M2 8 Q30 2 60 7 T118 5" stroke="#ffc21f" strokeWidth="5" fill="none" strokeLinecap="round" /></svg></span> at a time.
           </motion.h1>
           <motion.p initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="mt-5 max-w-lg text-lg leading-relaxed text-espresso-600">
-            Short lessons, quick feedback and a friendly lion in your corner. We start with your very first variable and finish with a real program that you built yourself.
+            Short lessons, quick feedback and Mr. Lauder in your corner. We start with your very first variable and finish with a real program that you built yourself.
           </motion.p>
           <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="mt-8 flex flex-col gap-3 sm:flex-row">
             <ButtonLink to={cta.to} size="lg" className="whitespace-nowrap">
@@ -96,7 +96,7 @@ export function LandingPage() {
           <div>
             <h2 className="text-4xl font-bold">We learn Java by doing it, not by staring at walls of text.</h2>
             <p className="mt-4 text-lg leading-relaxed text-espresso-600">
-              Every lesson follows the same rhythm. First a short explanation, then an example you can run yourself, then a few questions with feedback right away. Get one wrong? Byte shows you <em>why</em>, gives you another try, and follows up with an easier question.
+              Every lesson follows the same rhythm. First a short explanation, then an example you can run yourself, then a few questions with feedback right away. Get one wrong? Mr. Lauder shows you <em>why</em>, gives you another try, and follows up with an easier question.
             </p>
             <ul className="mt-6 grid gap-2 text-espresso-700 sm:grid-cols-2">
               {['Predict the output', 'Fill in the blank', 'Find the bug', 'Arrange the code', 'Fix broken programs', 'Write real code'].map((t) => (

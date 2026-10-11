@@ -380,7 +380,7 @@ describe('saved progress', () => {
     }
     const p = migrate(old)!
     expect(p.version).toBe(PROGRESS_VERSION)
-    expect(p.profile).toMatchObject({ name: 'Sam', createdAt: 5, avatar: 'lion' })
+    expect(p.profile).toMatchObject({ name: 'Sam', createdAt: 5, avatar: 'lauder' })
     expect(p).toMatchObject({ onboarded: true, xp: 400, achievements: { 'first-lesson': 9 } })
     expect(p.lessons).toEqual({})
     expect(p.units).toEqual({})

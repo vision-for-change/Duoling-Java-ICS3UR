@@ -12,7 +12,7 @@ const EXAMPLES: { id: string; title: string; code: string }[] = [
     code: j`
 public class Main {
     public static void main(String[] args) {
-        String name = "Byte";
+        String name = "Mr. Lauder";
         int cups = 3;
         System.out.println("Hello from " + name + "!");
         System.out.printf("I brewed %d cups of Java today.%n", cups);
