@@ -1,3 +1,5 @@
+import type { IconName } from './types'
+
 /**
  * The project warm-up quiz: a short, silly tradition before every final project.
  * The six classroom sayings below are the ONLY sayings used, always word for word, and each one is the
@@ -15,6 +17,8 @@ export const SAYINGS = [
 
 export interface WarmupQuestion {
   id: string
+  /** the custom icon shown with this saying */
+  icon: IconName
   prompt: string
   /** the exact saying, which is always the correct option */
   saying: (typeof SAYINGS)[number]
@@ -27,6 +31,7 @@ export interface WarmupQuestion {
 export const WARMUP: WarmupQuestion[] = [
   {
     id: 'consistency',
+    icon: 'repeat',
     prompt: 'Complete the classroom wisdom: "The key to success is..."',
     saying: 'The key to success is consistency.',
     decoys: [
@@ -38,6 +43,7 @@ export const WARMUP: WarmupQuestion[] = [
   },
   {
     id: 'silence',
+    icon: 'megaphone',
     prompt: 'You have been stuck on the same bug for 40 minutes. What is the rule?',
     saying: 'Never suffer in silence.',
     decoys: [
@@ -49,6 +55,7 @@ export const WARMUP: WarmupQuestion[] = [
   },
   {
     id: 'counts',
+    icon: 'check-circle',
     prompt: 'You fixed one tiny missing semicolon. What does your teacher say?',
     saying: 'Everything counts.',
     decoys: [
@@ -60,6 +67,7 @@ export const WARMUP: WarmupQuestion[] = [
   },
   {
     id: 'collaboration',
+    icon: 'handshake',
     prompt: 'Your friend is stuck on a loop and you know the answer. Which motto applies?',
     saying: 'Collaboration, not competition.',
     decoys: [
@@ -71,6 +79,7 @@ export const WARMUP: WarmupQuestion[] = [
   },
   {
     id: 'weekend',
+    icon: 'sun',
     prompt: 'It is Friday afternoon. How does class end?',
     saying: 'Remember to have a wonderful or fantastic weekend.',
     decoys: [
@@ -82,6 +91,7 @@ export const WARMUP: WarmupQuestion[] = [
   },
   {
     id: 'laughing',
+    icon: 'laugh',
     prompt: 'Finish the saying: "If someone is laughing..."',
     saying: 'If someone is laughing, someone is crying.',
     decoys: [
@@ -106,10 +116,10 @@ export function pickWarmup(rand: () => number = Math.random, count = WARMUP_LENG
   return a.slice(0, count)
 }
 
-/** A title for the completion screen, from the score. */
-export function warmupRank(score: number, total: number): string {
-  if (score === total) return 'Certified Classroom Legend'
-  if (score >= total - 1) return 'Honorary Teacher\'s Assistant'
-  if (score >= total / 2) return 'Promising Listener'
-  return 'Fresh Ears (that is okay, now you know them!)'
+/** A title and badge icon for the completion screen, from the score. */
+export function warmupRank(score: number, total: number): { title: string; icon: IconName } {
+  if (score === total) return { title: 'Certified Classroom Legend', icon: 'crown' }
+  if (score >= total - 1) return { title: "Honorary Teacher's Assistant", icon: 'medal' }
+  if (score >= total / 2) return { title: 'Promising Listener', icon: 'star' }
+  return { title: 'Fresh Ears (that is okay, now you know them!)', icon: 'sprout' }
 }

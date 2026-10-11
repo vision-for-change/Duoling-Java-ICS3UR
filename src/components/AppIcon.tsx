@@ -1,11 +1,13 @@
 import {
   Bomb,
+  Bot,
   BookOpen,
   Bug,
   BrickWall,
   Brain,
   Calculator,
   CircleCheck,
+  CircleX,
   Coffee,
   Compass,
   Construction,
@@ -16,15 +18,20 @@ import {
   Flag,
   Flame,
   FlaskConical,
+  Gamepad2,
   Footprints,
   GitBranch,
   GraduationCap,
+  Handshake,
+  Heart,
   HeartCrack,
   Keyboard,
   Landmark,
+  Laugh,
   Layers,
   Lightbulb,
   Medal,
+  Megaphone,
   Package,
   PartyPopper,
   PenLine,
@@ -42,6 +49,8 @@ import {
   Sparkles,
   Sprout,
   Star,
+  Sun,
+  Swords,
   Target,
   ThumbsDown,
   ThumbsUp,
@@ -51,13 +60,47 @@ import {
   Type,
   Zap,
   type LucideIcon,
+  type LucideProps,
 } from 'lucide-react'
+import type { ComponentType } from 'react'
 import type { IconName } from '../data/types'
 
-const ICONS: Record<IconName, LucideIcon> = {
+/** A football in the same line style as the rest of the icons (lucide has none). */
+function Football({ size = 24, strokeWidth = 2, className = '', ...rest }: LucideProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={strokeWidth}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      {...rest}
+    >
+      <circle cx="12" cy="12" r="10" />
+      <path d="M12 7.5l4.3 3.1-1.6 5h-5.4l-1.6-5z" />
+      <path d="M12 7.5V2.3M16.3 10.6l4.9-1.6M14.7 15.6l3 4.2M9.3 15.6l-3 4.2M7.7 10.6L2.8 9" />
+    </svg>
+  )
+}
+
+const ICONS: Record<IconName, LucideIcon | ComponentType<LucideProps>> = {
   alert: TriangleAlert,
   bank: Landmark,
+  bot: Bot,
   cart: ShoppingCart,
+  football: Football,
+  gamepad: Gamepad2,
+  handshake: Handshake,
+  heart: Heart,
+  laugh: Laugh,
+  megaphone: Megaphone,
+  sun: Sun,
+  swords: Swords,
+  'x-circle': CircleX,
   bomb: Bomb,
   book: BookOpen,
   'brick-wall': BrickWall,

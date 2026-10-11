@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { DIALOGUE, pickLine } from '../data/battleDialogue'
 import { getQuestion, UNITS } from '../data/curriculum'
-import { pickWarmup, SAYINGS, WARMUP, WARMUP_LENGTH } from '../data/warmup'
+import { pickWarmup, SAYINGS, WARMUP, WARMUP_LENGTH, warmupRank } from '../data/warmup'
 import { createEmptyProgress } from '../state/types'
 import { MemoryRepository } from '../state/repository'
 import { ProgressStore } from '../state/store'
@@ -140,6 +140,11 @@ describe('project warm-up', () => {
       for (const d of q.decoys) expect(d.text).not.toBe(q.saying)
       for (const text of [q.prompt, q.correctReaction, ...q.decoys.flatMap((d) => [d.text, d.reaction])]) expect(text).not.toMatch(/[\u2013\u2014]|\p{Extended_Pictographic}/u)
     }
+  })
+
+  it('gives every saying its own custom icon, and every rank a badge', () => {
+    expect(new Set(WARMUP.map((q) => q.icon)).size).toBe(WARMUP.length)
+    expect([4, 3, 2, 0].map((s) => warmupRank(s, 4).icon)).toEqual(['crown', 'medal', 'star', 'sprout'])
   })
 
   it('keeps each warm-up short and never repeats a question', () => {

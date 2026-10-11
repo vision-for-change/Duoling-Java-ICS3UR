@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
-import { ArrowRight, CheckCircle2, Clock, Flame, Heart, LogOut, RotateCcw, Swords, Trophy, XCircle, Zap } from 'lucide-react'
+import { ArrowRight, LogOut, RotateCcw } from 'lucide-react'
+import { AppIcon } from '../components/AppIcon'
 import { Link } from 'react-router'
 import { Button, ButtonLink } from '../components/Button'
 import { CodeBlock } from '../components/CodeBlock'
@@ -8,9 +9,9 @@ import { Mascot } from '../components/Mascot'
 import { Md } from '../components/Md'
 import { ProgressBar } from '../components/ProgressBar'
 import { shuffledOrder } from '../components/questions/types'
-import { FootballIcon, Villain, type VillainPose } from '../components/Villains'
-import { pickLine, type BattleMoment } from '../data/battleDialogue'
-import type { MascotMood } from '../data/types'
+import { Villain, type VillainPose } from '../components/Villains'
+import { MOMENT_ICON, pickLine, type BattleMoment } from '../data/battleDialogue'
+import type { IconName, MascotMood } from '../data/types'
 import {
   accuracy,
   answer,
@@ -56,7 +57,7 @@ function HpBar({ label, hp, max, tone }: { label: string; hp: number; max: numbe
       <div className="mb-0.5 flex items-center justify-between gap-2 text-xs font-extrabold tracking-wide text-espresso-700 uppercase">
         <span className="truncate">{label}</span>
         <span className="flex items-center gap-1 font-display">
-          <Heart size={12} className={tone === 'mint' ? 'fill-mint-500 text-mint-600' : 'fill-berry-500 text-berry-600'} />
+          <AppIcon name="heart" size={13} className={tone === 'mint' ? 'fill-mint-500 text-mint-600' : 'fill-berry-500 text-berry-600'} />
           {hp}
         </span>
       </div>
@@ -66,18 +67,22 @@ function HpBar({ label, hp, max, tone }: { label: string; hp: number; max: numbe
 }
 
 /** A speech bubble above a character. It never takes clicks, so it can't get in the way of answering. */
-function Bubble({ text, align = 'center' }: { text: string; align?: 'center' | 'right' | 'left' }) {
+function Bubble({ text, icon, who, align = 'center' }: { text: string; icon: IconName; who: Foe; align?: 'center' | 'right' | 'left' }) {
   const pos = align === 'right' ? 'right-0' : align === 'left' ? 'left-0' : 'left-1/2 -translate-x-1/2'
+  const tile = who === 'bryan' ? 'bg-brew-100 text-brew-600' : 'bg-sky-100 text-sky-700'
   return (
     <motion.div
       initial={{ opacity: 0, y: 6, scale: 0.9 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: -4, scale: 0.95 }}
       transition={{ type: 'spring', stiffness: 420, damping: 26 }}
-      className={`pointer-events-none absolute bottom-full z-20 mb-1 w-max max-w-[min(15rem,46vw)] rounded-2xl border-2 border-espresso-900 bg-white px-3 py-1.5 text-[13px] leading-snug font-bold text-espresso-900 shadow-[0_3px_0_var(--color-espresso-900)] ${pos}`}
+      className={`pointer-events-none absolute bottom-full z-20 mb-1 w-max max-w-[min(15rem,46vw)] flex items-start gap-2 rounded-2xl border-2 border-espresso-900 bg-white px-2.5 py-1.5 text-[13px] leading-snug font-bold text-espresso-900 shadow-[0_3px_0_var(--color-espresso-900)] ${pos}`}
       aria-live="polite"
     >
-      {text}
+      <span className={`mt-px flex h-6 w-6 shrink-0 items-center justify-center rounded-lg ${tile}`}>
+        <AppIcon name={icon} size={15} strokeWidth={2.6} />
+      </span>
+      <span>{text}</span>
     </motion.div>
   )
 }
@@ -105,10 +110,30 @@ function Fighter({ pose, facing, children }: { pose: VillainPose; facing: 1 | -1
   )
 }
 
-function Stat({ icon, label, value }: { icon: ReactNode; label: string; value: ReactNode }) {
+const TILE: Record<'brew' | 'sun' | 'mint' | 'sky' | 'berry' | 'espresso', string> = {
+  brew: 'bg-brew-100 text-brew-600',
+  sun: 'bg-sun-100 text-sun-700',
+  mint: 'bg-mint-100 text-mint-700',
+  sky: 'bg-sky-100 text-sky-700',
+  berry: 'bg-berry-100 text-berry-600',
+  espresso: 'bg-espresso-100 text-espresso-600',
+}
+
+/** An icon in a soft colored tile. */
+function IconTile({ icon, tone, size = 36 }: { icon: IconName; tone: keyof typeof TILE; size?: number }) {
+  return (
+    <span className={`flex shrink-0 items-center justify-center rounded-xl ${TILE[tone]}`} style={{ width: size, height: size }}>
+      <AppIcon name={icon} size={size * 0.55} strokeWidth={2.4} />
+    </span>
+  )
+}
+
+function Stat({ icon, tone, label, value }: { icon: IconName; tone: keyof typeof TILE; label: string; value: ReactNode }) {
   return (
     <div className="rounded-2xl border-2 border-espresso-100 bg-white p-3 text-center">
-      <div className="mx-auto mb-1 flex justify-center">{icon}</div>
+      <div className="mb-1 flex justify-center">
+        <IconTile icon={icon} tone={tone} size={34} />
+      </div>
       <div className="font-display text-2xl font-bold text-espresso-900">{value}</div>
       <div className="text-xs font-extrabold tracking-wide text-espresso-400 uppercase">{label}</div>
     </div>
@@ -120,12 +145,13 @@ function Stat({ icon, label, value }: { icon: ReactNode; label: string; value: R
 function Lobby({ onStart, poolSize }: { onStart: () => void; poolSize: number }) {
   const p = useProgress()
   // Bryan and Avik take turns trash-talking, so their bubbles never cover each other
-  const [talk, setTalk] = useState(() => ({ who: 'bryan' as Foe, text: pickLine('bryan', 'intro'), key: 0 }))
+  const [talk, setTalk] = useState(() => ({ who: 'bryan' as Foe, moment: 'intro' as BattleMoment, text: pickLine('bryan', 'intro'), key: 0 }))
   useEffect(() => {
     const id = setInterval(() => {
       setTalk((t) => {
         const who: Foe = t.who === 'bryan' ? 'avik' : 'bryan'
-        return { who, text: pickLine(who, t.key % 4 < 2 ? 'intro' : 'taunt'), key: t.key + 1 }
+        const moment: BattleMoment = t.key % 4 < 2 ? 'intro' : 'taunt'
+        return { who, moment, text: pickLine(who, moment), key: t.key + 1 }
       })
     }, 3200)
     return () => clearInterval(id)
@@ -134,7 +160,7 @@ function Lobby({ onStart, poolSize }: { onStart: () => void; poolSize: number })
     <div className="mx-auto max-w-4xl">
       <div className="text-center">
         <div className="inline-flex items-center gap-2 rounded-full bg-berry-100 px-3 py-1 text-xs font-extrabold tracking-widest text-berry-700 uppercase">
-          <Swords size={14} /> Practice battle
+          <AppIcon name="swords" size={14} /> Practice battle
         </div>
         <h1 className="mt-2 text-4xl font-bold sm:text-5xl">Java Battle</h1>
         <p className="mx-auto mt-2 max-w-xl text-espresso-600">Bryan and Avik think they know more Java than you. Answer fast, answer right, and prove them wrong.</p>
@@ -151,7 +177,7 @@ function Lobby({ onStart, poolSize }: { onStart: () => void; poolSize: number })
           <div className="flex items-end gap-1 sm:gap-4">
             {(['bryan', 'avik'] as Foe[]).map((f) => (
               <div key={f} className="relative flex flex-col items-center">
-                <AnimatePresence>{talk.who === f && <Bubble key={talk.key} text={talk.text} align={f === 'avik' ? 'right' : 'center'} />}</AnimatePresence>
+                <AnimatePresence>{talk.who === f && <Bubble key={talk.key} text={talk.text} icon={MOMENT_ICON[f][talk.moment]} who={f} align={f === 'avik' ? 'right' : 'center'} />}</AnimatePresence>
                 <Villain who={f} pose={talk.who === f ? 'taunt' : 'idle'} size={130} />
                 <span className="mt-1 rounded-full bg-berry-600 px-2.5 py-0.5 text-xs font-extrabold tracking-wide text-white uppercase">{NAMES[f]}</span>
               </div>
@@ -165,16 +191,16 @@ function Lobby({ onStart, poolSize }: { onStart: () => void; poolSize: number })
           <h2 className="mb-3 text-xl font-bold">How to win</h2>
           <ul className="space-y-2.5 text-[15px] text-espresso-700">
             <li className="flex gap-3">
-              <Clock size={20} className="mt-0.5 shrink-0 text-sky-600" /> Every question has a timer. Read carefully, but don't fall asleep.
+              <IconTile icon="timer" tone="sky" size={30} /> <span className="self-center">Every question has a timer. Read carefully, but don't fall asleep.</span>
             </li>
             <li className="flex gap-3">
-              <Zap size={20} className="mt-0.5 shrink-0 text-sun-600" /> A right answer attacks. Get {CRIT_STREAK} in a row for critical hits.
+              <IconTile icon="zap" tone="sun" size={30} /> <span className="self-center">A right answer attacks. Get {CRIT_STREAK} in a row for critical hits.</span>
             </li>
             <li className="flex gap-3">
-              <FootballIcon size={20} /> A wrong answer (or running out of time) lets them hit back.
+              <IconTile icon="football" tone="berry" size={30} /> <span className="self-center">A wrong answer (or running out of time) lets them hit back.</span>
             </li>
             <li className="flex gap-3">
-              <Trophy size={20} className="mt-0.5 shrink-0 text-brew-500" /> Knock out Bryan, then Avik, before your health runs out. Questions get harder as you go.
+              <IconTile icon="trophy" tone="brew" size={30} /> <span className="self-center">Knock out Bryan, then Avik, before your health runs out. Questions get harder as you go.</span>
             </li>
           </ul>
           <p className="mt-3 text-xs font-semibold text-espresso-400">
@@ -183,15 +209,15 @@ function Lobby({ onStart, poolSize }: { onStart: () => void; poolSize: number })
         </div>
         <div className="flex flex-col gap-3">
           <div className="grid grid-cols-3 gap-2 md:grid-cols-1">
-            <Stat icon={<Swords size={18} className="text-espresso-500" />} label="Battles" value={p.battle.played} />
-            <Stat icon={<Trophy size={18} className="text-sun-600" />} label="Wins" value={p.battle.wins} />
-            <Stat icon={<Zap size={18} className="text-brew-500" />} label="Best score" value={p.battle.bestScore} />
+            <Stat icon="swords" tone="espresso" label="Battles" value={p.battle.played} />
+            <Stat icon="trophy" tone="sun" label="Wins" value={p.battle.wins} />
+            <Stat icon="star" tone="brew" label="Best score" value={p.battle.bestScore} />
           </div>
         </div>
       </div>
 
       <div className="mt-6 flex flex-col items-center gap-3">
-        <Button size="lg" onClick={onStart} icon={<Swords size={22} />} className="min-w-64">
+        <Button size="lg" onClick={onStart} icon={<AppIcon name="swords" size={22} />} className="min-w-64">
           Start battle
         </Button>
         <Link to="/practice/session?mode=smart" className="text-sm font-bold text-espresso-400 hover:text-espresso-600">
@@ -244,7 +270,7 @@ function Battle({ pool, onDone, onQuit }: { pool: string[]; onDone: (s: BattleSt
   const [poses, setPoses] = useState<Record<Foe, VillainPose>>({ bryan: 'taunt', avik: 'idle' })
   const [playerMood, setPlayerMood] = useState<MascotMood>('encouraging')
   const [playerPose, setPlayerPose] = useState<VillainPose>('idle')
-  const [bubbles, setBubbles] = useState<Record<Foe, { text: string; key: number } | null>>({ bryan: { text: pickLine('bryan', 'intro'), key: 1 }, avik: null })
+  const [bubbles, setBubbles] = useState<Record<Foe, { text: string; key: number; icon: IconName } | null>>(() => ({ bryan: { text: pickLine('bryan', 'intro'), key: 1, icon: MOMENT_ICON.bryan.intro }, avik: null }))
   const [fx, setFx] = useState<Fx | null>(null)
   const [popup, setPopup] = useState<Popup | null>(null)
   const [xp, setXp] = useState(0)
@@ -264,7 +290,7 @@ function Battle({ pool, onDone, onQuit }: { pool: string[]; onDone: (s: BattleSt
     lastLine.current[who] = text
     const key = ++counter.current
     // one speaker at a time, so the bubbles never overlap
-    later(delay, () => setBubbles({ bryan: null, avik: null, [who]: { text, key } }))
+    later(delay, () => setBubbles({ bryan: null, avik: null, [who]: { text, key, icon: MOMENT_ICON[who][moment] } }))
     later(delay + 3400, () => setBubbles((b) => (b[who]?.key === key ? { ...b, [who]: null } : b)))
   }, [])
 
@@ -397,6 +423,7 @@ function Battle({ pool, onDone, onQuit }: { pool: string[]; onDone: (s: BattleSt
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <span className="rounded-xl bg-espresso-900 px-3 py-1.5 font-display text-sm font-semibold text-white">
+            <AppIcon name="star" size={15} className="mr-1 inline-block fill-sun-300 align-[-2px] text-sun-300" />
             Score <span className="ml-1 text-sun-300">{state.score}</span>
           </span>
           <motion.span
@@ -405,8 +432,12 @@ function Battle({ pool, onDone, onQuit }: { pool: string[]; onDone: (s: BattleSt
             animate={{ scale: 1 }}
             className={`flex items-center gap-1 rounded-xl px-3 py-1.5 font-display text-sm font-semibold ${state.streak >= CRIT_STREAK ? 'bg-brew-500 text-white' : 'bg-brew-100 text-brew-700'}`}
           >
-            <Flame size={16} className={state.streak ? 'fill-current' : ''} /> {state.streak} streak
-            {state.streak >= CRIT_STREAK && <span className="ml-1 text-[11px] font-extrabold tracking-wider uppercase">Crits on!</span>}
+            <AppIcon name="flame" size={16} className={state.streak >= CRIT_STREAK ? 'fill-sun-300' : state.streak ? 'fill-brew-300' : ''} /> {state.streak} streak
+            {state.streak >= CRIT_STREAK && (
+              <span className="ml-1 flex items-center gap-0.5 text-[11px] font-extrabold tracking-wider uppercase">
+                <AppIcon name="zap" size={12} className="fill-sun-300 text-sun-300" /> Crits on!
+              </span>
+            )}
           </motion.span>
           <span className="hidden rounded-xl bg-white px-3 py-1.5 text-sm font-bold text-espresso-500 sm:inline">Question {state.answered + (picked === null ? 1 : 0)}</span>
         </div>
@@ -437,7 +468,7 @@ function Battle({ pool, onDone, onQuit }: { pool: string[]; onDone: (s: BattleSt
           <div className="self-center pb-12 font-display text-2xl font-bold text-berry-400 sm:text-3xl">VS</div>
           {(['bryan', 'avik'] as Foe[]).map((f) => (
             <div key={f} className={`relative flex flex-col items-center gap-2 transition-opacity ${fighting(f) || state.foeHp[f] === 0 || state.status !== 'fighting' ? 'opacity-100' : 'opacity-70'}`}>
-              <AnimatePresence>{bubbles[f] && <Bubble key={bubbles[f]!.key} text={bubbles[f]!.text} align={f === 'avik' ? 'right' : 'center'} />}</AnimatePresence>
+              <AnimatePresence>{bubbles[f] && <Bubble key={bubbles[f]!.key} text={bubbles[f]!.text} icon={bubbles[f]!.icon} who={f} align={f === 'avik' ? 'right' : 'center'} />}</AnimatePresence>
               <div ref={refs[f]} className="relative">
                 {fighting(f) && <span className="absolute -top-1 left-1/2 z-10 -translate-x-1/2 rounded-full bg-berry-500 px-2 py-0.5 text-[10px] font-extrabold tracking-wider text-white uppercase">Fighting</span>}
                 <Fighter pose={poses[f]} facing={-1}>
@@ -454,7 +485,7 @@ function Battle({ pool, onDone, onQuit }: { pool: string[]; onDone: (s: BattleSt
 
       {/* timer */}
       <div className="flex items-center gap-3">
-        <Clock size={18} className={urgent ? 'text-berry-500' : 'text-espresso-400'} />
+        <AppIcon name="timer" size={20} className={urgent ? 'text-berry-500' : 'text-espresso-400'} />
         <div className="relative h-3 flex-1 overflow-hidden rounded-full bg-espresso-100" role="timer" aria-label={`${Math.ceil(timeLeft)} seconds left`}>
           <div
             className={`h-full rounded-full transition-[width] duration-100 ease-linear ${timeLeft / total > 0.5 ? 'bg-mint-500' : urgent ? 'bg-berry-500' : 'bg-sun-400'}`}
@@ -503,8 +534,8 @@ function Battle({ pool, onDone, onQuit }: { pool: string[]; onDone: (s: BattleSt
               >
                 <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-sm font-bold ${isRight ? 'bg-mint-500 text-white' : isWrongPick ? 'bg-berry-500 text-white' : 'bg-espresso-100 text-espresso-600'}`}>{di + 1}</span>
                 <span className={`min-w-0 flex-1 ${optionMono ? 'font-mono text-sm whitespace-pre-wrap' : 'font-semibold'}`}>{optionMono ? opt.text : <Md text={opt.text} />}</span>
-                {isRight && <CheckCircle2 size={20} className="shrink-0 text-mint-600" />}
-                {isWrongPick && <XCircle size={20} className="shrink-0 text-berry-500" />}
+                {isRight && <AppIcon name="check-circle" size={20} className="shrink-0 text-mint-600" />}
+                {isWrongPick && <AppIcon name="x-circle" size={20} className="shrink-0 text-berry-500" />}
               </button>
             )
           })}
@@ -515,7 +546,8 @@ function Battle({ pool, onDone, onQuit }: { pool: string[]; onDone: (s: BattleSt
             <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className={`mt-4 rounded-2xl border-2 p-4 ${turn.correct ? 'border-mint-300 bg-mint-50' : 'border-berry-200 bg-berry-50'}`}>
               <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
                 <div className="flex-1">
-                  <div className={`font-display text-xl font-bold ${turn.correct ? 'text-mint-800' : 'text-berry-700'}`}>
+                  <div className={`flex items-center gap-2 font-display text-xl font-bold ${turn.correct ? 'text-mint-800' : 'text-berry-700'}`}>
+                    <IconTile icon={turn.correct ? (turn.crit ? 'zap' : 'target') : turn.timedOut ? 'timer' : 'heart-crack'} tone={turn.correct ? (turn.crit ? 'sun' : 'mint') : 'berry'} size={32} />
                     {turn.correct
                       ? `${turn.crit ? 'Critical hit! ' : 'Hit! '}+${turn.points} points`
                       : turn.timedOut
@@ -552,7 +584,12 @@ function DamagePopup({ popup }: { popup: Popup }) {
       className={`pointer-events-none absolute top-6 left-1/2 z-30 -translate-x-1/2 font-display text-2xl font-bold whitespace-nowrap ${popup.target === 'player' ? 'text-berry-500' : 'text-brew-600'}`}
       style={{ WebkitTextStroke: '1.5px #241812' }}
     >
-      {popup.crit && <span className="mr-1 text-sun-400">CRIT</span>}
+      {popup.crit && (
+        <span className="mr-1 inline-flex items-center text-sun-400">
+          <AppIcon name="zap" size={22} className="fill-sun-300 text-espresso-900" />
+          CRIT
+        </span>
+      )}
       {popup.text}
     </motion.div>
   )
@@ -584,7 +621,9 @@ function Projectile({ fx }: { fx: Fx }) {
       transition={{ duration: 0.42, ease: 'easeIn', opacity: { times: [0, 0.85, 1], duration: 0.5 } }}
     >
       {fx.kind === 'ball' ? (
-        <FootballIcon size={34} />
+        <span className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-espresso-900 bg-white text-espresso-900 shadow-[0_3px_0_var(--color-espresso-900)]">
+          <AppIcon name="football" size={30} strokeWidth={2} />
+        </span>
       ) : (
         <span className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-espresso-900 bg-brew-400 font-mono text-sm font-bold text-white shadow-[0_0_16px_4px_rgba(247,111,34,0.6)]">{'{ }'}</span>
       )}
@@ -610,6 +649,9 @@ function Results({ state, reward, onAgain, onLobby }: { state: BattleState; rewa
   }, [])
   return (
     <div className="mx-auto max-w-3xl text-center">
+      <motion.div initial={{ scale: 0.6, opacity: 0, rotate: -8 }} animate={{ scale: 1, opacity: 1, rotate: 0 }} className="mb-2 flex justify-center">
+        <IconTile icon={won ? 'trophy' : 'heart-crack'} tone={won ? 'sun' : 'berry'} size={64} />
+      </motion.div>
       <motion.h1 initial={{ scale: 0.7, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className={`text-5xl font-bold ${won ? 'text-mint-700' : 'text-berry-600'}`}>
         {won ? 'Victory!' : 'Defeated... for now'}
       </motion.h1>
@@ -624,7 +666,7 @@ function Results({ state, reward, onAgain, onLobby }: { state: BattleState; rewa
           <div className="flex items-end gap-2 sm:gap-6">
             {(['bryan', 'avik'] as Foe[]).map((f) => (
               <div key={f} className="relative">
-                <AnimatePresence>{speaker === f && <Bubble key={f} text={lines[f]} align={f === 'avik' ? 'right' : 'center'} />}</AnimatePresence>
+                <AnimatePresence>{speaker === f && <Bubble key={f} text={lines[f]} icon={MOMENT_ICON[f][won ? 'playerWon' : 'victory']} who={f} align={f === 'avik' ? 'right' : 'center'} />}</AnimatePresence>
                 <Fighter pose={won ? 'defeated' : 'victory'} facing={-1}>
                   <Villain who={f} pose={won ? 'defeated' : 'victory'} size={104} />
                 </Fighter>
@@ -635,12 +677,16 @@ function Results({ state, reward, onAgain, onLobby }: { state: BattleState; rewa
       </div>
 
       <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <Stat icon={<Zap size={18} className="text-brew-500" />} label={newBest ? 'New best!' : 'Score'} value={state.score} />
-        <Stat icon={<CheckCircle2 size={18} className="text-mint-600" />} label="Accuracy" value={`${Math.round(accuracy(state) * 100)}%`} />
-        <Stat icon={<Swords size={18} className="text-espresso-500" />} label="Correct" value={`${state.correct}/${state.answered}`} />
-        <Stat icon={<Flame size={18} className="text-brew-500" />} label="Best streak" value={state.bestStreak} />
+        <Stat icon={newBest ? 'medal' : 'star'} tone="brew" label={newBest ? 'New best!' : 'Score'} value={state.score} />
+        <Stat icon="target" tone="sky" label="Accuracy" value={`${Math.round(accuracy(state) * 100)}%`} />
+        <Stat icon="check-circle" tone="mint" label="Correct" value={`${state.correct}/${state.answered}`} />
+        <Stat icon="flame" tone="sun" label="Best streak" value={state.bestStreak} />
       </div>
-      {reward && <p className="mt-3 font-display text-lg font-semibold text-sun-700">+{reward.xp} XP</p>}
+      {reward && (
+        <p className="mt-3 inline-flex items-center gap-1.5 font-display text-lg font-semibold text-sun-700">
+          <AppIcon name="zap" size={20} className="fill-sun-300" /> +{reward.xp} XP
+        </p>
+      )}
 
       <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
         <Button size="lg" onClick={onAgain} icon={<RotateCcw size={20} />}>

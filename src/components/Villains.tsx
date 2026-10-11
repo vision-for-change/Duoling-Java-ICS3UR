@@ -394,10 +394,3 @@ export function Villain({ who, pose = 'idle', size = 140, className = '' }: { wh
   )
 }
 
-export function FootballIcon({ size = 28 }: { size?: number }) {
-  return (
-    <svg viewBox="0 0 30 30" width={size} height={size} aria-hidden>
-      <Football cx={15} cy={15} r={12} />
-    </svg>
-  )
-}

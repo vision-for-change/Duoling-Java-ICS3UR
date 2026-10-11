@@ -1,4 +1,5 @@
 import type { VillainId } from '../components/Villains'
+import type { IconName } from './types'
 
 /** The moments a villain says something during a battle. */
 export type BattleMoment =
@@ -98,4 +99,30 @@ export function pickLine(who: VillainId, moment: BattleMoment, last?: string, ra
   if (!lines.length) return ''
   const options = lines.length > 1 ? lines.filter((l) => l !== last) : lines
   return options[Math.floor(rand() * options.length)]
+}
+
+/** The icon shown in a villain's speech bubble, by moment: Bryan games and kicks, Avik computes and zaps. */
+export const MOMENT_ICON: Record<VillainId, Record<BattleMoment, IconName>> = {
+  bryan: {
+    intro: 'gamepad',
+    taunt: 'gamepad',
+    hit: 'heart-crack',
+    attack: 'football',
+    timeout: 'timer',
+    defeated: 'heart-crack',
+    stepIn: 'gamepad',
+    victory: 'crown',
+    playerWon: 'football',
+  },
+  avik: {
+    intro: 'bot',
+    taunt: 'bot',
+    hit: 'heart-crack',
+    attack: 'zap',
+    timeout: 'timer',
+    defeated: 'heart-crack',
+    stepIn: 'bot',
+    victory: 'trophy',
+    playerWon: 'thumbs-up',
+  },
 }
