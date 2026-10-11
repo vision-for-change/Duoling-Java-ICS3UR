@@ -28,7 +28,7 @@ interface MascotProps {
   title?: string
 }
 
-type Arms = 'down' | 'up' | 'think' | 'thumb' | 'out'
+type Arms = 'down' | 'up' | 'think' | 'out'
 
 const ARMS: Record<MascotMood, Arms> = {
   happy: 'down',
@@ -36,7 +36,8 @@ const ARMS: Record<MascotMood, Arms> = {
   thinking: 'think',
   confused: 'down',
   celebrating: 'up',
-  encouraging: 'thumb',
+  // both hands resting down as round fists: no raised finger or thumb
+  encouraging: 'down',
   surprised: 'out',
 }
 
@@ -66,14 +67,6 @@ function ArmsFor({ arms }: { arms: Arms }) {
         <>
           <Arm d="M68 148 Q54 160 50 172" hand={[50, 174]} />
           <Arm d="M132 146 Q154 144 150 128" hand={[149, 125]} />
-        </>
-      )
-    case 'thumb':
-      return (
-        <>
-          <Arm d="M68 148 Q54 160 50 172" hand={[50, 174]} />
-          <Arm d="M132 146 Q150 138 158 120" hand={[159, 117]} />
-          <rect x={155} y={100} width={8} height={14} rx={4} fill={SKIN} stroke={INK} strokeWidth={3.5} />
         </>
       )
     case 'out':
