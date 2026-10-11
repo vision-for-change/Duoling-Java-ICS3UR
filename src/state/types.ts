@@ -105,6 +105,10 @@ export interface Progress {
     programsRun: number
     bugsFixed: number
   }
+  /** Practice battles against Bryan and Avik */
+  battle: { played: number; wins: number; bestScore: number }
+  /** project id -> when the learner finished its warm-up quiz */
+  warmups: Record<string, number>
   /** the final project the learner chose when they started (null until they pick one) */
   project: ProjectId | null
   /** stage ids are project specific (cart-1, guesser-2, ...); completedAt is set when the chosen project is finished */
@@ -137,6 +141,8 @@ export function createEmptyProgress(now = Date.now()): Progress {
     placement: null,
     activity: [],
     stats: { answered: 0, correct: 0, bestCombo: 0, practiceSessions: 0, programsRun: 0, bugsFixed: 0 },
+    battle: { played: 0, wins: 0, bestScore: 0 },
+    warmups: {},
     project: null,
     final: { stagesDone: [], code: {} },
   }

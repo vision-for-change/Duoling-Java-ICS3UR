@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { motion } from 'motion/react'
-import { CheckCircle2, ChevronDown, ChevronRight, Eye, FlaskConical, HelpCircle, Lightbulb, Play, Shuffle } from 'lucide-react'
-import { Link, Navigate } from 'react-router'
+import { CheckCircle2, ChevronDown, ChevronRight, Eye, FlaskConical, HelpCircle, Lightbulb, PartyPopper, Play, Shuffle } from 'lucide-react'
+import { Link, Navigate, useNavigate, useSearchParams } from 'react-router'
 import { Button } from '../components/Button'
 import { CodeBlock } from '../components/CodeBlock'
 import { CodeEditor } from '../components/CodeEditor'
@@ -10,6 +10,7 @@ import { Mascot, MascotSays } from '../components/Mascot'
 import { Md } from '../components/Md'
 import { Modal } from '../components/Modal'
 import { VideoLink } from '../components/ProjectPicker'
+import { WarmupQuiz } from '../components/WarmupQuiz'
 import { TestResults } from '../components/questions/CodeTaskQuestion'
 import { ErrorExplainer, RunnableCode } from '../components/RunnableCode'
 import { getProject } from '../data/projects'
@@ -34,10 +35,25 @@ function nextOpenStage(stages: FinalStage[], done: string[], from: number): numb
 
 export function FinalPage() {
   const p = useProgress()
+  const navigate = useNavigate()
+  const [params] = useSearchParams()
   const project = getProject(p.project)
   // the final project opens after the last lesson, or when the learner chooses to skip ahead to it
   if (!project) return <Navigate to="/project" replace />
   if (!isFinalUnlocked(p)) return <Navigate to="/learn#final" replace />
+  // a short classroom warm-up comes before each project (and can be replayed with ?warmup=1)
+  if (!p.warmups[project.id] || params.get('warmup') === '1') {
+    return (
+      <WarmupQuiz
+        key={project.id}
+        project={project}
+        onDone={() => {
+          store.completeWarmup(project.id)
+          navigate('/final', { replace: true })
+        }}
+      />
+    )
+  }
   return <ProjectBuilder key={project.id} project={project} />
 }
 
@@ -146,6 +162,9 @@ function ProjectBuilder({ project }: { project: FinalProject }) {
               Completed!
             </div>
           )}
+          <Link to="/final?warmup=1" className="inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-sm font-bold text-espresso-500 hover:bg-espresso-100">
+            <PartyPopper size={16} /> Replay the warm-up
+          </Link>
           <Link to="/project" className="inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-sm font-bold text-espresso-500 hover:bg-espresso-100">
             <Shuffle size={16} /> Change project
           </Link>

@@ -296,6 +296,33 @@ export class ProgressStore {
     return reward
   }
 
+  /** A Practice battle ended. Counts as a practice session, and keeps the battle record. */
+  finishBattle(result: { won: boolean; score: number; correct: number; answered: number; bestStreak: number; xp: number }): Reward {
+    const p = this.state
+    const withStats: Progress = {
+      ...p,
+      stats: { ...p.stats, practiceSessions: p.stats.practiceSessions + 1, bestCombo: Math.max(p.stats.bestCombo, result.bestStreak) },
+      battle: { played: p.battle.played + 1, wins: p.battle.wins + (result.won ? 1 : 0), bestScore: Math.max(p.battle.bestScore, result.score) },
+    }
+    const breakdown = [
+      { label: 'Correct answers', xp: result.xp },
+      { label: 'Battle complete', xp: XP.practiceComplete },
+    ]
+    if (result.won) breakdown.push({ label: 'Beat Bryan and Avik', xp: XP.battleWin })
+    const { next, reward, events } = this.reward(withStats, breakdown, {
+      kind: 'practice',
+      title: result.won ? 'Beat Bryan and Avik in a Java battle!' : 'Fought Bryan and Avik in a Java battle',
+      detail: `${result.correct}/${result.answered} correct, ${result.score} points`,
+    })
+    this.commit(next, events)
+    return reward
+  }
+
+  /** The project warm-up quiz is done (it only shows once per project, but can be replayed). */
+  completeWarmup(projectId: ProjectId) {
+    this.commit({ ...this.state, warmups: { ...this.state.warmups, [projectId]: this.state.warmups[projectId] ?? Date.now() } })
+  }
+
   /**
    * The learner chose to jump ahead to a lesson, a checkpoint or the final project. Everything passed over
    * is marked as skipped (not completed, and still open to finish later), and the target is opened.

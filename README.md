@@ -78,8 +78,15 @@ Progress is stored in the browser (`localStorage`), so no account or server is n
   inserted, and a question failed twice comes back later in the lesson.
 - **Watch it run:** step through any program with the current line highlighted, a variable table (changed
   values glow) and the output so far.
-- **Practice:** smart sessions built from weak topics (accuracy under 80%) and recently missed questions,
-  per-topic practice with mastery bars, "fix your mistakes", and unit reviews.
+- **Practice is a Java battle against Bryan and Avik**, two villains drawn as mascots from photos of the real
+  Bryan and Avik. Answer multiple-choice questions (output, debugging, syntax, loops, strings and the rest) before
+  the timer runs out. A right answer attacks, a streak of 3 lands critical hits, and a wrong answer or a timeout lets
+  them hit back. Knock out Bryan, then Avik, before your health runs out. Questions come only from lessons the learner
+  has finished, step up from Beginner to Advanced as the battle goes on, and every answer shows its explanation.
+  Bryan (loud, overconfident, Fortnite and football) and Avik (deadpan, logical, his robotic arm) trash-talk in
+  speech bubbles that never cover the question. The results screen shows score, accuracy, correct answers and best
+  streak, with a one-click rematch. Lessons and the dashboard still link to quiet adaptive review sessions
+  (weak topics, mistakes, a single topic or unit) at `/practice/session`.
 - **Java Sandbox page** for free experimentation, with interactive console input.
 - **Final project, chosen at the start.** After the 8 units, the learner builds the project they picked, guided
   stage by stage (4 or 5 stages each). The finished program is the code from the teacher's handout, and each project
@@ -93,6 +100,11 @@ Progress is stored in the browser (`localStorage`), so no account or server is n
   the ideas properly and points to the video. After a failed test run, Byte suggests the explanation and the video.
   Stages can be done in any order (each one starts with the earlier parts already written), and the project can be
   switched later on the **/project** page without losing saved code.
+- **Project warm-up.** Before a project starts, a short, silly 4-question quiz built from the six class sayings
+  ("The key to success is consistency.", "Never suffer in silence.", "Everything counts.", "Collaboration, not
+  competition.", "Remember to have a wonderful or fantastic weekend.", "If someone is laughing, someone is crying.").
+  The saying is always the right answer, word for word, with funny reactions for every choice. It shows once per
+  project, can be replayed, and is kept separate from the project and every assessment.
 
 **Gamification**
 - XP: +10 per correct answer (+20 for advanced), +5 on a second try, +50 per lesson (+10 if perfect),
@@ -134,6 +146,7 @@ src/
 │   ├── grading.ts       grading for every question type
 │   ├── codeRunner.ts    runs learner code against tests
 │   ├── practice.ts      weak-topic / mistake-driven practice selection
+│   ├── battle.ts        the Practice battle: deck, damage, streaks, timer and scoring
 │   ├── progression.ts   lesson states (completed, current, unlocked, skipped, locked), unlock and skip rules, the "next step"
 │   ├── stats.ts         accuracy, mastery, weakest / strongest topics
 │   ├── achievements.ts  achievement definitions (pure checks over progress)

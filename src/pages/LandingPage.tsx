@@ -174,7 +174,7 @@ export function LandingPage() {
 
       <footer className="border-t-2 border-espresso-100 py-8 text-center text-sm text-espresso-400">
         <p className="font-semibold text-espresso-500">ByteBrew - Your chance to get good at java</p>
-        <img src={signatureUrl} alt="ByteBrew signature" className="mx-auto mt-4 h-36 w-auto max-w-full object-contain opacity-90 sm:h-44" />
+        <img src={signatureUrl} alt="ByteBrew signature" className="mx-auto mt-4 h-16 w-auto max-w-full object-contain opacity-80 sm:h-20" />
       </footer>
     </div>
   )

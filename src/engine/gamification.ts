@@ -14,6 +14,8 @@ export const XP = {
   perfectBonus: 10,
   unitComplete: 100,
   practiceComplete: 20,
+  /** beating both villains in a Practice battle */
+  battleWin: 30,
   finalStage: 50,
   finalComplete: 200,
   placementComplete: 25,
