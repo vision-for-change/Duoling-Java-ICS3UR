@@ -20,7 +20,7 @@ const LessonPage = lazy(() => import('./pages/LessonPage').then((m) => ({ defaul
 const CheckpointPage = lazy(() => import('./pages/LessonPage').then((m) => ({ default: m.CheckpointPage })))
 const OnboardingPage = lazy(() => import('./pages/OnboardingPage').then((m) => ({ default: m.OnboardingPage })))
 const PlacementPage = lazy(() => import('./pages/PlacementPage').then((m) => ({ default: m.PlacementPage })))
-const BattlePage = lazy(() => import('./pages/BattlePage').then((m) => ({ default: m.BattlePage })))
+const StadiumPage = lazy(() => import('./pages/StadiumPage').then((m) => ({ default: m.StadiumPage })))
 const PracticeSessionPage = lazy(() => import('./pages/PracticePage').then((m) => ({ default: m.PracticeSessionPage })))
 const ProfilePage = lazy(() => import('./pages/ProfilePage').then((m) => ({ default: m.ProfilePage })))
 const ProjectPage = lazy(() => import('./pages/ProjectPage').then((m) => ({ default: m.ProjectPage })))
@@ -91,7 +91,7 @@ const router = createBrowserRouter([
             children: [
               { path: '/home', element: <DashboardPage /> },
               { path: '/learn', element: <LearnPage /> },
-              { path: '/practice', element: <BattlePage /> },
+              { path: '/practice', element: <StadiumPage /> },
               { path: '/sandbox', element: <SandboxPage /> },
               { path: '/achievements', element: <AchievementsPage /> },
               { path: '/profile', element: <ProfilePage /> },

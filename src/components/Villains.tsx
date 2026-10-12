@@ -322,7 +322,22 @@ function AvikHair({ back }: { back: boolean }) {
 
 // ------------------------------------------------------------------ the character
 
-export function Villain({ who, pose = 'idle', size = 140, className = '', stride = false }: { who: VillainId; pose?: VillainPose; size?: number; className?: string; stride?: boolean }) {
+export function Villain({
+  who,
+  pose = 'idle',
+  size = 140,
+  className = '',
+  stride = false,
+  ball = true,
+}: {
+  who: VillainId
+  pose?: VillainPose
+  size?: number
+  className?: string
+  stride?: boolean
+  /** Bryan carries his own football; the stadium hides it so there is only one match ball */
+  ball?: boolean
+}) {
   const uid = useId().replace(/:/g, '')
   const look = LOOKS[who]
   const clipId = `shirt-${uid}`
@@ -392,7 +407,7 @@ export function Villain({ who, pose = 'idle', size = 140, className = '', stride
           {who === 'bryan' ? <BryanHair /> : <AvikHair back={false} />}
         </g>
 
-        {who === 'bryan' && pose !== 'attack' && <Football cx={160} cy={196} />}
+        {who === 'bryan' && ball && pose !== 'attack' && <Football cx={160} cy={196} />}
       </svg>
     </div>
   )

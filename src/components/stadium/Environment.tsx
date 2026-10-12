@@ -30,7 +30,7 @@ function seeded(seed: number) {
   }
 }
 
-const SHIRTS = ['#f76f22', '#33a24d', '#ffffff', '#ffc21f', '#f76f22', '#45a5f8', '#33a24d', '#fa5d80']
+const SHIRTS = ['#e8692a', '#2f8f46', '#e9e6df', '#e0b23a', '#e8692a', '#4f86c6', '#2f8f46', '#3a3743', '#3a3743']
 const SKINS = ['#f1c6a0', '#c88b5f', '#7a4a2c', '#e0ac7e', '#a96f45', '#f6d3b3']
 const BANDS = 12
 
@@ -51,7 +51,7 @@ const FANS: Fan[][] = (() => {
     for (let x = 8; x < WORLD_W - 4; x += 19) {
       // leave the two aisles (the stairs in the image) and a few empty seats
       if ((x > 292 && x < 356) || (x > 652 && x < 716)) continue
-      if (rand() < 0.28) continue
+      if (rand() < 0.5) continue
       const fan = { x: x + rand() * 4 - 2, y, shirt: SHIRTS[Math.floor(rand() * SHIRTS.length)], skin: SKINS[Math.floor(rand() * SKINS.length)], scarf: rand() < 0.18 }
       bands[Math.min(BANDS - 1, Math.floor((x / WORLD_W) * BANDS))].push(fan)
     }
@@ -80,12 +80,12 @@ const Crowd = memo(function Crowd({ mood }: { mood: CrowdMood }) {
 function Floodlight({ x, flash }: { x: number; flash: boolean }) {
   return (
     <g>
-      <rect x={x - 3} y={78} width={6} height={154} fill="#4b4f5a" stroke="#1d1b22" strokeWidth={1.5} />
-      <path d={`M${x - 3} 120 L${x + 3} 150 M${x + 3} 120 L${x - 3} 150 M${x - 3} 170 L${x + 3} 200 M${x + 3} 170 L${x - 3} 200`} stroke="#2f323a" strokeWidth={1.2} />
-      <circle cx={x} cy={64} r={flash ? 92 : 70} fill="url(#flood-glow)" className={flash ? 'flood-flash' : undefined} style={{ mixBlendMode: 'screen' }} />
-      <rect x={x - 27} y={50} width={54} height={28} rx={4} fill="#2f323a" stroke="#1d1b22" strokeWidth={2} />
+      <rect x={x - 3} y={186} width={6} height={50} fill="#4b4f5a" stroke="#1d1b22" strokeWidth={1.5} />
+      <path d={`M${x - 3} 194 L${x + 3} 214 M${x + 3} 194 L${x - 3} 214`} stroke="#2f323a" strokeWidth={1.2} />
+      <circle cx={x} cy={172} r={flash ? 92 : 64} fill="url(#flood-glow)" className={flash ? 'flood-flash' : undefined} style={{ mixBlendMode: 'screen' }} />
+      <rect x={x - 27} y={158} width={54} height={28} rx={4} fill="#2f323a" stroke="#1d1b22" strokeWidth={2} />
       {[0, 1].map((r) =>
-        [0, 1, 2, 3].map((c) => <circle key={`${r}${c}`} cx={x - 18 + c * 12} cy={58 + r * 12} r={4.4} fill="#fffbe6" stroke="#c9c19a" strokeWidth={1} />),
+        [0, 1, 2, 3].map((c) => <circle key={`${r}${c}`} cx={x - 18 + c * 12} cy={166 + r * 12} r={4.4} fill="#fffbe6" stroke="#c9c19a" strokeWidth={1} />),
       )}
     </g>
   )

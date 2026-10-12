@@ -247,7 +247,7 @@ export function Defender({
   const uid = useId().replace(/:/g, '')
   if (who === 'bryan' || who === 'avik') {
     const map: Record<DefenderPose, VillainPose> = { idle: 'idle', taunt: 'taunt', power: 'attack', beaten: 'defeated', victory: 'victory' }
-    return <Villain who={who} pose={map[pose]} size={size} stride={stride} className={className} />
+    return <Villain who={who} pose={map[pose]} size={size} stride={stride} className={className} ball={false} />
   }
   const s = STYLES[who]
   const clip = `kit-${uid}`
