@@ -97,7 +97,7 @@ function Dizzy({ cx, cy }: { cx: number; cy: number }) {
 }
 
 /** Eyes, brows and mouth, per villain and pose. */
-function Face({ who, pose, s }: { who: keyof typeof STYLES; pose: DefenderPose; s: Style }) {
+function Face({ who, pose }: { who: keyof typeof STYLES; pose: DefenderPose }) {
   if (pose === 'beaten') {
     return (
       <g>
@@ -264,7 +264,7 @@ export function Defender({
       )}
       <ellipse cx={100} cy={94} rx={s.big ? 46 : 42} ry={44} fill={s.skin} stroke={INK} strokeWidth={5} />
       {who === 'tremor' && <path d="M66 104 L78 98 L84 108 M124 102 L132 112" stroke="#6e6052" strokeWidth={3} strokeLinecap="round" fill="none" />}
-      <Face who={who} pose={pose} s={s} />
+      <Face who={who} pose={pose} />
       <Headgear who={who} s={s} />
     </g>
   )
