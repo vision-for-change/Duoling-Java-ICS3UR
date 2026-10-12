@@ -437,3 +437,25 @@ html.reduce-motion *::after {
 .reduce-motion .ball-dribble {
   animation: none;
 }
+@keyframes magnet-dash {
+  to {
+    stroke-dashoffset: -22;
+  }
+}
+.magnet-dash {
+  animation: magnet-dash 0.5s linear infinite;
+}
+@keyframes flame-flicker {
+  0%,
+  100% {
+    transform: translateY(0) scaleY(1);
+  }
+  50% {
+    transform: translateY(-2px) scaleY(1.15);
+  }
+}
+.flame-flicker {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: flame-flicker 0.25s ease-in-out infinite;
+}
