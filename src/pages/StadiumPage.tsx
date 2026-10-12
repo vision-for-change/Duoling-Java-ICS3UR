@@ -894,8 +894,8 @@ function StadiumGame({ pool }: { pool: PoolQuestion[] }) {
       )}
 
       {(phase === 'duel' || phase === 'playing' || phase === 'feedback') && q && question && (
-        <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_240px]">
-          <div className="rounded-3xl border-2 border-espresso-100 bg-white p-5">
+        <div className="grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-[minmax(0,1fr)_240px]">
+          <div className="min-w-0 rounded-3xl border-2 border-espresso-100 bg-white p-5">
             <div className="mb-2 flex flex-wrap items-center gap-2 text-xs font-extrabold tracking-wider text-espresso-400 uppercase">
               <span className="rounded-full bg-grape-100 px-2 py-0.5 text-grape-700">Unit {unit?.number}</span>
               <span className={q.difficulty === 1 ? 'text-mint-600' : q.difficulty === 2 ? 'text-sun-700' : 'text-berry-600'}>{q.difficulty === 1 ? 'Beginner' : q.difficulty === 2 ? 'Intermediate' : 'Advanced'}</span>

@@ -78,15 +78,25 @@ Progress is stored in the browser (`localStorage`), so no account or server is n
   inserted, and a question failed twice comes back later in the lesson.
 - **Watch it run:** step through any program with the current line highlighted, a variable table (changed
   values glow) and the output so far.
-- **Practice is a Java battle against Bryan and Avik**, two villains drawn as mascots from photos of the real
-  Bryan and Avik. Answer multiple-choice questions (output, debugging, syntax, loops, strings and the rest) before
-  the timer runs out. A right answer attacks, a streak of 3 lands critical hits, and a wrong answer or a timeout lets
-  them hit back. Knock out Bryan, then Avik, before your health runs out. Questions come only from lessons the learner
-  has finished, step up from Beginner to Advanced as the battle goes on, and every answer shows its explanation.
-  Bryan (loud, overconfident, Fortnite and football) and Avik (deadpan, logical, his robotic arm) trash-talk in
-  speech bubbles that never cover the question. The results screen shows score, accuracy, correct answers and best
-  streak, with a one-click rematch. Lessons and the dashboard still link to quiet adaptive review sessions
-  (weak topics, mistakes, a single topic or unit) at `/practice/session`.
+- **Practice is the Stadium Challenge**, a football game built on the stadium image. Mr. Lauder dribbles from his own
+  box toward the far goal while 7 superpowered defenders and a goalkeeper block the way: Bryan (The Firewall) and
+  Avik (The Speed Demon), with their own dialogue, plus Frostbyte (ice), Glitch (teleport), Graviton (gravity),
+  Polarity (magnet), Tremor (earthquake) and The Null in goal (energy shield). Each defender blocks him with one
+  multiple-choice question: a right answer is a skill move past them (stepover chip, Cruyff turn, nutmeg, roulette,
+  rainbow flick, elastico, a leap over the shockwave, and a top-corner screamer past the keeper); a wrong answer
+  triggers their superpower, shows the explanation and costs one of 3 possessions. Lose all 3 and it is a turnover.
+  - **Every unit, evenly:** questions come only from lessons the learner has finished, rotate so every studied unit
+    gets a turn before any unit repeats (and favour units practised least overall), and get harder near the goal. A
+    perfect match covers all 8 units. The HUD shows the current unit, the question number, possessions, the score and
+    the defenders left.
+  - **The stadium:** parallax stands, a crowd that bobs, cheers, groans and does the wave, floodlights, scrolling LED
+    boards, goals with rippling nets, pitch lighting and shadows, a camera that follows the play and cuts to cinematic
+    close-ups (with letterbox bars) for each duel, running animations, a dribbled ball with real arcs and spin, and
+    synthesized sound (crowd, kicks, footsteps, the whistle and every superpower), with a working mute button.
+  - **Results:** final score, a rating, accuracy, defenders beaten, the goal, correct and incorrect answers, best
+    streak, units covered, XP, and the questions worth another look, with Retry and Play again (a new lineup order and
+    a new mix of questions every time). Lessons and the dashboard still link to quiet adaptive review sessions at
+    `/practice/session`.
 - **Java Sandbox page** for free experimentation, with interactive console input.
 - **Final project, chosen at the start.** After the 8 units, the learner builds the project they picked, guided
   stage by stage (4 or 5 stages each). The finished program is the code from the teacher's handout, and each project
@@ -146,7 +156,7 @@ src/
 │   ├── grading.ts       grading for every question type
 │   ├── codeRunner.ts    runs learner code against tests
 │   ├── practice.ts      weak-topic / mistake-driven practice selection
-│   ├── battle.ts        the Practice battle: deck, damage, streaks, timer and scoring
+│   ├── stadium.ts       the Practice stadium match: lineup, unit rotation, possessions and scoring
 │   ├── progression.ts   lesson states (completed, current, unlocked, skipped, locked), unlock and skip rules, the "next step"
 │   ├── stats.ts         accuracy, mastery, weakest / strongest topics
 │   ├── achievements.ts  achievement definitions (pure checks over progress)
