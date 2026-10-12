@@ -47,7 +47,7 @@ Progress is stored in the browser (`localStorage`), so no account or server is n
      constants with `final`
   2. **Reading Input**: `Scanner` with `next`, `nextInt` and `nextDouble`
   3. **Math in Java**: the arithmetic operators (integer vs float division, modulus), assignment operators,
-     casting, the two jobs of `+`, the Math class and random numbers
+     casting and the two jobs of `+`
   4. **Errors and Debugging**: syntax errors, logic and run-time errors, how to debug
   5. **Formatting with printf**: placeholders, decimals, width and alignment
   6. **Making Decisions**: statements and expressions, relational operators, `if`/`else`, `else if`, nested ifs,
@@ -55,7 +55,7 @@ Progress is stored in the browser (`localStorage`), so no account or server is n
   7. **Loops**: `while`, `do-while`, `break` and `continue`, `for`, nested `for`
   8. **Switch and Exceptions**: `switch` (with fall-through), `try`/`catch`, `ArithmeticException`,
      `InputMismatchException` and `Exception e`
-- **Learning path** with 8 units and 36 lessons (+ a checkpoint per unit and the final project), drawn as a
+- **Learning path** with 8 units and 34 lessons (+ a checkpoint per unit and the final project), drawn as a
   winding path of nodes with Mr. Lauder standing next to the current lesson. **Learning is sequential by default:** a new
   learner starts at Unit 1, Lesson 1 and sees only Unit 1. Finishing a lesson unlocks the next one, and finishing the
   last lesson of a unit reveals the next unit. Each lesson shows one of five states: *completed*, *current*, *unlocked*,
@@ -137,7 +137,7 @@ src/
 │   └── index.ts         runJava(source, { stdin, interactive, trace }) → RunResult
 ├── data/            Course content as plain, serialisable data
 │   ├── types.ts         content model (units, lessons, teaching cards, 9 question types)
-│   ├── units/unit1-8.ts 36 lessons + ~400 questions, written with the j`…` code tag
+│   ├── units/unit1-8.ts 34 lessons + ~390 questions, written with the j`…` code tag
 │   ├── placement.ts     placement test
 │   ├── projects.ts      the four final projects (stages, tests, explanations, video links)
 │   └── curriculum.ts    indexes and lookups

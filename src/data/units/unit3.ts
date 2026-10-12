@@ -381,7 +381,7 @@ System.out.println(d);`,
       concept: 'cast-int',
       prompt: 'Casting a `double` to an `int` rounds the number to the nearest whole number.',
       answer: false,
-      wrongFeedback: 'Not quite. The cast only chops the decimal part off, so 9.99 becomes 9, not 10. If you want rounding, you use `Math.round`, which is coming up soon.',
+      wrongFeedback: 'Not quite. The cast only chops the decimal part off, so 9.99 becomes 9, not 10. A cast never rounds.',
       explanation: '`(int) 3.99` is 3. Casting truncates, and the part after the decimal point is simply dropped.',
     },
     {
@@ -665,314 +665,6 @@ System.out.println(a + " + " + b + " = " + (a + b));`,
     },
   ]),
 
-  // ---------------- Lesson 5: The Math class ----------------
-  ...topic('math', [
-    {
-      id: 'u3l5-01',
-      type: 'multiple-choice',
-      difficulty: 1,
-      concept: 'sqrt',
-      prompt: 'Which line gives the square root of 49?',
-      optionStyle: 'code',
-      options: [
-        { text: 'Math.sqrt(49)' },
-        { text: 'sqrt(49)', feedback: 'These tools live inside the Math class, so you have to start with `Math.`' },
-        { text: 'Math.root(49)', feedback: 'Nice guess, but the method is called `sqrt`, short for square root.' },
-        { text: '49 ^ 0.5', feedback: 'The caret is not a power sign in Java. It does something completely different, and it will not even compile with a decimal.' },
-      ],
-      answer: 0,
-      explanation: 'Java gives you a toolbox called `Math`. You call a tool by writing `Math.` and then its name, and `Math.sqrt(49)` gives 7.0.',
-    },
-    {
-      id: 'u3l5-02',
-      type: 'predict-output',
-      difficulty: 1,
-      concept: 'pow',
-      prompt: 'What does this program print?',
-      code: j`System.out.println(Math.pow(3, 2));`,
-      optionStyle: 'output',
-      options: [
-        { text: '9.0' },
-        { text: '9', feedback: '`Math.pow` always gives back a `double`, so it prints with a decimal point.' },
-        { text: '6.0', feedback: 'That would be 3 times 2. `pow` raises 3 to the power of 2, which is 3 times 3.' },
-        { text: '8.0', feedback: 'That is 2 to the power of 3. The base comes first, then the exponent.' },
-      ],
-      answer: 0,
-      explanation: '`Math.pow(base, exponent)` gives base to the power of the exponent. 3 squared is 9, and the answer comes back as a `double`, so you see 9.0.',
-    },
-    {
-      id: 'u3l5-03',
-      type: 'true-false',
-      difficulty: 1,
-      concept: 'round',
-      prompt: '`Math.round(2.5)` gives `3`.',
-      answer: true,
-      wrongFeedback: 'It does. Java rounds halves up, so 2.5 becomes 3.',
-      explanation: '`Math.round` goes to the nearest whole number, and a .5 goes up.',
-    },
-    {
-      id: 'u3l5-04',
-      type: 'fill-blank',
-      difficulty: 1,
-      concept: 'abs',
-      prompt: 'Fill in the blank to print the distance from zero, without the minus sign.',
-      code: j`System.out.println(Math.___(-7));`,
-      blanks: [['abs']],
-      bank: ['abs', 'sqrt', 'round', 'max'],
-      expectedOutput: '7',
-      explanation: '`Math.abs` gives the **absolute value**, which is how far a number is from zero. It drops the minus sign.',
-    },
-    {
-      id: 'u3l5-05',
-      type: 'predict-output',
-      difficulty: 2,
-      concept: 'max-min',
-      prompt: 'What does this program print?',
-      code: j`System.out.println(Math.max(3, 9) + Math.min(3, 9));`,
-      optionStyle: 'output',
-      options: [
-        { text: '12' },
-        { text: '9', feedback: 'Both calls run, and then their results are added together.' },
-        { text: '6', feedback: 'That is the difference. The program adds the two results.' },
-        { text: '39', feedback: 'Both results are numbers, so the plus adds them. It does not join digits.' },
-      ],
-      answer: 0,
-      explanation: '`max` picks the bigger one, which is 9, and `min` picks the smaller one, which is 3. Then 9 + 3 is 12.',
-    },
-    {
-      id: 'u3l5-06',
-      type: 'predict-output',
-      difficulty: 2,
-      concept: 'rounding',
-      prompt: 'What does this program print?',
-      code: j`
-System.out.println(Math.round(7.4));
-System.out.println(Math.ceil(7.4));
-System.out.println(Math.floor(7.4));`,
-      optionStyle: 'output',
-      options: [
-        { text: '7\n8.0\n7.0' },
-        { text: '7.0\n8.0\n7.0', feedback: 'The first one is `Math.round`, and it hands back a whole number.' },
-        { text: '7\n8\n7', feedback: '`ceil` and `floor` return doubles, so they print with a decimal point.' },
-        { text: '8\n8.0\n7.0', feedback: 'The nearest whole number to 7.4 is 7, not 8.' },
-      ],
-      answer: 0,
-      explanation: '`round` goes to the nearest whole number (7). `ceil` goes up to the next whole number, like a ceiling (8.0). `floor` goes down, like a floor (7.0). The last two come back as doubles.',
-    },
-    {
-      id: 'u3l5-07',
-      type: 'error-type',
-      difficulty: 2,
-      concept: 'return-types',
-      prompt: 'What happens when we try to run this code?',
-      code: j`
-int p = Math.pow(2, 3);
-System.out.println(p);`,
-      answer: 'syntax',
-      feedback: {
-        runtime: 'Java catches this before the program starts.',
-        logic: 'The program does not run at all, so it cannot give a wrong answer.',
-        none: 'What type does `Math.pow` hand back, and can that go in an int?',
-      },
-      highlightLines: [1],
-      explanation: '`Math.pow` always returns a `double`, and a `double` will not squeeze into an `int` box without a cast. Write `int p = (int) Math.pow(2, 3);`.',
-    },
-    {
-      id: 'u3l5-08',
-      type: 'type-output',
-      difficulty: 3,
-      concept: 'return-types',
-      prompt: 'Type exactly what this program prints.',
-      code: j`
-int r = (int) Math.round(2.6);
-System.out.println(r + Math.sqrt(16));`,
-      answer: '7.0',
-      explanation: '`Math.round(2.6)` is 3, and the cast makes it an int. `Math.sqrt(16)` is 4.0. An int plus a double is a double, so 3 + 4.0 is 7.0.',
-    },
-    {
-      id: 'u3l5-09',
-      type: 'find-bug',
-      difficulty: 3,
-      concept: 'pow',
-      prompt: 'This program should find the longest side of a right triangle, but it will not compile. Tap the buggy line.',
-      code: j`
-double a = 3;
-double b = 4;
-double c = Math.sqrt(a ^ 2 + b ^ 2);
-System.out.println(c);`,
-      bugLines: [3],
-      fixedCode: j`
-double a = 3;
-double b = 4;
-double c = Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
-System.out.println(c);`,
-      bugKind: 'syntax',
-      explanation: 'The caret `^` is not the power sign in Java, so it will not work on doubles. Use `Math.pow(a, 2)` for a squared.',
-    },
-    {
-      id: 'u3l5-10',
-      type: 'write-code',
-      difficulty: 3,
-      concept: 'rounding',
-      prompt: 'Read a radius as a `double`. Print the area of the circle (`Math.PI * radius * radius`) rounded to the nearest whole number.',
-      starter: j`
-// 1. read the radius
-
-// 2. print the rounded area
-`,
-      solution: j`
-Scanner console = new Scanner(System.in);
-double radius = console.nextDouble();
-System.out.println(Math.round(Math.PI * radius * radius));`,
-      tests: [
-        { label: 'radius 2', stdin: '2\n', output: '13' },
-        { label: 'radius 1', stdin: '1\n', output: '3' },
-        { label: 'radius 10', stdin: '10\n', output: '314' },
-      ],
-      mustInclude: [
-        { pattern: 'Math\\.PI', message: 'Use `Math.PI` for pi.' },
-        { pattern: 'Math\\.round', message: 'Round the area with `Math.round`.' },
-      ],
-      explanation: '`Math.PI` is a ready-made constant. Multiply it by the radius twice, and wrap the whole thing in `Math.round` to get a whole number.',
-    },
-  ]),
-
-  // ---------------- Lesson 6: Random numbers ----------------
-  ...topic('math', [
-    {
-      id: 'u3l6-01',
-      type: 'multiple-choice',
-      difficulty: 1,
-      concept: 'random',
-      prompt: 'Which values can `Math.random()` give back?',
-      options: [
-        { text: 'Any decimal from 0.0 up to, but not including, 1.0' },
-        { text: 'Whole numbers from 0 to 10', feedback: 'It gives decimals, not whole numbers, and always less than 1.' },
-        { text: 'Any decimal from 0.0 to 1.0, including 1.0', feedback: 'It gets very close to 1.0 but never actually reaches it.' },
-        { text: 'Any number at all', feedback: 'It is always between 0.0 and 1.0.' },
-      ],
-      answer: 0,
-      explanation: '`Math.random()` returns a `double` that is at least 0.0 and always less than 1.0. To get dice, cards or coin flips, we scale and shift that number.',
-    },
-    {
-      id: 'u3l6-02',
-      type: 'multiple-choice',
-      difficulty: 2,
-      concept: 'random-range',
-      prompt: 'Which expression gives a random whole number from 1 to 6, like rolling a die?',
-      optionStyle: 'code',
-      options: [
-        { text: '(int) (Math.random() * 6) + 1' },
-        { text: '(int) (Math.random() * 6)', feedback: 'This gives 0 to 5. Add 1 to move it up to 1 to 6.' },
-        { text: '(int) Math.random() * 6 + 1', feedback: 'The cast only touches `Math.random()`, and that is always 0, so this is always 1. Put the multiplication in brackets first.' },
-        { text: '(int) (Math.random() * 7)', feedback: 'This gives 0 to 6, and a die does not have a zero.' },
-      ],
-      answer: 0,
-      explanation: '`Math.random() * 6` is a decimal from 0.0 to just under 6.0. The cast chops it to 0 through 5, and the `+ 1` shifts that to 1 through 6.',
-    },
-    {
-      id: 'u3l6-03',
-      type: 'true-false',
-      difficulty: 1,
-      concept: 'random-range',
-      prompt: '`(int) (Math.random() * 10)` can produce the number 10.',
-      answer: false,
-      wrongFeedback: '`Math.random()` is always smaller than 1.0, so times 10 it is always smaller than 10. The biggest value the cast can give is 9.',
-      explanation: 'The range of `(int) (Math.random() * 10)` is 0 to 9. That is ten possible values, and 10 itself is never one of them.',
-    },
-    {
-      id: 'u3l6-04',
-      type: 'predict-output',
-      difficulty: 3,
-      concept: 'random-cast',
-      prompt: 'What does this program print? (Careful, this one has a trap.)',
-      code: j`System.out.println((int) Math.random() * 100);`,
-      optionStyle: 'output',
-      options: [
-        { text: '0' },
-        { text: 'A random number from 0 to 99', feedback: 'The cast is applied to `Math.random()` alone, before the multiplication.' },
-        { text: 'A random number from 1 to 100', feedback: 'There is no plus one, and the cast already ruins the randomness.' },
-        { text: '100', feedback: 'The cast turns the random decimal into 0 before anything gets multiplied.' },
-      ],
-      answer: 0,
-      explanation: '`(int) Math.random()` happens first. Any decimal below 1.0 gets chopped to 0, and 0 times 100 is 0. Put brackets around `Math.random() * 100` so the cast comes last.',
-    },
-    {
-      id: 'u3l6-05',
-      type: 'fill-blank',
-      difficulty: 2,
-      concept: 'random-range',
-      prompt: 'Make `card` a random number from 1 to 13.',
-      code: j`
-int card = (int) (Math.random() * ___) + ___;
-System.out.println(card);`,
-      blanks: [['13'], ['1']],
-      verify: { status: 'ok', random: true },
-      explanation: 'There are 13 possible values, so we multiply by 13. They start at 1, so we add 1 to shift the range.',
-    },
-    {
-      id: 'u3l6-06',
-      type: 'multiple-choice',
-      difficulty: 3,
-      concept: 'random-range',
-      prompt: 'Which expression gives a random whole number from 10 to 20, **including** both ends?',
-      optionStyle: 'code',
-      options: [
-        { text: '(int) (Math.random() * 11) + 10' },
-        { text: '(int) (Math.random() * 10) + 10', feedback: 'That gives 10 to 19, which is only ten values and never reaches 20.' },
-        { text: '(int) (Math.random() * 20) + 10', feedback: 'That gives 10 to 29, which is far too big.' },
-        { text: '(int) (Math.random() * 21)', feedback: 'That gives 0 to 20, so it can be smaller than 10.' },
-      ],
-      answer: 0,
-      explanation: 'The formula is `(int) (Math.random() * count) + min`, where `count = max - min + 1`. Here that is 20 - 10 + 1 = 11 values, starting at 10.',
-    },
-    {
-      id: 'u3l6-07',
-      type: 'type-output',
-      difficulty: 2,
-      concept: 'random-range',
-      prompt: 'Pretend `Math.random()` happened to return 0.75. Type exactly what this program prints.',
-      code: j`
-double r = 0.75;
-int roll = (int) (r * 6) + 1;
-System.out.println(roll);`,
-      answer: '5',
-      explanation: '0.75 times 6 is 4.5, and the cast chops it to 4. Then adding 1 gives 5. So 0.75 lands on a 5.',
-    },
-    {
-      id: 'u3l6-08',
-      type: 'multiple-choice',
-      difficulty: 2,
-      concept: 'random-range',
-      prompt: 'A game needs a random month number from 1 to 12. Which expression is right?',
-      optionStyle: 'code',
-      options: [
-        { text: '(int) (Math.random() * 12) + 1' },
-        { text: '(int) (Math.random() * 12)', feedback: 'That gives 0 to 11, and there is no month 0.' },
-        { text: '(int) (Math.random() * 13)', feedback: 'That gives 0 to 12. Month 0 does not exist.' },
-        { text: '(int) (Math.random() * 11) + 1', feedback: 'That gives 1 to 11, so December can never come up.' },
-      ],
-      answer: 0,
-      explanation: 'There are 12 values, so multiply by 12. They start at 1, so add 1. That gives 1 through 12.',
-    },
-    {
-      id: 'u3l6-09',
-      type: 'write-code',
-      difficulty: 3,
-      concept: 'random-range',
-      prompt: 'Print a random whole number from 1 to 6, like rolling a die.',
-      starter: j`
-// roll the die and print the result
-`,
-      solution: j`
-int die = (int) (Math.random() * 6) + 1;
-System.out.println(die);`,
-      tests: [{ label: 'prints a number from 1 to 6', outputPattern: '^[1-6]$' }],
-      mustInclude: [{ pattern: 'Math\\.random\\s*\\(', message: 'Use `Math.random()` to roll the die.' }],
-      explanation: 'Scale with `* 6`, chop with `(int)`, and shift with `+ 1`. Run it a few times and you will see the number change.',
-    },
-  ]),
-
   // ---------------- Unit 3 checkpoint ----------------
   ...topic('arithmetic', [
     {
@@ -1042,33 +734,34 @@ System.out.println(x);`,
       id: 'u3cp-04',
       type: 'find-bug',
       difficulty: 3,
-      concept: 'return-types',
-      topic: 'math',
+      concept: 'narrowing',
       prompt: 'This program will not compile. Tap the line with the bug.',
       code: j`
 double price = 8.6;
-int rounded = Math.round(price);
-System.out.println(rounded);`,
+int dollars = price;
+System.out.println(dollars);`,
       bugLines: [2],
       fixedCode: j`
 double price = 8.6;
-int rounded = (int) Math.round(price);
-System.out.println(rounded);`,
+int dollars = (int) price;
+System.out.println(dollars);`,
       bugKind: 'syntax',
-      explanation: 'When you give `Math.round` a `double`, it hands back a `long`, which is a bigger kind of whole number, and a `long` does not fit in an `int` without a cast.',
+      explanation: 'A `double` will not go into an `int` box on its own, because Java would lose the decimal part. Writing `(int)` tells Java you are fine with chopping it off, so `dollars` becomes 8.',
     },
     {
       id: 'u3cp-05',
       type: 'fill-blank',
       difficulty: 2,
-      concept: 'pow',
-      topic: 'math',
-      prompt: 'Fill in the blank to work out 2 to the power of 10.',
-      code: j`System.out.println(Math.___(2, 10));`,
-      blanks: [['pow']],
-      bank: ['pow', 'sqrt', 'abs', 'max'],
-      expectedOutput: '1024.0',
-      explanation: '`Math.pow(2, 10)` multiplies 2 by itself ten times. The answer is a `double`, so it prints as 1024.0.',
+      concept: 'compound',
+      prompt: 'Fill in the blank so the score is tripled and the program prints 30.',
+      code: j`
+int score = 10;
+score ___ 3;
+System.out.println(score);`,
+      blanks: [['*=']],
+      bank: ['*=', '+=', '-=', '/='],
+      expectedOutput: '30',
+      explanation: '`score *= 3` multiplies the score by 3 and stores the answer back in `score`, so 10 becomes 30. It is the short way to write `score = score * 3;`',
     },
     {
       id: 'u3cp-06',
@@ -1102,10 +795,10 @@ export const unit3: UnitContent = {
     id: 'u3',
     number: 3,
     title: 'Math in Java',
-    tagline: 'Operators, shortcuts, casting and the handy Math class.',
+    tagline: 'Operators, shortcuts, casting and the two jobs of the + sign.',
     color: 'grape',
     icon: 'calculator',
-    topics: ['arithmetic', 'math'],
+    topics: ['arithmetic'],
     checkpoint: ['u3cp-01', 'u3cp-02', 'u3cp-03', 'u3cp-04', 'u3cp-05', 'u3cp-06'],
     lessons: [
       {
@@ -1354,121 +1047,6 @@ System.out.println(2 + 3 + " is the total");`,
         ],
         questions: ['u3l4-01', 'u3l4-02', 'u3l4-03', 'u3l4-04', 'u3l4-05', 'u3l4-06', 'u3l4-07', 'u3l4-08', 'u3l4-09'],
         challenge: 'u3l4-10',
-      },
-      {
-        id: 'u3-l5',
-        unitId: 'u3',
-        title: 'The Math Class',
-        summary: 'pow, sqrt, abs, max, min and the rounding family.',
-        topic: 'math',
-        teach: [
-          {
-            kind: 'concept',
-            title: 'A toolbox that is already built',
-            what: 'Java comes with a toolbox called **Math**. It has ready-made tools for powers, square roots, rounding and more. You do not import anything. You just write `Math.` followed by the name of the tool, like `Math.sqrt(81)`.',
-            why: 'Nobody wants to write their own square root. These tools are fast, tested and always available, and you will use them in almost every program that involves numbers.',
-            mood: 'happy',
-          },
-          {
-            kind: 'example',
-            title: 'The tools you will use most',
-            how: 'Read each line, guess the answer, and then run it. Pay attention to which results have a decimal point.',
-            code: j`
-System.out.println(Math.pow(2, 5));
-System.out.println(Math.sqrt(81));
-System.out.println(Math.abs(-12));
-System.out.println(Math.max(8, 15));
-System.out.println(Math.min(8, 15));
-System.out.println(Math.round(7.5));
-System.out.println(Math.ceil(7.1));
-System.out.println(Math.floor(7.9));
-System.out.println(Math.PI);`,
-            notes: [
-              { line: 1, text: '2 to the power of 5. It always comes back as a double: 32.0.' },
-              { line: 2, text: 'Square root of 81: 9.0.' },
-              { line: 3, text: 'Absolute value drops the minus sign: 12.' },
-              { line: 6, text: 'round goes to the nearest whole number, and a .5 goes up: 8.' },
-              { line: 7, text: 'ceil always goes up: 8.0.' },
-              { line: 8, text: 'floor always goes down: 7.0.' },
-              { line: 9, text: 'Math.PI is a ready-made constant.' },
-            ],
-          },
-          {
-            kind: 'tip',
-            title: 'Watch the return types',
-            body: 'Each tool hands back a particular type, and that decides whether you need a cast.',
-            bullets: [
-              '`pow`, `sqrt`, `ceil` and `floor` always give back a `double`.',
-              '`abs`, `max` and `min` give back the same type that you gave them.',
-              '`Math.round` of a `double` gives back a `long`. Write `(int) Math.round(x)` if you need an `int`.',
-            ],
-          },
-          {
-            kind: 'mistake',
-            title: 'A double that will not fit',
-            body: '`Math.pow` hands back a double. Trying to store that in an int is the same problem as `int x = 5.9;`, and Java stops you.',
-            wrong: j`
-int p = Math.pow(2, 3);
-System.out.println(p);`,
-            right: j`
-int p = (int) Math.pow(2, 3);
-System.out.println(p);`,
-          },
-        ],
-        questions: ['u3l5-01', 'u3l5-02', 'u3l5-03', 'u3l5-04', 'u3l5-05', 'u3l5-06', 'u3l5-07', 'u3l5-08', 'u3l5-09'],
-        challenge: 'u3l5-10',
-      },
-      {
-        id: 'u3-l6',
-        unitId: 'u3',
-        title: 'Random Numbers',
-        summary: 'Dice, cards and coin flips.',
-        topic: 'math',
-        teach: [
-          {
-            kind: 'concept',
-            title: 'Letting chance into your program',
-            what: '`Math.random()` gives back a random decimal that is at least 0.0 and always less than 1.0. On its own that is not very useful, but a little math turns it into dice rolls, card draws and coin flips. You **scale** it by multiplying, **chop** it with a cast, and **shift** it by adding.',
-            why: 'Games, simulations and quizzes all need a bit of randomness to stay interesting. Once you know the pattern, you can make any range you want.',
-            mood: 'excited',
-          },
-          {
-            kind: 'example',
-            title: 'Rolling a die',
-            how: 'Run this a few times and watch the number change. Multiply by 6 for six possible values, cast to chop, and add 1 so the range starts at 1.',
-            code: j`
-int die = (int) (Math.random() * 6) + 1;
-System.out.println("You rolled a " + die);`,
-            random: true,
-            notes: [
-              { line: 1, text: 'random() * 6 gives 0.0 up to just under 6.0. The cast chops that to 0 through 5. The + 1 shifts it to 1 through 6.' },
-            ],
-          },
-          {
-            kind: 'tip',
-            title: 'The formula to remember',
-            body: 'To get a random whole number from `min` to `max`, both included, use this:',
-            code: '(int) (Math.random() * (max - min + 1)) + min',
-            bullets: [
-              'A die from 1 to 6 uses `* 6` and `+ 1`.',
-              'A coin flip, 0 or 1, uses `* 2` and nothing added.',
-              'A number from 10 to 20 uses `* 11` and `+ 10`.',
-            ],
-          },
-          {
-            kind: 'mistake',
-            title: 'Casting too early',
-            body: 'The cast sits right next to `Math.random()`, so it chops the random decimal to 0 before anything is multiplied. The result is the same number every time.',
-            wrong: j`
-int roll = (int) Math.random() * 100 + 1;
-System.out.println(roll);`,
-            right: j`
-int roll = (int) (Math.random() * 100) + 1;
-System.out.println(roll);`,
-          },
-        ],
-        questions: ['u3l6-01', 'u3l6-02', 'u3l6-03', 'u3l6-04', 'u3l6-05', 'u3l6-06', 'u3l6-07', 'u3l6-08'],
-        challenge: 'u3l6-09',
       },
     ],
   },

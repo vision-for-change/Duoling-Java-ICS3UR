@@ -12,8 +12,10 @@ import type { Difficulty, PlacementArea, ProjectId, TopicId } from '../data/type
  * 3: lessons unlock in order, and `skipped` / `unlocked` record the ones the learner jumped past or opened early.
  * 4: the café kiosk final was replaced by four projects. `project` is the one the learner picked,
  *    and old kiosk stages in `final` are dropped.
+ * 5: the Math class and random numbers lessons (u3-l5, u3-l6) were removed, so their lesson
+ *    records and answers are dropped.
  */
-export const PROGRESS_VERSION = 4
+export const PROGRESS_VERSION = 5
 
 export type SessionSource = 'lesson' | 'practice' | 'checkpoint' | 'placement'
 

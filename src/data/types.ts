@@ -11,7 +11,6 @@ export type TopicId =
   | 'types'
   | 'input'
   | 'arithmetic'
-  | 'math'
   | 'errors'
   | 'printf'
   | 'expressions'

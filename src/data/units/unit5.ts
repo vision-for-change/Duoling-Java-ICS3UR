@@ -689,7 +689,7 @@ double price = 4.5;
 double total = 3 * 4.99;
 System.out.printf("Price: $%.2f%n", price);
 System.out.printf("Total: $%.2f%n", total);
-System.out.printf("Pi to 3 places: %.3f%n", Math.PI);
+System.out.printf("Pi to 3 places: %.3f%n", 3.14159265);
 System.out.printf("Rounded to a whole number: %.0f%n", 2.5);`,
             notes: [
               { line: 3, text: '4.5 becomes 4.50, which is how prices look.' },

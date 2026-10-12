@@ -82,6 +82,21 @@ export class MemoryRepository implements ProgressRepository {
   }
 }
 
+/** Lessons that no longer exist (version 5 removed the Math class and random numbers). */
+const REMOVED_LESSONS = ['u3-l5', 'u3-l6']
+const REMOVED_QUESTION = /^u3l[56]-/
+
+function withoutKeys<T>(record: Record<string, T>, keys: string[]): Record<string, T> {
+  const out = { ...record }
+  for (const k of keys) delete out[k]
+  return out
+}
+
+function dropRemovedLessons(course: { lessons: Progress['lessons']; history: Progress['history'] }) {
+  course.lessons = withoutKeys(course.lessons, REMOVED_LESSONS)
+  course.history = course.history.filter((a) => !REMOVED_QUESTION.test(a.qid) && (a.topic as string) !== 'math')
+}
+
 /**
  * Validate and upgrade a stored document. Unknown or missing fields are filled
  * from defaults so older saves keep working as the schema grows.
@@ -105,6 +120,8 @@ export function migrate(raw: unknown): Progress | null {
         // the café kiosk (version 3 and older) is gone, so its stages are dropped
         final: r.version < 4 ? { ...empty.final } : { ...empty.final, ...r.final },
       }
+  // version 5 removed the Math class and random numbers lessons, so forget them
+  if (r.version < 5) dropRemovedLessons(course)
   return {
     ...empty,
     ...r,
@@ -116,8 +133,8 @@ export function migrate(raw: unknown): Progress | null {
     stats: { ...empty.stats, ...r.stats },
     battle: { ...empty.battle, ...r.battle },
     warmups: r.warmups ?? {},
-    skipped: r.skipped ?? {},
-    unlocked: r.unlocked ?? {},
+    skipped: withoutKeys(r.skipped ?? {}, REMOVED_LESSONS),
+    unlocked: withoutKeys(r.unlocked ?? {}, REMOVED_LESSONS),
     project: r.version < 4 ? null : (r.project ?? null),
     days: r.days ?? {},
     achievements: r.achievements ?? {},

@@ -395,6 +395,28 @@ describe('saved progress', () => {
     expect(p.project).toBe('grades')
   })
 
+  it('forgets the removed Math class and random numbers lessons', () => {
+    const at = { topic: 'arithmetic' as const, difficulty: 1 as const, correct: true, solved: true, at: 1, source: 'lesson' as const }
+    const v4 = {
+      ...createEmptyProgress(),
+      version: 4,
+      onboarded: true,
+      lessons: { 'u3-l4': rec, 'u3-l5': rec, 'u3-l6': rec },
+      skipped: { 'u3-l5': 1 },
+      unlocked: { 'u3-l6': 1, 'u4-l1': 2 },
+      history: [
+        { ...at, qid: 'u3l4-01' },
+        { ...at, qid: 'u3l5-02', topic: 'math' },
+        { ...at, qid: 'u3l6-03', topic: 'math' },
+      ],
+    } as unknown as Progress
+    const p = migrate(v4)!
+    expect(Object.keys(p.lessons)).toEqual(['u3-l4'])
+    expect(p.history.map((a) => a.qid)).toEqual(['u3l4-01'])
+    expect(p.skipped).toEqual({})
+    expect(p.unlocked).toEqual({ 'u4-l1': 2 })
+  })
+
   it('drops the old café kiosk progress and asks for a project', () => {
     const v3 = { ...createEmptyProgress(), version: 3, onboarded: true, lessons: { 'u1-l1': rec }, final: { stagesDone: ['final-1', 'final-2'], completedAt: 4, code: { 'final-1': 'x' } } } as Partial<Progress>
     delete v3.project

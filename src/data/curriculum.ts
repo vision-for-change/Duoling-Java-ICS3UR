@@ -80,7 +80,6 @@ export const TOPICS: TopicInfo[] = [
   { id: 'types', label: 'Data Types & Strings', short: 'Data types', icon: 'type', unitId: 'u1' },
   { id: 'input', label: 'Scanner Input', short: 'Input', icon: 'keyboard', unitId: 'u2' },
   { id: 'arithmetic', label: 'Operators & Casting', short: 'Operators', icon: 'divide', unitId: 'u3' },
-  { id: 'math', label: 'The Math Class', short: 'Math', icon: 'ruler', unitId: 'u3' },
   { id: 'errors', label: 'Errors & Debugging', short: 'Errors', icon: 'bug', unitId: 'u4' },
   { id: 'printf', label: 'printf Formatting', short: 'printf', icon: 'printer', unitId: 'u5' },
   { id: 'expressions', label: 'Expressions & Relational Operators', short: 'Expressions', icon: 'calculator', unitId: 'u6' },

@@ -126,7 +126,7 @@ function ChunkLoadError({ error, fullPage }: { error: unknown; fullPage: boolean
   }
   return (
     <ErrorLayout fullPage={fullPage} mood="confused" title="This page didn't load">
-      <p className="max-w-md text-espresso-600">Byte couldn't open this part of ByteBrew. Reloading usually fixes it, and your progress is saved in this browser.</p>
+      <p className="max-w-md text-espresso-600">Mr. Lauder couldn't open this part of ByteBrew. Reloading usually fixes it, and your progress is saved in this browser.</p>
       <Actions />
       <Details error={error} />
     </ErrorLayout>

@@ -28,7 +28,7 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
-        int secret = (int) (Math.random() * 10) + 1;
+        int secret = 7; // change this to hide a different number
         int tries = 0;
         int guess = 0;
         System.out.println("I'm thinking of a number from 1 to 10.");
@@ -115,11 +115,11 @@ export function SandboxPage() {
             <div className="mb-2 flex items-center gap-2 font-display text-lg font-semibold">
               <Info size={20} className="text-sky-600" /> What runs here?
             </div>
-            <p className="text-sm text-espresso-600">Byte's sandbox understands the Java you learn in ByteBrew:</p>
+            <p className="text-sm text-espresso-600">Mr. Lauder's sandbox understands the Java you learn in ByteBrew:</p>
             <ul className="mt-2 space-y-1 text-sm text-espresso-700">
               {[
                 'int, double, boolean, char, long, String',
-                'operators, casting, Math methods',
+                'operators and casting',
                 'if / else, while, do-while, for',
                 'Scanner input, hasNextInt()',
                 'try / catch and exceptions',
