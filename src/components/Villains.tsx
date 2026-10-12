@@ -322,7 +322,7 @@ function AvikHair({ back }: { back: boolean }) {
 
 // ------------------------------------------------------------------ the character
 
-export function Villain({ who, pose = 'idle', size = 140, className = '' }: { who: VillainId; pose?: VillainPose; size?: number; className?: string }) {
+export function Villain({ who, pose = 'idle', size = 140, className = '', stride = false }: { who: VillainId; pose?: VillainPose; size?: number; className?: string; stride?: boolean }) {
   const uid = useId().replace(/:/g, '')
   const look = LOOKS[who]
   const clipId = `shirt-${uid}`
@@ -341,10 +341,14 @@ export function Villain({ who, pose = 'idle', size = 140, className = '' }: { wh
         {who === 'bryan' && pose === 'victory' && <Crown />}
 
         {/* legs */}
-        <rect x={70} y={180} width={24} height={22} rx={9} fill={look.pants} stroke={INK} strokeWidth={4.5} />
-        <rect x={106} y={180} width={24} height={22} rx={9} fill={look.pants} stroke={INK} strokeWidth={4.5} />
-        <ellipse cx={82} cy={201} rx={14} ry={6} fill={INK} />
-        <ellipse cx={118} cy={201} rx={14} ry={6} fill={INK} />
+        <g className={stride ? 'stride-a' : undefined}>
+          <rect x={70} y={180} width={24} height={22} rx={9} fill={look.pants} stroke={INK} strokeWidth={4.5} />
+          <ellipse cx={82} cy={201} rx={14} ry={6} fill={INK} />
+        </g>
+        <g className={stride ? 'stride-b' : undefined}>
+          <rect x={106} y={180} width={24} height={22} rx={9} fill={look.pants} stroke={INK} strokeWidth={4.5} />
+          <ellipse cx={118} cy={201} rx={14} ry={6} fill={INK} />
+        </g>
 
         {/* arms, then the shirt on top */}
         {who === 'bryan' ? (

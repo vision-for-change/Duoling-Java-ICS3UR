@@ -26,6 +26,8 @@ interface MascotProps {
   /** gentle floating idle animation */
   float?: boolean
   title?: string
+  /** legs swing as if running (the Practice stadium) */
+  stride?: boolean
 }
 
 type Arms = 'down' | 'up' | 'think' | 'out'
@@ -263,7 +265,7 @@ function Extras({ mood }: { mood: MascotMood }) {
 
 
 /** Mr. Lauder: ByteBrew's mascot. */
-export function Mascot({ mood = 'happy', size = 120, className = '', float = false, title }: MascotProps) {
+export function Mascot({ mood = 'happy', size = 120, className = '', float = false, title, stride = false }: MascotProps) {
   const uid = useId().replace(/:/g, '')
   const beardId = `beard-${uid}`
   const dotsId = `dots-${uid}`
@@ -297,10 +299,14 @@ export function Mascot({ mood = 'happy', size = 120, className = '', float = fal
         <Extras mood={mood} />
 
         {/* legs and shoes */}
-        <rect x={70} y={180} width={24} height={22} rx={9} fill={BLAZER} stroke={INK} strokeWidth={4.5} />
-        <rect x={106} y={180} width={24} height={22} rx={9} fill={BLAZER} stroke={INK} strokeWidth={4.5} />
-        <ellipse cx={82} cy={201} rx={14} ry={6} fill={INK} />
-        <ellipse cx={118} cy={201} rx={14} ry={6} fill={INK} />
+        <g className={stride ? 'stride-a' : undefined}>
+          <rect x={70} y={180} width={24} height={22} rx={9} fill={BLAZER} stroke={INK} strokeWidth={4.5} />
+          <ellipse cx={82} cy={201} rx={14} ry={6} fill={INK} />
+        </g>
+        <g className={stride ? 'stride-b' : undefined}>
+          <rect x={106} y={180} width={24} height={22} rx={9} fill={BLAZER} stroke={INK} strokeWidth={4.5} />
+          <ellipse cx={118} cy={201} rx={14} ry={6} fill={INK} />
+        </g>
 
         {/* arms, then the blazer on top so the shoulders tuck under it */}
         <ArmsFor arms={ARMS[mood]} />

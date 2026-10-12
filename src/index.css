@@ -307,3 +307,26 @@ html.reduce-motion *::after {
   animation-iteration-count: 1 !important;
   transition-duration: 0.001ms !important;
 }
+
+/* the running stride used by the Practice stadium (legs swing from the hip, in opposite phase) */
+@keyframes stride {
+  0% {
+    transform: rotate(-24deg) translateY(-2px);
+  }
+  100% {
+    transform: rotate(24deg);
+  }
+}
+.stride-a,
+.stride-b {
+  transform-box: fill-box;
+  transform-origin: 50% 0%;
+  animation: stride 0.32s ease-in-out infinite alternate;
+}
+.stride-b {
+  animation-delay: -0.32s;
+}
+.reduce-motion .stride-a,
+.reduce-motion .stride-b {
+  animation: none;
+}
