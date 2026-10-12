@@ -330,3 +330,110 @@ html.reduce-motion *::after {
 .reduce-motion .stride-b {
   animation: none;
 }
+
+/* ---------------- Practice stadium ---------------- */
+@keyframes fan-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-1.4px);
+  }
+}
+@keyframes fan-jump {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-8px);
+  }
+}
+.fans .fan-band {
+  animation: fan-bob 1.4s ease-in-out infinite;
+}
+.fans-cheer .fan-band {
+  animation: fan-jump 0.42s ease-in-out infinite;
+}
+.fans-wave .fan-band {
+  animation: fan-jump 0.55s ease-in-out 4 both;
+}
+.fans-groan .fan-band {
+  animation: none;
+  transform: translateY(1.5px);
+}
+@keyframes led-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.led-scroll {
+  animation: led-scroll 26s linear infinite;
+}
+@keyframes cloud-drift {
+  from {
+    transform: translateX(-30px);
+  }
+  to {
+    transform: translateX(90px);
+  }
+}
+.cloud-drift {
+  animation: cloud-drift 38s ease-in-out infinite alternate;
+}
+.cloud-drift-slow {
+  animation: cloud-drift 60s ease-in-out infinite alternate-reverse;
+}
+@keyframes net-ripple {
+  0%,
+  100% {
+    transform: scaleX(1);
+  }
+  25% {
+    transform: scaleX(1.35);
+  }
+  55% {
+    transform: scaleX(0.92);
+  }
+  80% {
+    transform: scaleX(1.08);
+  }
+}
+.net-ripple {
+  animation: net-ripple 0.9s ease-out 1;
+}
+@keyframes flood-flash {
+  0%,
+  100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+.flood-flash {
+  animation: flood-flash 0.35s ease-in-out 6;
+}
+@keyframes ball-dribble {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+.ball-dribble {
+  animation: ball-dribble 0.32s ease-in-out infinite;
+}
+.reduce-motion .fans .fan-band,
+.reduce-motion .led-scroll,
+.reduce-motion .cloud-drift,
+.reduce-motion .cloud-drift-slow,
+.reduce-motion .ball-dribble {
+  animation: none;
+}
