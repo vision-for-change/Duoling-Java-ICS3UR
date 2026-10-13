@@ -10,7 +10,6 @@ dist
 *.log
 npm-debug.log*
 
-# editor / OS / local tool settings
+# editor / OS settings
 .DS_Store
 Thumbs.db
-.claude/
