@@ -344,7 +344,7 @@ export interface FinalStage {
   explain: { title: string; body: string; code?: string }[]
 }
 
-/** The four final projects a learner can choose from. */
+/** The final projects a learner can choose from. */
 export type ProjectId = 'cart' | 'guesser' | 'bank' | 'grades' | 'stats' | 'quiz'
 
 export interface FinalProject {

@@ -38,7 +38,7 @@ Progress is stored in the browser (`localStorage`), so no account or server is n
 
 **Learning experience**
 - **Landing page → onboarding → placement test.** New learners first choose the **final project** they want to
-  build (Shopping Cart, Number Guesser, Mini Banking or Grade Analyzer), then pick a daily goal and their experience level.
+  build (Shopping Cart, Number Guesser, Mini Banking, Grade Analyzer, Number Statistics Analyzer or Java Quiz), then pick a daily goal and their experience level.
   The 14-question placement test walks through the course in order, then recommends a starting unit
   ("You seem comfortable with X, but Y could use a little practice"). Earlier units are *placed out* but stay
   open for review.
@@ -105,6 +105,10 @@ Progress is stored in the browser (`localStorage`), so no account or server is n
   - **Number Guesser**: two player game with 10 attempts, too high / too low, `while (true)` + `InputMismatchException`
   - **Mini Banking**: balance, deposits and withdrawals with an `else if` chain for bad amounts and insufficient funds
   - **Grade Analyzer**: a `for` loop with `i--` to re-ask bad grades, the average with `printf("%.2f%%")`, letter grades
+  - **Number Statistics Analyzer**: sum and a `(double)` average, even and odd counts with `%`, highest and lowest,
+    and a `while (!valid)` loop with `continue` to re-ask bad numbers
+  - **Java Quiz**: five questions picked by a `switch` inside a `for` loop, a score with `printf("%d")`, and answers
+    checked for both type (try / catch) and range (1 to 3)
 
   Every stage is checked by automated tests and has progressive hints, plus an **"I don't get it"** panel that explains
   the ideas properly and points to the video. After a failed test run, Mr. Lauder suggests the explanation and the video.

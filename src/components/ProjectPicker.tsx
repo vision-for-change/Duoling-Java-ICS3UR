@@ -3,7 +3,7 @@ import { PROJECTS } from '../data/projects'
 import type { FinalProject, ProjectId } from '../data/types'
 import { AppIcon } from './AppIcon'
 
-/** The four final projects as radio cards. Used in onboarding and on the "change project" page. */
+/** The final projects as radio cards. Used in onboarding and on the "change project" page. */
 export function ProjectPicker({ value, onChange }: { value: ProjectId | null; onChange: (id: ProjectId) => void }) {
   return (
     <div className="grid gap-3 sm:grid-cols-2" role="radiogroup" aria-label="Final project">

@@ -158,7 +158,7 @@ export function LandingPage() {
           </ol>
           <div className="mt-6 flex items-center justify-center gap-3 rounded-3xl border-2 border-dashed border-sun-400/60 p-4 text-center font-display text-lg text-sun-200">
             <AppIcon name="flag" size={22} className="mr-2 inline-block align-[-4px]" />
-            Then: your final project. Build a Shopping Cart, Number Guesser, Mini Bank or Grade Analyzer!
+            Then: your final project. Pick one of six, from a Shopping Cart to a Java Quiz, and build it yourself!
           </div>
         </div>
       </section>
