@@ -345,7 +345,7 @@ export interface FinalStage {
 }
 
 /** The four final projects a learner can choose from. */
-export type ProjectId = 'cart' | 'guesser' | 'bank' | 'grades'
+export type ProjectId = 'cart' | 'guesser' | 'bank' | 'grades' | 'stats' | 'quiz'
 
 export interface FinalProject {
   id: ProjectId

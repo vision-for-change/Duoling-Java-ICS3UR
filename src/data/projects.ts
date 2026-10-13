@@ -1448,6 +1448,872 @@ System.out.printf("Your average is: %.2f%%%n", average);
   },
 ]
 
+// ------------------------------------------------------------------ Number Statistics Analyzer
+
+const STATS1 = j`
+import java.util.Scanner;
+
+class Main {
+    public static void main(String[] args) {
+        Scanner console = new Scanner(System.in);
+        boolean running = true;
+
+        System.out.println("=== NUMBER STATISTICS ANALYZER ===");
+
+        while (running) {
+            System.out.println("\n1. Analyze Numbers");
+            System.out.println("2. Exit");
+
+            System.out.print("Choose an option: ");
+            int choice = console.nextInt();
+
+            switch (choice) {
+                case 2:
+                    running = false;
+                    System.out.println("Goodbye!");
+                    break;
+                default:
+                    System.out.println("Invalid option.");
+            }
+        }
+        console.close();
+    }
+}`
+
+const STATS2 = j`
+import java.util.Scanner;
+
+class Main {
+    public static void main(String[] args) {
+        Scanner console = new Scanner(System.in);
+        boolean running = true;
+
+        System.out.println("=== NUMBER STATISTICS ANALYZER ===");
+
+        while (running) {
+            System.out.println("\n1. Analyze Numbers");
+            System.out.println("2. Exit");
+
+            System.out.print("Choose an option: ");
+            int choice = console.nextInt();
+
+            switch (choice) {
+                case 1:
+                    System.out.print("How many numbers? ");
+                    int count = console.nextInt();
+                    if (count <= 0) {
+                        System.out.println(
+                            "Enter a number greater than zero."
+                        );
+                        break;
+                    }
+                    int sum = 0;
+                    for (int i = 1; i <= count; i++) {
+                        System.out.print(
+                            "Enter number " + i + ": "
+                        );
+                        int number = console.nextInt();
+                        sum += number;
+                    }
+                    double average = (double) sum / count;
+                    System.out.println("\n=== RESULTS ===");
+                    System.out.println("Sum: " + sum);
+                    System.out.printf(
+                        "Average: %.2f%n", average
+                    );
+                    break;
+                case 2:
+                    running = false;
+                    System.out.println("Goodbye!");
+                    break;
+                default:
+                    System.out.println("Invalid option.");
+            }
+        }
+        console.close();
+    }
+}`
+
+const STATS3 = j`
+import java.util.Scanner;
+
+class Main {
+    public static void main(String[] args) {
+        Scanner console = new Scanner(System.in);
+        boolean running = true;
+
+        System.out.println("=== NUMBER STATISTICS ANALYZER ===");
+
+        while (running) {
+            System.out.println("\n1. Analyze Numbers");
+            System.out.println("2. Exit");
+
+            System.out.print("Choose an option: ");
+            int choice = console.nextInt();
+
+            switch (choice) {
+                case 1:
+                    System.out.print("How many numbers? ");
+                    int count = console.nextInt();
+                    if (count <= 0) {
+                        System.out.println(
+                            "Enter a number greater than zero."
+                        );
+                        break;
+                    }
+                    int sum = 0;
+                    int even = 0;
+                    int odd = 0;
+                    int highest = 0;
+                    int lowest = 0;
+                    for (int i = 1; i <= count; i++) {
+                        System.out.print(
+                            "Enter number " + i + ": "
+                        );
+                        int number = console.nextInt();
+                        sum += number;
+                        if (number % 2 == 0) {
+                            even++;
+                        } else {
+                            odd++;
+                        }
+                        if (i == 1) {
+                            highest = number;
+                            lowest = number;
+                        } else {
+                            if (number > highest) {
+                                highest = number;
+                            }
+                            if (number < lowest) {
+                                lowest = number;
+                            }
+                        }
+                    }
+                    double average = (double) sum / count;
+                    System.out.println("\n=== RESULTS ===");
+                    System.out.println("Sum: " + sum);
+                    System.out.printf(
+                        "Average: %.2f%n", average
+                    );
+                    System.out.println("Highest: " + highest);
+                    System.out.println("Lowest: " + lowest);
+                    System.out.println("Even numbers: " + even);
+                    System.out.println("Odd numbers: " + odd);
+                    break;
+                case 2:
+                    running = false;
+                    System.out.println("Goodbye!");
+                    break;
+                default:
+                    System.out.println("Invalid option.");
+            }
+        }
+        console.close();
+    }
+}`
+
+const STATS4 = j`
+import java.util.Scanner;
+
+class Main {
+    public static void main(String[] args) {
+        Scanner console = new Scanner(System.in);
+        boolean running = true;
+
+        System.out.println("=== NUMBER STATISTICS ANALYZER ===");
+
+        while (running) {
+            System.out.println("\n1. Analyze Numbers");
+            System.out.println("2. Exit");
+
+            try {
+                System.out.print("Choose an option: ");
+                int choice = console.nextInt();
+
+                switch (choice) {
+                    case 1:
+                        System.out.print("How many numbers? ");
+                        int count = console.nextInt();
+                        if (count <= 0) {
+                            System.out.println(
+                                "Enter a number greater than zero."
+                            );
+                            break;
+                        }
+                        int sum = 0;
+                        int even = 0;
+                        int odd = 0;
+                        int highest = 0;
+                        int lowest = 0;
+                        for (int i = 1; i <= count; i++) {
+                            int number;
+                            boolean valid = false;
+                            while (!valid) {
+                                try {
+                                    System.out.print(
+                                        "Enter number " + i + ": "
+                                    );
+                                    number = console.nextInt();
+                                    valid = true;
+                                } catch (Exception e) {
+                                    System.out.println(
+                                        "Please enter an integer."
+                                    );
+                                    console.next();
+                                    continue;
+                                }
+                                sum += number;
+                                if (number % 2 == 0) {
+                                    even++;
+                                } else {
+                                    odd++;
+                                }
+                                if (i == 1) {
+                                    highest = number;
+                                    lowest = number;
+                                } else {
+                                    if (number > highest) {
+                                        highest = number;
+                                    }
+                                    if (number < lowest) {
+                                        lowest = number;
+                                    }
+                                }
+                            }
+                        }
+                        double average = (double) sum / count;
+                        System.out.println("\n=== RESULTS ===");
+                        System.out.println("Sum: " + sum);
+                        System.out.printf(
+                            "Average: %.2f%n", average
+                        );
+                        System.out.println("Highest: " + highest);
+                        System.out.println("Lowest: " + lowest);
+                        System.out.println("Even numbers: " + even);
+                        System.out.println("Odd numbers: " + odd);
+                        break;
+                    case 2:
+                        running = false;
+                        System.out.println("Goodbye!");
+                        break;
+                    default:
+                        System.out.println("Invalid option.");
+                }
+            } catch (Exception e) {
+                System.out.println("Please enter a valid number.");
+                console.next();
+            }
+        }
+        console.close();
+    }
+}`
+
+const STATS_STAGES: FinalStage[] = [
+  {
+    id: 'stats-1',
+    title: 'The Menu',
+    concepts: ['Scanner', 'while loop', 'boolean flag', 'switch'],
+    story: 'Welcome to your final project! We are building a number statistics analyzer: type in a list of numbers, and it tells you everything about them. First, the menu that keeps the program running.',
+    instructions: [
+      'Make a `boolean` called `running` that starts at `true`.',
+      'Write a `while (running)` loop. Inside it, print the menu with two `println` lines: `"\\n1. Analyze Numbers"` and `"2. Exit"`.',
+      'Print `Choose an option: ` with `print`, then read `int choice = console.nextInt();`',
+      'Use a `switch` on `choice`. `case 2` sets `running` to `false` and prints `Goodbye!`. The `default` prints `Invalid option.`. After the loop, call `console.close();`',
+    ],
+    starter: j`
+import java.util.Scanner;
+
+class Main {
+    public static void main(String[] args) {
+        Scanner console = new Scanner(System.in);
+        // TODO 1: make a boolean called running (true)
+
+        System.out.println("=== NUMBER STATISTICS ANALYZER ===");
+
+        // TODO 2: while running is true, print the menu and read the choice with console.nextInt()
+        // TODO 3: switch on choice. Case 2 says "Goodbye!" and stops the loop. The default prints "Invalid option."
+
+        console.close();
+    }
+}`,
+    solution: STATS1,
+    tests: [
+      { label: 'exit straight away', stdin: '2\n' },
+      { label: 'a wrong option, then exit', stdin: '5\n2\n' },
+    ],
+    hints: [
+      'The loop keeps running while `running` is `true`. Setting it to `false` in case 2 is what lets the program end.',
+      'Starting the first menu line with `\\n` prints a blank line first, so every menu gets a little space above it.',
+    ],
+    mustInclude: [
+      { pattern: 'while\\s*\\(\\s*running\\s*\\)', message: 'Use a `while (running)` loop for the menu.' },
+      { pattern: 'switch\\s*\\(\\s*choice\\s*\\)', message: 'Use a `switch` on `choice`.' },
+    ],
+    explain: [MENU_EXPLAIN.flag('running'), MENU_EXPLAIN.switch, MENU_EXPLAIN.print],
+  },
+  {
+    id: 'stats-2',
+    title: 'Sum and Average',
+    concepts: ['for loop', 'Compound assignment', 'Casting', 'printf'],
+    story: 'Option 1 asks how many numbers you have, reads them one by one, and adds them up. Then it works out the average.',
+    instructions: [
+      'Add `case 1` above case 2. Print `How many numbers? ` and read `int count = console.nextInt();`',
+      'If `count <= 0`, print `Enter a number greater than zero.` and `break;` straight away.',
+      'Make `int sum = 0;` and write `for (int i = 1; i <= count; i++)`. Inside, print `"Enter number " + i + ": "`, read `int number = console.nextInt();` and add it with `sum += number;`',
+      'After the loop, work out `double average = (double) sum / count;`',
+      'Print `"\\n=== RESULTS ==="`, then `"Sum: " + sum`, then `System.out.printf("Average: %.2f%n", average);`. End the case with `break;`',
+    ],
+    starter: withTodo(STATS1, 'case 2:', [
+      '// TODO: case 1 asks how many numbers, reads them in a for loop and adds them up,',
+      '//       then prints the "=== RESULTS ===" heading, the sum and the average',
+    ]),
+    solution: STATS2,
+    tests: [
+      { label: 'three numbers', stdin: '1\n3\n4\n7\n10\n2\n' },
+      { label: 'zero numbers', stdin: '1\n0\n2\n' },
+      { label: 'an average with decimals', stdin: '1\n2\n-5\n8\n2\n' },
+    ],
+    hints: [
+      '`sum` is an `int` and so is `count`. Without the `(double)` cast, `sum / count` would be integer division and lose the decimals.',
+      '`sum += number;` is the short way to write `sum = sum + number;`',
+      '`%.2f` prints the average with exactly two decimal places.',
+    ],
+    mustInclude: [
+      { pattern: 'for\\s*\\(\\s*int\\s+i\\s*=\\s*1', message: 'Use a `for (int i = 1; ...)` loop to read the numbers.' },
+      { pattern: '\\(\\s*double\\s*\\)\\s*sum', message: 'Cast with `(double) sum` before dividing.' },
+      { pattern: 'sum\\s*\\+=', message: 'Add each number with `sum += number;`' },
+    ],
+    explain: [
+      {
+        title: 'A running sum in a loop',
+        body: '`sum` starts at 0, before the loop. Each time around, `sum += number;` adds the new number to everything added so far. When the loop ends, `sum` holds the total.',
+        code: j`
+int sum = 0;
+sum += 4;    // sum is 4
+sum += 7;    // sum is 11
+sum += 10;   // sum is 21`,
+      },
+      {
+        title: 'Why we cast to double for the average',
+        body: 'Remember integer division from Unit 3: `21 / 2` is 10, not 10.5, because both numbers are ints. Writing `(double) sum` turns the sum into a decimal first, so the division keeps its decimals.',
+        code: j`
+int sum = 21;
+int count = 2;
+System.out.println(sum / count);            // 10
+System.out.println((double) sum / count);   // 10.5`,
+      },
+    ],
+  },
+  {
+    id: 'stats-3',
+    title: 'Highs, Lows, Evens and Odds',
+    concepts: ['Modulus', 'if / else', 'Nested if', 'Increment'],
+    story: 'A real analyzer tells you more than the total. Let us count the even and odd numbers, and keep track of the highest and the lowest.',
+    instructions: [
+      'Next to `sum`, make `int even = 0;`, `int odd = 0;`, `int highest = 0;` and `int lowest = 0;`',
+      'Inside the loop, after adding to `sum`: if `number % 2 == 0`, do `even++;`, otherwise `odd++;`',
+      'Then, if `i == 1` (the first number), set both `highest` and `lowest` to `number`. Otherwise, update `highest` if `number > highest`, and update `lowest` if `number < lowest`.',
+      'After the average line, print `"Highest: " + highest`, `"Lowest: " + lowest`, `"Even numbers: " + even` and `"Odd numbers: " + odd`.',
+    ],
+    starter: withTodo(STATS2, 'double average = (double) sum / count;', [
+      '// TODO 1: go back up and count even and odd numbers, and track the highest and lowest',
+      '// TODO 2: after the average, print Highest, Lowest, Even numbers and Odd numbers',
+    ]),
+    solution: STATS3,
+    tests: [
+      { label: 'a mix of numbers', stdin: '1\n4\n3\n8\n-2\n5\n2\n' },
+      { label: 'just one number', stdin: '1\n1\n7\n2\n' },
+      { label: 'all negative', stdin: '1\n3\n-4\n-9\n-1\n2\n' },
+    ],
+    hints: [
+      '`number % 2` is the remainder after dividing by 2. Even numbers leave 0.',
+      'Why `i == 1`? The first number is both the highest and the lowest so far. Every number after that only has to be compared with them.',
+      'Starting `highest` at 0 would be wrong for a list of negative numbers, which is why the first number sets it.',
+    ],
+    mustInclude: [
+      { pattern: '%\\s*2\\s*==\\s*0', message: 'Check for even numbers with `number % 2 == 0`.' },
+      { pattern: 'i\\s*==\\s*1', message: 'Use `i == 1` to start highest and lowest at the first number.' },
+    ],
+    explain: [
+      {
+        title: 'Even or odd with %',
+        body: 'The modulus operator `%` gives the remainder of a division. Any even number divided by 2 leaves a remainder of 0, so `number % 2 == 0` is true for even numbers and false for odd ones.',
+        code: j`
+System.out.println(8 % 2);    // 0, so 8 is even
+System.out.println(5 % 2);    // 1, so 5 is odd`,
+      },
+      {
+        title: 'Tracking the highest and the lowest',
+        body: 'The first number starts as both the highest and the lowest, since it is the only one we have seen. After that, each new number is compared: if it beats the highest, it becomes the new highest, and the same for the lowest. This is a nested if: the comparisons only happen in the `else`, when it is not the first number.',
+      },
+    ],
+  },
+  {
+    id: 'stats-4',
+    title: 'Crash-Proof Input',
+    concepts: ['try / catch', 'while (!valid)', 'continue', 'Exception'],
+    story: 'Type a word instead of a number and the analyzer crashes. Let us protect every number we read: the menu choice, and each number in the list.',
+    instructions: [
+      'For each number in the list, replace the simple read with `int number;` and `boolean valid = false;`, then a `while (!valid)` loop.',
+      'Inside that loop, put the prompt and `number = console.nextInt();` in a `try` block, followed by `valid = true;`',
+      'In `catch (Exception e)`, print `Please enter an integer.`, call `console.next();` and then `continue;`',
+      'Move the `sum`, even/odd and highest/lowest code inside the `while (!valid)` loop, after the try / catch.',
+      'Finally, wrap the menu prompt and the whole switch in an outer `try`. Its `catch (Exception e)` prints `Please enter a valid number.` and calls `console.next();`',
+    ],
+    starter: withTodo(STATS3, 'System.out.print("Choose an option: ");', [
+      '// TODO 1: put the prompt, the nextInt() and the whole switch inside try { } with',
+      '//         catch (Exception e): print "Please enter a valid number." and call console.next();',
+      '// TODO 2: read each number in a while (!valid) loop with its own try / catch',
+    ]),
+    solution: STATS4,
+    tests: [
+      { label: 'a word at the menu', stdin: 'abc\n1\n2\n5\n6\n2\n' },
+      { label: 'a word for how many', stdin: '1\nthree\n2\n' },
+      { label: 'a word in the list', stdin: '1\n3\n4\nfour\n5\n6\n2\n' },
+    ],
+    hints: [
+      '`while (!valid)` keeps asking until `valid` becomes true, which only happens after `nextInt()` worked.',
+      '`continue;` jumps back to the top of the `while (!valid)` loop, so the bad number is never added to the sum.',
+      'Remember `console.next();` in each catch, or the bad word stays in the input forever.',
+    ],
+    mustInclude: [
+      { pattern: 'while\\s*\\(\\s*!\\s*valid\\s*\\)', message: 'Read each number in a `while (!valid)` loop.' },
+      { pattern: 'continue\\s*;', message: 'Use `continue;` in the catch to ask again.' },
+      { pattern: 'Please enter a valid number', message: 'Add the outer try / catch around the menu.' },
+    ],
+    explain: [
+      {
+        title: 'A loop that asks until the input is good',
+        body: '`valid` starts as `false`, so the `while (!valid)` loop runs at least once. If `nextInt()` works, `valid = true;` runs and the loop ends after this trip. If it throws, Java jumps straight into the catch and `valid` stays false, so the loop asks again.',
+        code: j`
+boolean valid = false;
+while (!valid) {
+    try {
+        number = console.nextInt();
+        valid = true;          // good input: this is the last trip
+    } catch (Exception e) {
+        console.next();        // throw the bad word away
+        continue;              // and ask again
+    }
+    // only good numbers get here
+}`,
+      },
+      {
+        title: 'What continue does here',
+        body: '`continue;` skips the rest of the loop body and goes straight back to the loop condition. Here it means: do not add anything to the sum, just ask for the number again.',
+      },
+      CRASH_EXPLAIN.next,
+    ],
+  },
+]
+
+// ------------------------------------------------------------------ Java Quiz
+
+const QUIZ_QUESTIONS = j`
+                        switch (i) {
+                            case 1:
+                                System.out.println("\nWhat is 5 * 3?");
+                                System.out.println("1. 8");
+                                System.out.println("2. 15");
+                                System.out.println("3. 20");
+                                answer = 2;
+                                break;
+                            case 2:
+                                System.out.println("\nWhich type stores true or false?");
+                                System.out.println("1. int");
+                                System.out.println("2. double");
+                                System.out.println("3. boolean");
+                                answer = 3;
+                                break;
+                            case 3:
+                                System.out.println("\nWhich loop repeats while a condition is true?");
+                                System.out.println("1. while");
+                                System.out.println("2. switch");
+                                System.out.println("3. println");
+                                answer = 1;
+                                break;
+                            case 4:
+                                System.out.println("\nWhich symbol means AND?");
+                                System.out.println("1. ||");
+                                System.out.println("2. &&");
+                                System.out.println("3. !");
+                                answer = 2;
+                                break;
+                            case 5:
+                                System.out.println("\nWhich statement exits a loop?");
+                                System.out.println("1. continue");
+                                System.out.println("2. break");
+                                System.out.println("3. nextInt");
+                                answer = 2;
+                                break;
+                        }`
+
+/** Shift a block of code left by `n` spaces (the earlier stages sit one level less deep than the final one). */
+function dedent(code: string, n: number): string {
+  return code
+    .split('\n')
+    .map((l) => l.slice(Math.min(n, l.length - l.trimStart().length)))
+    .join('\n')
+}
+
+const QUIZ_MENU_START = j`
+import java.util.Scanner;
+
+class Main {
+    public static void main(String[] args) {
+        Scanner console = new Scanner(System.in);
+        boolean playing = true;
+
+        System.out.println("=== JAVA QUIZ CHALLENGE ===");
+
+        while (playing) {
+            System.out.println("\n1. Start Quiz");
+            System.out.println("2. Exit");
+
+            System.out.print("Choose an option: ");
+            int choice = console.nextInt();
+
+            switch (choice) {`
+
+const QUIZ_MENU_END = j`
+                case 2:
+                    playing = false;
+                    System.out.println("Thanks for playing!");
+                    break;
+                default:
+                    System.out.println("Invalid option.");
+            }
+        }
+        console.close();
+    }
+}`
+
+const QUIZ1 = QUIZ_MENU_START + '\n' + QUIZ_MENU_END
+
+const QUIZ_LOOP = (results: boolean) => j`
+                case 1:
+                    int score = 0;
+                    int correct = 0;
+                    int incorrect = 0;
+                    for (int i = 1; i <= 5; i++) {
+                        int answer = 0;
+${dedent(QUIZ_QUESTIONS, 4)}
+                        System.out.print("Your answer (1-3): ");
+                        int guess = console.nextInt();
+                        if (guess == answer) {
+                            System.out.println("Correct!");
+                            score += 20;
+                            correct++;
+                        } else {
+                            System.out.println("Incorrect!");
+                            incorrect++;
+                        }
+                    }
+${
+  results
+    ? `                    System.out.println("\\n=== QUIZ RESULTS ===");
+                    System.out.println("Correct: " + correct);
+                    System.out.println("Incorrect: " + incorrect);
+                    System.out.printf("Final score: %d/100%n", score);
+                    if (score >= 80) {
+                        System.out.println("Excellent work!");
+                    } else if (score >= 60) {
+                        System.out.println("Good effort!");
+                    } else {
+                        System.out.println("Keep practicing!");
+                    }
+`
+    : ''
+}                    break;`
+
+const QUIZ2 = QUIZ_MENU_START + '\n' + QUIZ_LOOP(false) + '\n' + QUIZ_MENU_END
+const QUIZ3 = QUIZ_MENU_START + '\n' + QUIZ_LOOP(true) + '\n' + QUIZ_MENU_END
+
+const QUIZ4 = j`
+import java.util.Scanner;
+
+class Main {
+    public static void main(String[] args) {
+        Scanner console = new Scanner(System.in);
+        boolean playing = true;
+
+        System.out.println("=== JAVA QUIZ CHALLENGE ===");
+
+        while (playing) {
+            System.out.println("\n1. Start Quiz");
+            System.out.println("2. Exit");
+
+            try {
+                System.out.print("Choose an option: ");
+                int choice = console.nextInt();
+
+                switch (choice) {
+                    case 1:
+                        int score = 0;
+                        int correct = 0;
+                        int incorrect = 0;
+                        for (int i = 1; i <= 5; i++) {
+                            int answer = 0;
+${QUIZ_QUESTIONS}
+                            int guess = 0;
+                            boolean valid = false;
+                            while (!valid) {
+                                try {
+                                    System.out.print("Your answer (1-3): ");
+                                    guess = console.nextInt();
+                                    if (guess >= 1 && guess <= 3) {
+                                        valid = true;
+                                    } else {
+                                        System.out.println("Choose 1, 2, or 3.");
+                                    }
+                                } catch (Exception e) {
+                                    System.out.println("Please enter an integer.");
+                                    console.next();
+                                }
+                            }
+                            if (guess == answer) {
+                                System.out.println("Correct!");
+                                score += 20;
+                                correct++;
+                            } else {
+                                System.out.println("Incorrect!");
+                                incorrect++;
+                            }
+                        }
+                        System.out.println("\n=== QUIZ RESULTS ===");
+                        System.out.println("Correct: " + correct);
+                        System.out.println("Incorrect: " + incorrect);
+                        System.out.printf("Final score: %d/100%n", score);
+                        if (score >= 80) {
+                            System.out.println("Excellent work!");
+                        } else if (score >= 60) {
+                            System.out.println("Good effort!");
+                        } else {
+                            System.out.println("Keep practicing!");
+                        }
+                        break;
+                    case 2:
+                        playing = false;
+                        System.out.println("Thanks for playing!");
+                        break;
+                    default:
+                        System.out.println("Invalid option.");
+                }
+            } catch (Exception e) {
+                System.out.println("Please enter a valid number.");
+                console.next();
+            }
+        }
+        console.close();
+    }
+}`
+
+const QUIZ_STAGES: FinalStage[] = [
+  {
+    id: 'quiz-1',
+    title: 'The Menu',
+    concepts: ['Scanner', 'while loop', 'boolean flag', 'switch'],
+    story: 'Welcome to your final project! We are building a Java quiz game: five questions about the Java you learned, with a score at the end. First, the menu.',
+    instructions: [
+      'Make a `boolean` called `playing` that starts at `true`.',
+      'Write a `while (playing)` loop. Inside it, print the menu with two `println` lines: `"\\n1. Start Quiz"` and `"2. Exit"`.',
+      'Print `Choose an option: ` with `print`, then read `int choice = console.nextInt();`',
+      'Use a `switch` on `choice`. `case 2` sets `playing` to `false` and prints `Thanks for playing!`. The `default` prints `Invalid option.`. After the loop, call `console.close();`',
+    ],
+    starter: j`
+import java.util.Scanner;
+
+class Main {
+    public static void main(String[] args) {
+        Scanner console = new Scanner(System.in);
+        // TODO 1: make a boolean called playing (true)
+
+        System.out.println("=== JAVA QUIZ CHALLENGE ===");
+
+        // TODO 2: while playing is true, print the menu and read the choice with console.nextInt()
+        // TODO 3: switch on choice. Case 2 says "Thanks for playing!" and stops the loop.
+        //         The default prints "Invalid option."
+
+        console.close();
+    }
+}`,
+    solution: QUIZ1,
+    tests: [
+      { label: 'exit straight away', stdin: '2\n' },
+      { label: 'a wrong option, then exit', stdin: '4\n2\n' },
+    ],
+    hints: [
+      'The loop keeps running while `playing` is `true`. Setting it to `false` in case 2 is what lets the program end.',
+      'Do not forget `break;` at the end of case 2, or Java falls through into the default.',
+    ],
+    mustInclude: [
+      { pattern: 'while\\s*\\(\\s*playing\\s*\\)', message: 'Use a `while (playing)` loop for the menu.' },
+      { pattern: 'switch\\s*\\(\\s*choice\\s*\\)', message: 'Use a `switch` on `choice`.' },
+    ],
+    explain: [MENU_EXPLAIN.flag('playing'), MENU_EXPLAIN.switch, MENU_EXPLAIN.print],
+  },
+  {
+    id: 'quiz-2',
+    title: 'Ask the Questions',
+    concepts: ['for loop', 'switch', 'if / else', 'Compound assignment'],
+    story: 'Now the quiz itself. A for loop counts through the five questions, and a switch inside it picks which question to ask each time.',
+    instructions: [
+      'Add `case 1` above case 2. Make `int score = 0;`, `int correct = 0;` and `int incorrect = 0;`',
+      'Write `for (int i = 1; i <= 5; i++)`. Inside, make `int answer = 0;` and then a `switch (i)` with five cases.',
+      'Each case prints the question (starting with `\\n`) and its three choices, sets `answer` to the right choice, and breaks. The questions and answers are in the starter TODO list and the video.',
+      'After the switch, print `Your answer (1-3): ` and read `int guess = console.nextInt();`',
+      'If `guess == answer`, print `Correct!`, add 20 to `score` and do `correct++;`. Otherwise print `Incorrect!` and do `incorrect++;`. After the loop, `break;`',
+    ],
+    starter: withTodo(QUIZ1, 'case 2:', [
+      '// TODO: case 1 runs a for loop from 1 to 5. A switch (i) asks each question:',
+      '//   1: "What is 5 * 3?"  1. 8  2. 15  3. 20  (answer 2)',
+      '//   2: "Which type stores true or false?"  1. int  2. double  3. boolean  (answer 3)',
+      '//   3: "Which loop repeats while a condition is true?"  1. while  2. switch  3. println  (answer 1)',
+      '//   4: "Which symbol means AND?"  1. ||  2. &&  3. !  (answer 2)',
+      '//   5: "Which statement exits a loop?"  1. continue  2. break  3. nextInt  (answer 2)',
+      '// Then read the guess, and print "Correct!" (score += 20, correct++) or "Incorrect!" (incorrect++)',
+    ]),
+    solution: QUIZ2,
+    tests: [
+      { label: 'all five right', stdin: '1\n2\n3\n1\n2\n2\n2\n' },
+      { label: 'all five wrong', stdin: '1\n1\n1\n2\n1\n1\n2\n' },
+    ],
+    hints: [
+      'The `break;` inside each case of `switch (i)` leaves that switch, not the for loop, so the loop carries on to the next question.',
+      'Each question starts with `"\\n"`, which puts a blank line between questions.',
+      '`score += 20;` gives 20 points per right answer, so five right answers make 100.',
+    ],
+    mustInclude: [
+      { pattern: 'for\\s*\\(\\s*int\\s+i\\s*=\\s*1\\s*;\\s*i\\s*<=\\s*5', message: 'Loop through the questions with `for (int i = 1; i <= 5; i++)`.' },
+      { pattern: 'switch\\s*\\(\\s*i\\s*\\)', message: 'Pick each question with `switch (i)`.' },
+      { pattern: 'score\\s*\\+=\\s*20', message: 'Add 20 points with `score += 20;`' },
+    ],
+    explain: [
+      {
+        title: 'A switch inside a loop',
+        body: 'The for loop counts `i` from 1 to 5. Each time around, `switch (i)` jumps to the case with that number, so trip 1 asks question 1, trip 2 asks question 2, and so on. The `break;` in each case only leaves the switch: the loop keeps going.',
+        code: j`
+for (int i = 1; i <= 3; i++) {
+    switch (i) {
+        case 1:
+            System.out.println("first");
+            break;
+        case 2:
+            System.out.println("second");
+            break;
+        default:
+            System.out.println("third");
+    }
+}`,
+      },
+      {
+        title: 'Keeping score',
+        body: 'Three counters start at 0 before the loop. A right answer runs `score += 20;` and `correct++;`, a wrong one runs `incorrect++;`. Because they live outside the loop, they remember their values across all five questions.',
+      },
+    ],
+  },
+  {
+    id: 'quiz-3',
+    title: 'The Results',
+    concepts: ['printf with %d', 'else if chains', 'Relational operators'],
+    story: 'Five questions, done. Time to show the player how they did, with a message that depends on their score.',
+    instructions: [
+      'After the for loop (before `break;`), print `"\\n=== QUIZ RESULTS ==="`, then `"Correct: " + correct` and `"Incorrect: " + incorrect`.',
+      'Print the score with `System.out.printf("Final score: %d/100%n", score);`',
+      'Then an if / else if / else: `score >= 80` prints `Excellent work!`, `score >= 60` prints `Good effort!`, and anything else prints `Keep practicing!`',
+    ],
+    // the TODO goes right after the for loop closes, before the case's break
+    starter: QUIZ2.replace(
+      '                    }\n                    break;',
+      () =>
+        '                    }\n                    // TODO: print the results (heading, Correct, Incorrect, Final score with printf),\n                    //       then "Excellent work!", "Good effort!" or "Keep practicing!"\n                    break;',
+    ),
+    solution: QUIZ3,
+    tests: [
+      { label: 'a perfect score', stdin: '1\n2\n3\n1\n2\n2\n2\n' },
+      { label: 'three right', stdin: '1\n2\n3\n1\n1\n1\n2\n' },
+      { label: 'one right', stdin: '1\n2\n1\n2\n1\n1\n2\n' },
+    ],
+    hints: [
+      '`%d` is the printf placeholder for a whole number, so `%d/100` prints something like `80/100`.',
+      'Check `score >= 80` first. A score of 100 is also `>= 60`, so the order of the checks matters.',
+    ],
+    mustInclude: [
+      { pattern: '%d/100', message: 'Print the score with `printf("Final score: %d/100%n", score)`.' },
+      { pattern: 'score\\s*>=\\s*80', message: 'Check `score >= 80` for "Excellent work!".' },
+    ],
+    explain: [
+      {
+        title: 'printf with %d',
+        body: 'You met `%.2f` for decimals. `%d` is the placeholder for an `int`. The value after the comma fills it in.',
+        code: j`
+int score = 80;
+System.out.printf("Final score: %d/100%n", score);
+// Final score: 80/100`,
+      },
+      {
+        title: 'Reading the else if chain from the top',
+        body: 'Java checks each condition in order and runs only the first one that is true. A score of 80 passes `score >= 80`, prints `Excellent work!` and skips the rest.',
+      },
+    ],
+  },
+  {
+    id: 'quiz-4',
+    title: 'Crash-Proof Input',
+    concepts: ['try / catch', 'while (!valid)', 'Logical operators', 'Exception'],
+    story: 'What if the player types 7, or the word "two"? Let us check both: the answer has to be a whole number, and it has to be 1, 2 or 3.',
+    instructions: [
+      'Replace the simple guess read with `int guess = 0;` and `boolean valid = false;`, then a `while (!valid)` loop.',
+      'Inside, in a `try` block: print `Your answer (1-3): `, read `guess = console.nextInt();`, and if `guess >= 1 && guess <= 3` set `valid = true;`, otherwise print `Choose 1, 2, or 3.`',
+      'In `catch (Exception e)`, print `Please enter an integer.` and call `console.next();`',
+      'Finally, wrap the menu prompt and the whole switch in an outer `try`. Its `catch (Exception e)` prints `Please enter a valid number.` and calls `console.next();`',
+    ],
+    starter: withTodo(QUIZ3, 'System.out.print("Choose an option: ");', [
+      '// TODO 1: put the prompt, the nextInt() and the whole switch inside try { } with',
+      '//         catch (Exception e): print "Please enter a valid number." and call console.next();',
+      '// TODO 2: read each guess in a while (!valid) loop: try / catch for words, and 1 to 3 only',
+    ]),
+    solution: QUIZ4,
+    tests: [
+      { label: 'a word and an out-of-range answer', stdin: '1\n2\nseven\n3\n9\n1\n2\n2\n2\n' },
+      { label: 'a word at the menu', stdin: 'quit\n2\n' },
+      { label: 'answers out of range', stdin: '1\n0\n4\n2\n3\n1\n2\n2\n2\n' },
+    ],
+    hints: [
+      'There are two different problems: a word (that throws, so the catch handles it) and a number like 7 (no exception, so an if handles it).',
+      '`guess >= 1 && guess <= 3` is only true when the guess is inside the range.',
+      'Start `guess` at 0 so Java knows it has a value after the loop.',
+    ],
+    mustInclude: [
+      { pattern: 'while\\s*\\(\\s*!\\s*valid\\s*\\)', message: 'Read each guess in a `while (!valid)` loop.' },
+      { pattern: 'guess\\s*>=\\s*1\\s*&&\\s*guess\\s*<=\\s*3', message: 'Check the range with `guess >= 1 && guess <= 3`.' },
+      { pattern: 'Please enter a valid number', message: 'Add the outer try / catch around the menu.' },
+    ],
+    explain: [
+      {
+        title: 'Two checks: the type and the range',
+        body: 'A word like `seven` makes `nextInt()` throw, so the catch deals with it. A number like 7 is a perfectly good int, so nothing throws: it is the `if` that catches it, by checking it is between 1 and 3. Only when both checks pass does `valid` become true and the loop end.',
+        code: j`
+while (!valid) {
+    try {
+        guess = console.nextInt();       // a word? jump to catch
+        if (guess >= 1 && guess <= 3) {
+            valid = true;                // a good answer
+        } else {
+            System.out.println("Choose 1, 2, or 3.");
+        }
+    } catch (Exception e) {
+        System.out.println("Please enter an integer.");
+        console.next();
+    }
+}`,
+      },
+      CRASH_EXPLAIN.next,
+      CRASH_EXPLAIN.exception,
+    ],
+  },
+]
+
 // ------------------------------------------------------------------ the list
 
 export const PROJECTS: FinalProject[] = [
@@ -1490,6 +2356,26 @@ export const PROJECTS: FinalProject[] = [
     concepts: ['for loop', 'switch', 'else if chains', 'printf', 'try / catch'],
     videoUrl: 'https://www.youtube.com/watch?v=_WpZFcm-4Zg',
     stages: GRADES_STAGES,
+  },
+  {
+    id: 'stats',
+    title: 'Number Statistics Analyzer',
+    tagline: 'Type in numbers and get the sum, average, highest, lowest, evens and odds.',
+    pitch: 'Enter a list of numbers and get a full report: the sum, the average, the highest and lowest, and how many are even or odd.',
+    icon: 'calculator',
+    concepts: ['for loop', 'modulus', 'casting', 'printf', 'try / catch'],
+    videoUrl: 'https://www.youtube.com/watch?v=ZqV0XRfgG1o',
+    stages: STATS_STAGES,
+  },
+  {
+    id: 'quiz',
+    title: 'Java Quiz',
+    tagline: 'A five-question Java quiz with a score at the end.',
+    pitch: 'A quiz game about Java itself: five questions, points for every right answer, and a final score with a message to match.',
+    icon: 'brain',
+    concepts: ['for loop', 'switch', 'if / else if', 'printf', 'try / catch'],
+    videoUrl: 'https://www.youtube.com/watch?v=U9DN68ryk-8',
+    stages: QUIZ_STAGES,
   },
 ]
 

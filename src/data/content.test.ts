@@ -205,8 +205,8 @@ describe('final projects', () => {
       expect(stage.explain.length).toBeGreaterThan(0)
     })
   }
-  it('has four projects with a video each, ending in a crash-proof program', () => {
-    expect(PROJECTS.map((p) => p.title)).toEqual(['Shopping Cart', 'Number Guesser', 'Mini Banking', 'Grade Analyzer'])
+  it('has six projects with a video each, ending in a crash-proof program', () => {
+    expect(PROJECTS.map((p) => p.title)).toEqual(['Shopping Cart', 'Number Guesser', 'Mini Banking', 'Grade Analyzer', 'Number Statistics Analyzer', 'Java Quiz'])
     for (const p of PROJECTS) {
       expect(p.videoUrl).toMatch(/^https:\/\/www\.youtube\.com\/watch\?v=[\w-]+$/)
       const last = p.stages[p.stages.length - 1].solution

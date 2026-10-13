@@ -343,8 +343,8 @@ describe('progress store', () => {
     expect(store.getSnapshot().project).toBe('guesser')
   })
 
-  it('offers four projects, each with its own stage ids and a video', () => {
-    expect(PROJECTS.map((p) => p.id)).toEqual(['cart', 'guesser', 'bank', 'grades'])
+  it('offers six projects, each with its own stage ids and a video', () => {
+    expect(PROJECTS.map((p) => p.id)).toEqual(['cart', 'guesser', 'bank', 'grades', 'stats', 'quiz'])
     const ids = PROJECTS.flatMap((p) => p.stages.map((s) => s.id))
     expect(new Set(ids).size).toBe(ids.length)
     for (const p of PROJECTS) for (const s of p.stages) expect(s.id.startsWith(p.id + '-')).toBe(true)
