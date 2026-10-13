@@ -48,6 +48,8 @@ const SPOTS = Array.from({ length: DEFENDER_COUNT }, (_, i) => ({ x: 178 + i * 8
 const KEEPER_HOME = { x: 862, y: 545 }
 const SHOT_SPOT = { x: 782, y: 590 }
 const OVERVIEW: Camera = { cx: 463, cy: 470, zoom: 1, dur: 1 }
+/** the camera stops at the bottom edge of the stadium image, so this means "as low as it goes" */
+const WORLD_BOTTOM = 675
 
 class Cancelled extends Error {}
 
@@ -138,6 +140,28 @@ function Portrait({ who, size = 34 }: { who: DefenderId | 'lauder'; size?: numbe
 
 // ------------------------------------------------------------------ the game
 
+/** True on phone-sized screens, where the question needs more of the stage. */
+function useNarrow(): boolean {
+  const query = '(max-width: 639px)'
+  const [narrow, setNarrow] = useState(() => typeof window !== 'undefined' && window.matchMedia(query).matches)
+  useEffect(() => {
+    const m = window.matchMedia(query)
+    const on = () => setNarrow(m.matches)
+    m.addEventListener('change', on)
+    return () => m.removeEventListener('change', on)
+  }, [])
+  return narrow
+}
+
+/** One line that says what an answer did on the pitch. */
+function resultLine(play: Play): string {
+  const d = DEFENDERS[play.defender]
+  if (play.goal) return `GOAL! +${play.points} points`
+  if (play.correct) return `${d.skill}! Past ${d.name}. +${play.points}`
+  if (play.turnover) return `${d.name} wins the ball.`
+  return `${d.powerName}! You lose a possession.`
+}
+
 type Phase = 'lobby' | 'kickoff' | 'approach' | 'duel' | 'playing' | 'feedback' | 'results'
 
 interface Speech {
@@ -166,6 +190,11 @@ function StadiumGame({ pool }: { pool: PoolQuestion[] }) {
   const [speech, setSpeech] = useState<Speech | null>(null)
   const [caption, setCaption] = useState<Caption | null>(null)
   const [xp, setXp] = useState(0)
+  const [panelOpen, setPanelOpen] = useState(true)
+  const narrow = useNarrow()
+  const narrowRef = useRef(narrow)
+  narrowRef.current = narrow
+  const stageRef = useRef<HTMLDivElement>(null)
   const [reward, setReward] = useState<Reward | null>(null)
   const token = useRef(0)
   const ids = useRef(1)
@@ -260,6 +289,7 @@ function StadiumGame({ pool }: { pool: PoolQuestion[] }) {
     setOrder(shuffledOrder(4))
     setPicked(null)
     setPlay(null)
+    setPanelOpen(true)
     setPhase('duel')
   }
 
@@ -275,7 +305,7 @@ function StadiumGame({ pool }: { pool: PoolQuestion[] }) {
       const dur = Math.max(0.8, dist / 150)
       lauder({ x: target.x, y: target.y, dur, ease: 'easeInOut', mood: 'happy', stride: true, rot: 0, times: undefined })
       setScene((s) => ({ ...s, ball: { x: target.x + 15, y: target.y + 2, h: 0, spin: s.ball.spin + dist * 5, dribble: true, dur, ease: 'easeInOut', times: undefined } }))
-      camera({ cx: target.x + 70, cy: 540, zoom: 1.7, dur })
+      camera({ cx: target.x + 70, cy: 610, zoom: 1.7, dur })
       footsteps(dur)
       await wait(dur * 400)
       const meet = keeper ? { x: KEEPER_HOME.x - 4, y: 556 } : { x: target.x + 58, y: LANE }
@@ -285,7 +315,8 @@ function StadiumGame({ pool }: { pool: PoolQuestion[] }) {
       ball({ dribble: false })
       defender(id, { stride: false, pose: 'taunt' })
       // a cinematic close-up for the one-on-one
-      camera({ cx: (target.x + meet.x) / 2, cy: target.y - 34, zoom: keeper ? 2.2 : 2.6, dur: 0.9 })
+      // the question sits over the top half of the pitch, so the camera keeps the players low in the frame
+      camera({ cx: (target.x + meet.x) / 2, cy: WORLD_BOTTOM, zoom: narrowRef.current ? 1.35 : keeper ? 2 : 2.1, dur: 0.9 })
       sayAs(id, m.asked.some((a) => a.defender === id) ? 'taunt' : m.encounter < 2 ? 'taunt' : 'intro')
       await wait(500)
       nextQuestion(m)
@@ -301,6 +332,7 @@ function StadiumGame({ pool }: { pool: PoolQuestion[] }) {
     setQuestion(null)
     setPlay(null)
     setPicked(null)
+    stageRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
     void direct(async () => {
       setPhase('kickoff')
       stadiumSound.startCrowd()
@@ -309,7 +341,7 @@ function StadiumGame({ pool }: { pool: PoolQuestion[] }) {
       crowd('cheer')
       say('lauder', LAUDER_LINES.kickoff)
       show('KICK OFF!', 'good')
-      camera({ cx: START.x + 120, cy: 540, zoom: 1.7, dur: 1.4 })
+      camera({ cx: START.x + 120, cy: 610, zoom: 1.7, dur: 1.4 })
       await wait(1500)
       crowd('idle')
       await approach(m)
@@ -466,7 +498,7 @@ function StadiumGame({ pool }: { pool: PoolQuestion[] }) {
       stadiumSound.power('shield')
       defender(id, { pose: 'power' })
       const sh = addEffect({ kind: 'shield' })
-      camera({ cx: 830, cy: 530, zoom: 2.1, dur: 0.6 })
+      camera({ cx: 830, cy: WORLD_BOTTOM, zoom: 2, dur: 0.6 })
       await wait(550)
       lauder({ x: lx - 12, dur: 0.25, mood: 'excited' })
       await wait(260)
@@ -763,16 +795,19 @@ function StadiumGame({ pool }: { pool: PoolQuestion[] }) {
   const facing = currentDefender(match)
   const beatenCount = defendersBeaten(match)
   const questionNumber = match.asked.length + (phase === 'duel' ? 1 : 0)
+  const longCode = !!q?.code && q.code.split('\n').length > 3
+  // short answers fit two to a row even on a phone
+  const shortOptions = !!q && q.options.every((o) => o.text.length <= 18 && !o.text.includes('\n'))
 
   const overlay = (
     <div className="pointer-events-none absolute inset-0">
       {/* letterbox bars for the one-on-one close-ups */}
-      <motion.div className="absolute inset-x-0 top-0 bg-black/85" initial={false} animate={{ height: cinematic ? '7%' : '0%' }} transition={{ duration: 0.5 }} />
-      <motion.div className="absolute inset-x-0 bottom-0 bg-black/85" initial={false} animate={{ height: cinematic ? '7%' : '0%' }} transition={{ duration: 0.5 }} />
+      <motion.div className="absolute inset-x-0 top-0 bg-black/85" initial={false} animate={{ height: cinematic && !narrow ? '7%' : '0%' }} transition={{ duration: 0.5 }} />
+      <motion.div className="absolute inset-x-0 bottom-0 bg-black/85" initial={false} animate={{ height: cinematic && !narrow ? '7%' : '0%' }} transition={{ duration: 0.5 }} />
 
       {inMatch && (
         <div className="absolute top-2 left-2 flex flex-col items-start gap-1 sm:top-3 sm:left-3">
-          {unit && (phase === 'duel' || phase === 'playing' || phase === 'feedback') && (
+          {unit && cinematic && !panelOpen && (
             <span className="rounded-lg bg-black/60 px-2 py-0.5 text-[10px] font-extrabold tracking-wide text-white uppercase backdrop-blur sm:text-xs">
               Unit {unit.number} · {unit.title}
             </span>
@@ -802,8 +837,8 @@ function StadiumGame({ pool }: { pool: PoolQuestion[] }) {
         </button>
       </div>
 
-      {/* who is talking */}
-      <div className="absolute inset-x-0 top-[9%] grid justify-items-center px-12 sm:top-[11%] [&>*]:col-start-1 [&>*]:row-start-1">
+      {/* who is talking (during a duel it shows in the question panel instead) */}
+      <div className={`absolute inset-x-0 top-[9%] ${cinematic && panelOpen ? 'hidden' : ''} grid justify-items-center px-12 sm:top-[11%]`}>
         <AnimatePresence>
           {speech && (
             <motion.div
@@ -827,8 +862,8 @@ function StadiumGame({ pool }: { pool: PoolQuestion[] }) {
         </AnimatePresence>
       </div>
 
-      {/* big moments */}
-      <div className="absolute inset-0 flex items-center justify-center">
+      {/* big moments, over the players (below the question panel) */}
+      <div className={`absolute inset-x-0 flex items-center justify-center ${cinematic ? 'top-[50%] bottom-[16%]' : 'inset-y-0'}`}>
         <AnimatePresence>
           {caption && (
             <motion.div
@@ -850,6 +885,129 @@ function StadiumGame({ pool }: { pool: PoolQuestion[] }) {
           )}
         </AnimatePresence>
       </div>
+
+
+      {/* the question, right on the pitch */}
+      {cinematic && q && question && (
+        <div className="pointer-events-none absolute inset-x-1.5 top-10 flex h-[calc(96%-2.5rem)] items-start justify-center sm:inset-x-5 sm:top-[calc(7%+6px)] sm:h-[57%]">
+          <motion.div
+            key={question.id}
+            initial={{ opacity: 0, y: -14, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ type: 'spring', stiffness: 320, damping: 26 }}
+            className="pointer-events-auto flex max-h-full w-full max-w-3xl flex-col overflow-hidden rounded-2xl border-2 border-espresso-900 bg-white/95 shadow-[0_4px_0_var(--color-espresso-900)] backdrop-blur"
+            role="region"
+            aria-label="Question"
+          >
+            <div className="flex items-center gap-2 border-b-2 border-espresso-100 px-3 py-1.5">
+              <Portrait who={play?.defender ?? facing} size={28} />
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[10px] font-extrabold tracking-wider text-espresso-400 uppercase sm:text-[11px]">
+                  <span className="rounded-full bg-grape-100 px-1.5 py-px text-grape-700">
+                    Unit {unit?.number} · {unit?.title}
+                  </span>
+                  <span className={q.difficulty === 1 ? 'text-mint-600' : q.difficulty === 2 ? 'text-sun-700' : 'text-berry-600'}>{q.difficulty === 1 ? 'Beginner' : q.difficulty === 2 ? 'Intermediate' : 'Advanced'}</span>
+                  <span className="truncate">
+                    vs {DEFENDERS[play?.defender ?? facing].name}, {DEFENDERS[play?.defender ?? facing].title}
+                  </span>
+                </div>
+                {speech && (
+                  <div className="truncate text-[11px] font-bold text-espresso-600 sm:text-xs" aria-live="polite">
+                    <span className={speech.who === 'lauder' ? 'text-brew-600' : 'text-berry-600'}>{speech.who === 'lauder' ? 'Mr. Lauder' : DEFENDERS[speech.who].name}: </span>
+                    {speech.text}
+                  </div>
+                )}
+              </div>
+              <button
+                type="button"
+                onClick={() => setPanelOpen((o) => !o)}
+                className="shrink-0 rounded-lg px-2 py-1 text-[11px] font-extrabold tracking-wide text-espresso-500 uppercase hover:bg-espresso-100"
+                aria-expanded={panelOpen}
+              >
+                {panelOpen ? 'Hide' : 'Show question'}
+              </button>
+            </div>
+            {panelOpen && phase === 'playing' && play && (
+              <div className={`flex items-center gap-2 px-3 py-2 font-display text-base font-bold sm:text-lg ${play.correct ? 'text-mint-800' : 'text-berry-700'}`} aria-live="polite">
+                <IconTile icon={play.goal ? 'trophy' : play.correct ? 'zap' : 'heart-crack'} tone={play.correct ? 'mint' : 'berry'} size={26} />
+                {resultLine(play)}
+              </div>
+            )}
+            {panelOpen && phase !== 'playing' && (
+              <div className="min-h-0 overflow-y-auto px-2.5 py-1.5 sm:px-4 sm:py-3">
+                {/* long code: the answers sit beside it on wider screens, so the card stays short */}
+                <div className={longCode ? 'sm:grid sm:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] sm:items-start sm:gap-3' : undefined}>
+                <div className="min-w-0">
+                <div className="text-[14px] leading-snug font-semibold text-espresso-900 sm:text-base">
+                  <Md text={q.prompt} />
+                </div>
+                {q.code && <CodeBlock code={q.code} size="sm" className="mt-1.5 sm:mt-2 [&_.font-mono]:text-[11px] [&_.font-mono]:leading-[1.45] sm:[&_.font-mono]:text-[12px] sm:[&_.font-mono]:leading-[1.5]" copy={false} />}
+                {q.stdin && (
+                  <p className="mt-1.5 text-xs font-semibold text-espresso-500 sm:text-sm">
+                    The user types: <code className="rounded bg-espresso-50 px-1.5 py-0.5 font-mono">{q.stdin.trim().split('\n').join(', ')}</code>
+                  </p>
+                )}
+                </div>
+                <div className={`mt-1.5 grid gap-1 sm:mt-2 sm:gap-2 ${shortOptions && !longCode ? 'grid-cols-2' : 'grid-cols-1'} ${longCode ? '' : 'sm:grid-cols-2'}`}>
+                  {order.map((oi, di) => {
+                    const opt = q.options[oi]
+                    const right = picked !== null && oi === q.answer
+                    const wrong = picked === di && oi !== q.answer
+                    const mono = q.optionStyle === 'code' || q.optionStyle === 'output'
+                    return (
+                      <button
+                        key={`${question.id}-${oi}`}
+                        type="button"
+                        disabled={phase !== 'duel'}
+                        onClick={() => choose(di)}
+                        className={`flex items-start gap-2 rounded-xl border-2 px-2 py-1 text-left text-[13px] transition sm:px-3 sm:py-2 sm:text-sm ${
+                          right
+                            ? 'border-mint-500 bg-mint-50'
+                            : wrong
+                              ? 'border-berry-400 bg-berry-50'
+                              : picked !== null
+                                ? 'border-espresso-100 opacity-60'
+                                : 'border-espresso-200 bg-white shadow-[0_2px_0_var(--color-espresso-200)] hover:border-sky-300 hover:bg-sky-50 active:translate-y-[2px] active:shadow-none'
+                        }`}
+                      >
+                        <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md text-[11px] font-bold sm:h-6 sm:w-6 sm:text-xs ${right ? 'bg-mint-500 text-white' : wrong ? 'bg-berry-500 text-white' : 'bg-espresso-100 text-espresso-600'}`}>{di + 1}</span>
+                        <span className={`min-w-0 flex-1 ${mono ? 'font-mono text-[12px] whitespace-pre-wrap sm:text-[13px]' : 'font-semibold'}`}>{mono ? opt.text : <Md text={opt.text} />}</span>
+                        {right && <AppIcon name="check-circle" size={18} className="shrink-0 text-mint-600" />}
+                        {wrong && <AppIcon name="x-circle" size={18} className="shrink-0 text-berry-500" />}
+                      </button>
+                    )
+                  })}
+                </div>
+                </div>
+                {play && picked !== null && (
+                  <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className={`mt-2 rounded-xl border-2 p-2.5 sm:p-3 ${play.correct ? 'border-mint-300 bg-mint-50' : 'border-berry-200 bg-berry-50'}`}>
+                    <div className={`flex items-center gap-2 font-display text-base font-bold sm:text-lg ${play.correct ? 'text-mint-800' : 'text-berry-700'}`}>
+                      <IconTile icon={play.goal ? 'trophy' : play.correct ? 'zap' : 'heart-crack'} tone={play.correct ? 'mint' : 'berry'} size={26} />
+                      {resultLine(play)}
+                    </div>
+                    {!play.correct && q.options[order[picked]].feedback && (
+                      <p className="mt-1 text-sm text-espresso-800">
+                        <Md text={q.options[order[picked]].feedback!} />
+                      </p>
+                    )}
+                    <p className="mt-1 text-sm text-espresso-700">
+                      <Md text={q.explanation} />
+                    </p>
+                    {!play.correct && !play.turnover && <p className="mt-1 text-xs font-semibold text-espresso-500">Same defender, new question. You have {match.possessions} possession{match.possessions === 1 ? '' : 's'} left.</p>}
+                  </motion.div>
+                )}
+              </div>
+            )}
+            {play && picked !== null && phase === 'feedback' && (
+              <div className="flex justify-end border-t-2 border-espresso-100 px-3 py-1.5">
+                <Button onClick={proceed} disabled={phase !== 'feedback'} size="sm" icon={<ArrowRight size={16} />} variant={play.correct ? 'success' : 'primary'}>
+                  {phase !== 'feedback' ? 'Watch the play...' : match.status !== 'playing' ? 'See results' : play.correct ? 'Next defender' : 'Try again'}
+                </Button>
+              </div>
+            )}
+          </motion.div>
+        </div>
+      )}
 
       {/* defenders left */}
       {inMatch && (
@@ -876,7 +1034,15 @@ function StadiumGame({ pool }: { pool: PoolQuestion[] }) {
 
   return (
     <div className="mx-auto max-w-5xl space-y-4">
-      <Stage scene={scene} overlay={overlay} className="aspect-[4/3] w-full rounded-[28px] border-2 border-espresso-900 shadow-[0_6px_0_var(--color-espresso-900)] sm:aspect-[16/9]" />
+      <div ref={stageRef} className="scroll-mt-20">
+        <Stage
+          scene={scene}
+          overlay={overlay}
+          className={`w-full rounded-[28px] border-2 border-espresso-900 shadow-[0_6px_0_var(--color-espresso-900)] ${
+            inMatch ? 'h-[calc(100dvh-10.25rem)] min-h-[26rem] sm:h-[calc(100dvh-7.5rem)] sm:min-h-[30rem]' : 'aspect-[4/3] sm:aspect-[16/9]'
+          }`}
+        />
+      </div>
 
       {phase === 'lobby' && <Lobby lineup={match.lineup} available={available} onKickOff={kickOff} />}
 
@@ -893,104 +1059,20 @@ function StadiumGame({ pool }: { pool: PoolQuestion[] }) {
         </div>
       )}
 
-      {(phase === 'duel' || phase === 'playing' || phase === 'feedback') && q && question && (
-        <div className="grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-[minmax(0,1fr)_240px]">
-          <div className="min-w-0 rounded-3xl border-2 border-espresso-100 bg-white p-5">
-            <div className="mb-2 flex flex-wrap items-center gap-2 text-xs font-extrabold tracking-wider text-espresso-400 uppercase">
-              <span className="rounded-full bg-grape-100 px-2 py-0.5 text-grape-700">Unit {unit?.number}</span>
-              <span className={q.difficulty === 1 ? 'text-mint-600' : q.difficulty === 2 ? 'text-sun-700' : 'text-berry-600'}>{q.difficulty === 1 ? 'Beginner' : q.difficulty === 2 ? 'Intermediate' : 'Advanced'}</span>
-              <span>·</span>
-              <span>
-                vs {DEFENDERS[play?.defender ?? facing].name}, {DEFENDERS[play?.defender ?? facing].title}
-              </span>
-            </div>
-            <div className="text-lg font-semibold text-espresso-900">
-              <Md text={q.prompt} />
-            </div>
-            {q.code && <CodeBlock code={q.code} size="sm" className="mt-3" copy={false} />}
-            {q.stdin && (
-              <p className="mt-2 text-sm font-semibold text-espresso-500">
-                The user types: <code className="rounded bg-espresso-50 px-1.5 py-0.5 font-mono">{q.stdin.trim().split('\n').join(', ')}</code>
-              </p>
-            )}
-            <div className="mt-4 grid gap-2 sm:grid-cols-2">
-              {order.map((oi, di) => {
-                const opt = q.options[oi]
-                const right = picked !== null && oi === q.answer
-                const wrong = picked === di && oi !== q.answer
-                const mono = q.optionStyle === 'code' || q.optionStyle === 'output'
-                return (
-                  <button
-                    key={`${question.id}-${oi}`}
-                    type="button"
-                    disabled={phase !== 'duel'}
-                    onClick={() => choose(di)}
-                    className={`flex items-start gap-3 rounded-2xl border-2 px-4 py-3 text-left transition ${
-                      right
-                        ? 'border-mint-500 bg-mint-50'
-                        : wrong
-                          ? 'border-berry-400 bg-berry-50'
-                          : picked !== null
-                            ? 'border-espresso-100 opacity-60'
-                            : 'border-espresso-200 bg-white shadow-[0_3px_0_var(--color-espresso-200)] hover:border-sky-300 hover:bg-sky-50 active:translate-y-[2px] active:shadow-none'
-                    }`}
-                  >
-                    <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-sm font-bold ${right ? 'bg-mint-500 text-white' : wrong ? 'bg-berry-500 text-white' : 'bg-espresso-100 text-espresso-600'}`}>{di + 1}</span>
-                    <span className={`min-w-0 flex-1 ${mono ? 'font-mono text-sm whitespace-pre-wrap' : 'font-semibold'}`}>{mono ? opt.text : <Md text={opt.text} />}</span>
-                    {right && <AppIcon name="check-circle" size={20} className="shrink-0 text-mint-600" />}
-                    {wrong && <AppIcon name="x-circle" size={20} className="shrink-0 text-berry-500" />}
-                  </button>
-                )
-              })}
-            </div>
-            {play && picked !== null && (
-              <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className={`mt-4 rounded-2xl border-2 p-4 ${play.correct ? 'border-mint-300 bg-mint-50' : 'border-berry-200 bg-berry-50'}`}>
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
-                  <div className="flex-1">
-                    <div className={`flex items-center gap-2 font-display text-xl font-bold ${play.correct ? 'text-mint-800' : 'text-berry-700'}`}>
-                      <IconTile icon={play.goal ? 'trophy' : play.correct ? 'zap' : 'heart-crack'} tone={play.correct ? 'mint' : 'berry'} size={32} />
-                      {play.goal
-                        ? `GOAL! +${play.points} points`
-                        : play.correct
-                          ? `${DEFENDERS[play.defender].skill}! Past ${DEFENDERS[play.defender].name}. +${play.points}`
-                          : play.turnover
-                            ? `${DEFENDERS[play.defender].name} wins the ball.`
-                            : `${DEFENDERS[play.defender].powerName}! You lose a possession.`}
-                    </div>
-                    {!play.correct && picked !== null && q.options[order[picked]].feedback && (
-                      <p className="mt-1 text-[15px] text-espresso-800">
-                        <Md text={q.options[order[picked]].feedback!} />
-                      </p>
-                    )}
-                    <p className="mt-1 text-[15px] text-espresso-700">
-                      <Md text={q.explanation} />
-                    </p>
-                    {!play.correct && !play.turnover && <p className="mt-1 text-sm font-semibold text-espresso-500">Same defender, new question. You have {match.possessions} possession{match.possessions === 1 ? '' : 's'} left.</p>}
-                  </div>
-                  <Button onClick={proceed} disabled={phase !== 'feedback'} icon={<ArrowRight size={18} />} variant={play.correct ? 'success' : 'primary'} className="shrink-0">
-                    {phase !== 'feedback' ? 'Watch the play...' : match.status !== 'playing' ? 'See results' : play.correct ? 'Next defender' : 'Try again'}
-                  </Button>
-                </div>
-              </motion.div>
-            )}
+      {(phase === 'duel' || phase === 'playing' || phase === 'feedback') && (
+        <div className="grid gap-3 sm:grid-cols-2">
+          <div className="flex items-start gap-3 rounded-3xl border-2 border-espresso-100 bg-white p-4">
+            <Portrait who={play?.defender ?? facing} size={40} />
+            <p className="text-sm text-espresso-600">
+              <b className="text-espresso-900">
+                {DEFENDERS[play?.defender ?? facing].name}, {DEFENDERS[play?.defender ?? facing].title}.
+              </b>{' '}
+              {DEFENDERS[play?.defender ?? facing].powerName}: {DEFENDERS[play?.defender ?? facing].powerText}
+            </p>
           </div>
-          <div className="space-y-3">
-            <div className="rounded-3xl border-2 border-espresso-100 bg-white p-4">
-              <div className="mb-2 flex items-center gap-2">
-                <Portrait who={play?.defender ?? facing} size={40} />
-                <div>
-                  <div className="font-display font-semibold">{DEFENDERS[play?.defender ?? facing].name}</div>
-                  <div className="text-xs font-bold text-espresso-400">{DEFENDERS[play?.defender ?? facing].title}</div>
-                </div>
-              </div>
-              <p className="text-sm text-espresso-600">
-                <b>{DEFENDERS[play?.defender ?? facing].powerName}:</b> {DEFENDERS[play?.defender ?? facing].powerText}
-              </p>
-            </div>
-            <div className="rounded-3xl border-2 border-espresso-100 bg-white p-4">
-              <div className="mb-2 text-xs font-extrabold tracking-wider text-espresso-400 uppercase">Units this match</div>
-              <UnitCoverage match={match} available={available} />
-            </div>
+          <div className="rounded-3xl border-2 border-espresso-100 bg-white p-4">
+            <div className="mb-2 text-xs font-extrabold tracking-wider text-espresso-400 uppercase">Units this match</div>
+            <UnitCoverage match={match} available={available} />
           </div>
         </div>
       )}
